@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BorderFlow AI</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--bd:#e2e5ea;--tx:#1a1d23;--sub:#6b7280;--ht:#9ca3af;--bl:#1565c0;--blbg:#e8f1fb;--gn:#1D9E75;--gnbg:#e6f7f1;--rd:#c62828;--rdbg:#fce4ec;--am:#d97706;--ambg:#fef3c7;--pu:#7c3aed;--pubg:#ede9fe;--tl:#0e7490;--tlbg:#e0f7fa}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--card:#181b23;--bd:#282d3a;--tx:#e5e7eb;--sub:#9ca3af;--ht:#6b7280;--bl:#60a5fa;--blbg:#1e293b;--gn:#34d399;--gnbg:#162a23;--rd:#f87171;--rdbg:#2d1a1e;--am:#fbbf24;--ambg:#2a2416;--pu:#a78bfa;--pubg:#1f1a2e;--tl:#22d3ee;--tlbg:#0c2a33}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--tx);line-height:1.5}
+.app{max-width:940px;margin:0 auto;padding:20px 16px 60px}
+.hdr{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.logo{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#0C447C,#1D9E75);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);margin-bottom:16px;flex-wrap:wrap}
+.bc a{color:var(--bl);cursor:pointer;text-decoration:none;font-weight:500}
+.flows{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.fc{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px;cursor:pointer;transition:.15s}
+.fc:hover{border-color:var(--bl);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.fc h2{font-size:16px;font-weight:700;margin-bottom:6px}.fc p{font-size:11.5px;color:var(--sub)}.fc small{font-size:10px;color:var(--ht);display:block;margin-top:10px}
+.pipeline{display:flex;gap:2px;margin-bottom:20px;overflow-x:auto}
+.pip{flex:1;min-width:48px;padding:5px 2px;text-align:center;border-radius:6px;font-size:7px;font-weight:600;cursor:pointer;transition:.15s;line-height:1.2}
+.pip b{display:block;font-size:10px}
+.pip-done{background:var(--gnbg);color:var(--gn)}.pip-cur{background:var(--gn);color:#fff}.pip-fut{background:var(--bg);color:var(--ht)}
+.deal-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:.15s}
+.deal-card:hover{border-color:var(--bl);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.dbar{display:flex;gap:1px;height:6px;border-radius:3px;overflow:hidden;margin-top:10px}
+.dbar div{flex:1;border-radius:2px}.brd{background:var(--gn)}.brc{background:var(--am)}.brf{background:var(--bd)}
+.section{background:var(--card);border:1px solid var(--bd);border-radius:11px;margin-bottom:10px;overflow:hidden}
+.sh{padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.sh h3{font-size:13px;font-weight:600}
+.sb{border-top:1px solid var(--bd);padding:14px 16px}
+.inh{background:var(--bg);border-radius:7px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:var(--sub)}
+.inh b{font-size:9px;color:var(--ht);display:block;margin-bottom:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px}.g2 .k{color:var(--sub)}.g2 .v{font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:11px}th{padding:6px 8px;text-align:left;font-size:10px;color:var(--ht);background:var(--bg);border-bottom:1px solid var(--bd);font-weight:600}td{padding:7px 8px;border-bottom:1px solid var(--bd)}
+.tag{font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;white-space:nowrap}
+.tg{background:var(--gnbg);color:var(--gn)}.tb{background:var(--blbg);color:var(--bl)}.ta{background:var(--ambg);color:var(--am)}.tr{background:var(--rdbg);color:var(--rd)}.tp2{background:var(--pubg);color:var(--pu)}.tt{background:var(--tlbg);color:var(--tl)}
+.btn{padding:8px 16px;font-size:12px;font-weight:600;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.btn:hover{opacity:.85}
+.bg{background:var(--gn);color:#fff}.bb{background:var(--bl);color:#fff}.bs{background:var(--card);border:1px solid var(--bd);color:var(--sub)}.bam{background:var(--am);color:#fff}.bpu{background:var(--pu);color:#fff}
+.sm{padding:5px 10px;font-size:11px;border-radius:6px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-bottom:12px}
+.fg{display:flex;flex-direction:column;gap:3px}.fg.full{grid-column:1/-1}
+.fg label{font-size:11px;font-weight:600;color:var(--sub)}
+.fg input,.fg select,.fg textarea{padding:7px 10px;border:1px solid var(--bd);border-radius:6px;font-size:12px;background:var(--card);color:var(--tx);font-family:inherit}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--bl)}
+.fg input[readonly]{background:var(--bg);color:var(--sub)}
+.fg textarea{resize:vertical;min-height:50px}
+.disc{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.disc.hi{border-left:3px solid var(--rd)}.disc.md{border-left:3px solid var(--am)}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin:6px 0}
+.vb{background:var(--bg);border-radius:5px;padding:5px 8px;font-size:11px}
+.neq{font-size:14px;color:var(--rd);font-weight:700;text-align:center}
+.hs{font-family:monospace;font-size:10px;background:var(--blbg);color:var(--bl);padding:2px 5px;border-radius:3px;font-weight:600}
+.split{background:var(--pubg);border:1px solid var(--pu);border-radius:9px;padding:14px 16px;margin-bottom:12px}
+.nt{padding:10px 14px;background:var(--blbg);border-radius:8px;font-size:11px;color:var(--bl);line-height:1.6;margin:12px 0}
+.tot{display:flex;justify-content:space-between;padding:10px 0 0;font-size:14px;font-weight:700;border-top:2px solid var(--bd);margin-top:8px}
+.new-tag{background:var(--ambg);color:var(--am);font-size:8px;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px}
+
+/* ═══ Dashboard ═══ */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;text-align:center}
+.kpi .kpi-val{font-size:26px;font-weight:800;margin:4px 0}
+.kpi .kpi-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+.kpi .kpi-delta{font-size:10px;font-weight:600;margin-top:4px}
+.kpi .kpi-up{color:var(--gn)}.kpi .kpi-down{color:var(--rd)}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.chart-box{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px}
+.chart-box h3{font-size:13px;font-weight:600;margin-bottom:14px}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px}
+.bar-col{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:.3s}
+.bar-label{font-size:8px;color:var(--ht);text-align:center;line-height:1.2}
+.donut-wrap{display:flex;align-items:center;gap:20px}
+.donut-legend{display:flex;flex-direction:column;gap:6px}
+.donut-legend-item{display:flex;align-items:center;gap:6px;font-size:11px}
+.donut-legend-item .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.risk-list{display:flex;flex-direction:column;gap:8px}
+.risk-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:8px;font-size:12px}
+.risk-item .risk-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* ═══ Search & Filter ═══ */
+.search-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;font-size:12px;background:var(--card);color:var(--tx);font-family:inherit}
+.search-bar input:focus{outline:none;border-color:var(--bl)}
+.search-bar select{padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font-size:11px;background:var(--card);color:var(--tx);font-family:inherit;cursor:pointer}
+.search-bar select:focus{outline:none;border-color:var(--bl)}
+.no-results{text-align:center;padding:40px 20px;color:var(--sub);font-size:13px}
+
+/* ═══ Notifications ═══ */
+.notif-bell{position:relative;width:34px;height:34px;border-radius:8px;border:1px solid var(--bd);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:.15s}
+.notif-bell:hover{border-color:var(--bl)}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--rd);color:#fff;font-size:9px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+.notif-panel{position:absolute;top:42px;right:0;width:340px;max-height:420px;overflow-y:auto;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:100;padding:8px 0}
+.notif-header{padding:10px 16px;font-size:13px;font-weight:700;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+.notif-item{padding:10px 16px;border-bottom:1px solid var(--bd);cursor:pointer;transition:.1s;display:flex;gap:10px;align-items:flex-start}
+.notif-item:hover{background:var(--bg)}
+.notif-item:last-child{border-bottom:none}
+.notif-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.notif-content{flex:1;min-width:0}
+.notif-content .notif-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.notif-content .notif-desc{font-size:10px;color:var(--sub);line-height:1.4}
+.notif-content .notif-time{font-size:9px;color:var(--ht);margin-top:3px}
+.notif-unread{background:var(--blbg)}
+
+/* ═══ Timeline ═══ */
+.timeline{position:relative;padding-left:24px;margin-top:10px}
+.timeline::before{content:"";position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--bd)}
+.tl-item{position:relative;padding-bottom:16px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-24px;top:2px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;border:2px solid var(--card)}
+.tl-dot-gn{background:var(--gnbg);color:var(--gn);border-color:var(--gn)}
+.tl-dot-bl{background:var(--blbg);color:var(--bl);border-color:var(--bl)}
+.tl-dot-am{background:var(--ambg);color:var(--am);border-color:var(--am)}
+.tl-dot-rd{background:var(--rdbg);color:var(--rd);border-color:var(--rd)}
+.tl-body{background:var(--bg);border-radius:8px;padding:10px 12px}
+.tl-body .tl-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.tl-body .tl-desc{font-size:10px;color:var(--sub)}
+.tl-body .tl-time{font-size:9px;color:var(--ht);margin-top:4px}
+
+/* ═══ AI Chat ═══ */
+.chat-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#0C447C,#1D9E75);color:#fff;border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:200;transition:.2s}
+.chat-fab:hover{transform:scale(1.08)}
+.chat-panel{position:fixed;bottom:86px;right:24px;width:360px;height:500px;background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.15);z-index:200;display:flex;flex-direction:column;overflow:hidden}
+.chat-head{padding:14px 16px;background:linear-gradient(135deg,#0C447C,#1D9E75);color:#fff;display:flex;align-items:center;gap:10px}
+.chat-head h3{font-size:14px;font-weight:600;flex:1}
+.chat-close{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;opacity:.8}
+.chat-close:hover{opacity:1}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.5;animation:msgIn .2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg.bot{background:var(--bg);color:var(--tx);align-self:flex-start;border-bottom-left-radius:4px}
+.chat-msg.user{background:var(--bl);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-msg .msg-time{font-size:9px;opacity:.6;margin-top:4px}
+.chat-input-row{padding:10px 14px;border-top:1px solid var(--bd);display:flex;gap:8px}
+.chat-input-row input{flex:1;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;font-size:12px;background:var(--bg);color:var(--tx);font-family:inherit}
+.chat-input-row input:focus{outline:none;border-color:var(--bl)}
+.chat-send{width:36px;height:36px;border-radius:8px;border:none;background:var(--bl);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.chat-send:hover{opacity:.85}
+.chat-suggest{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}
+.chat-chip{padding:5px 10px;border:1px solid var(--bd);border-radius:16px;font-size:10px;color:var(--sub);cursor:pointer;background:var(--card);transition:.15s;white-space:nowrap}
+.chat-chip:hover{border-color:var(--bl);color:var(--bl);background:var(--blbg)}
+.typing-indicator{display:flex;gap:4px;padding:10px 14px;align-self:flex-start}
+.typing-indicator span{width:6px;height:6px;background:var(--ht);border-radius:50%;animation:blink 1.4s infinite both}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+
+/* ═══ Tab nav ═══ */
+.tab-nav{display:flex;gap:2px;margin-bottom:16px;background:var(--bg);border-radius:10px;padding:3px}
+.tab-btn{flex:1;padding:8px 12px;border:none;background:transparent;border-radius:8px;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;transition:.15s;text-align:center}
+.tab-btn.active{background:var(--card);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tab-btn:hover:not(.active){color:var(--tx)}
+
+/* ═══ Upload Zone ═══ */
+.upload-zone{border:2px dashed var(--bd);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:.2s;background:var(--bg);margin-bottom:16px;position:relative}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--bl);background:var(--blbg)}
+.upload-zone .uz-icon{font-size:32px;margin-bottom:8px}
+.upload-zone .uz-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.upload-zone .uz-desc{font-size:10px;color:var(--sub)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.upload-progress{margin-bottom:16px}
+.upload-progress .up-bar-bg{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin:8px 0}
+.upload-progress .up-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--bl),var(--gn));transition:width .3s}
+.upload-progress .up-status{font-size:11px;color:var(--sub);display:flex;justify-content:space-between}
+.upload-file-info{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-radius:8px;margin-bottom:12px}
+.upload-file-info .ufi-icon{font-size:22px}
+.upload-file-info .ufi-name{font-size:12px;font-weight:600}
+.upload-file-info .ufi-size{font-size:10px;color:var(--sub)}
+.upload-file-info .ufi-remove{margin-left:auto;color:var(--rd);cursor:pointer;font-size:14px;padding:4px}
+.ocr-result{border:1px solid var(--gn);border-radius:10px;padding:14px 16px;margin-bottom:16px;background:var(--gnbg)}
+.ocr-result h4{font-size:12px;font-weight:700;color:var(--gn);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ocr-result .ocr-items{display:flex;flex-direction:column;gap:4px}
+.ocr-result .ocr-item{display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 0}
+.ocr-result .ocr-item .ocr-label{color:var(--sub);min-width:100px}
+.ocr-result .ocr-item .ocr-val{font-weight:600}
+.ocr-result .ocr-item .ocr-check{color:var(--gn);font-weight:700}
+.fg.auto-filled input,.fg.auto-filled select{border-color:var(--gn);background:var(--gnbg);animation:autoFillPulse .6s ease}
+.fg.auto-filled label{color:var(--gn)}
+.fg.auto-filled label::after{content:" ✓ AI読取";font-size:9px;font-weight:700;margin-left:4px}
+@keyframes autoFillPulse{0%{box-shadow:0 0 0 0 rgba(29,158,117,.4)}70%{box-shadow:0 0 0 6px rgba(29,158,117,0)}100%{box-shadow:0 0 0 0 rgba(29,158,117,0)}}
+.ocr-step{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:11px}
+.ocr-step .ocr-step-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ocr-step .ocr-step-done{background:var(--gnbg);color:var(--gn)}
+.ocr-step .ocr-step-active{background:var(--blbg);color:var(--bl);animation:spin 1s linear infinite}
+.ocr-step .ocr-step-pending{background:var(--bg);color:var(--ht)}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.items-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
+.items-table th{padding:6px 8px;text-align:left;font-size:10px;color:var(--ht);background:var(--bg);border-bottom:1px solid var(--bd);font-weight:600}
+.items-table td{padding:7px 8px;border-bottom:1px solid var(--bd)}
+.items-table input{width:100%;padding:5px 8px;border:1px solid var(--bd);border-radius:5px;font-size:11px;background:var(--card);color:var(--tx);font-family:inherit}
+.items-table input.ai-filled{border-color:var(--gn);background:var(--gnbg)}
+.add-row-btn{width:100%;padding:8px;border:1px dashed var(--bd);border-radius:6px;background:transparent;color:var(--sub);font-size:11px;cursor:pointer;margin-top:6px;transition:.15s}
+.add-row-btn:hover{border-color:var(--bl);color:var(--bl)}
+
+@media(max-width:600px){.flows,.fr,.g2,.chart-row{grid-template-columns:1fr}.dash-grid{grid-template-columns:1fr 1fr}.pip{min-width:38px;font-size:6px}.pip b{font-size:9px}.chat-panel{width:calc(100vw - 32px);right:16px;bottom:80px;height:60vh}.notif-panel{width:calc(100vw - 40px);right:-10px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">読み込み中...</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+var h=React.createElement,us=React.useState,ue=React.useEffect,ur=React.useRef,N=function(n){return typeof n==="number"?n.toLocaleString():n};
+// ═══ 14 Import Steps ═══
+var IM=[{n:"引合・発注"},{n:"与信管理",nw:1},{n:"契約・L/C"},{n:"保険・為替予約",nw:1},{n:"書類受領・OCR"},{n:"書類照合"},{n:"HS・関税"},{n:"許可申請・法規",nw:1},{n:"通関申告"},{n:"検品・入庫"},{n:"在庫管理",nw:1},{n:"仕入伝票"},{n:"支払・L/C決済"},{n:"原価計算"}];
+// ═══ 11 Export Steps ═══
+var EX=[{n:"受注・契約"},{n:"与信管理",nw:1},{n:"安全保障・コンプラ",nw:1},{n:"該非判定"},{n:"輸出許可(E/L)",nw:1},{n:"書類作成"},{n:"輸出通関"},{n:"船積・B/L"},{n:"売上伝票"},{n:"請求・入金・消込"},{n:"為替差損益"}];
+// ═══ Import Deal Data ═══
+var ID1={id:"IM-2026-001",step:12,sup:"Nippon Precision Parts Co., Ltd.",co:"Japan",cur:"USD",inco:"FOB Yokohama",pay:"L/C at sight",
+  s0:{d:"2026-02-10",po:"PO-USM-1192",items:[{n:"CNC Aluminum Housing (A6061-T6)",q:500,u:"PCS",p:42.5},{n:"SS Shaft Assembly (SUS304)",q:200,u:"PCS",p:78},{n:"Ceramic Bearing (ZrO2)",q:1000,u:"PCS",p:15.8}],tot:52650},
+  s1:{d:"2026-02-12",limit:"$200,000",used:"$52,650",avail:"$147,350",rating:"A",reviewer:"Credit Dept.",expiry:"2026-12-31",note:"過去3年の取引実績良好。支払遅延なし。"},
+  s2:{d:"2026-02-20",no:"CTR-047",lc:"LC-MUFG-3847",bk:"三菱UFJ銀行",exp:"2026-04-30",ship:"2026-03-20",lcType:"Irrevocable L/C",lcStatus:"開設済",amendHistory:"なし"},
+  s3:{insurer:"東京海上日動",policy:"MAR-2026-1192",premium:"¥38,000",coverage:"CIF x 110%",fxType:"為替予約",fxRate:149.5,fxBank:"三菱UFJ銀行",fxRef:"FX-MUFG-2026-0312",fxMaturity:"2026-04-15",spotRate:151.2,saving:"¥89,460"},
+  s4:{inv:"INV-2026-03847",bl:"YMLU-TKY2603847",v:"YM WELLNESS",etd:"2026-03-16",eta:"2026-04-02"},
+  s5:[{s:"high",it:"Ceramic Bearing",a:"B/L: 1,050",b:"Invoice: 1,000",dt:"50個差異。B/L Amendment必要。"},{s:"medium",it:"Shaft Assembly",a:"B/L: SS Shaft",b:"Invoice: SUS304 Shaft",dt:"略称。品名統一推奨。"}],
+  s6:[{n:"CNC Housing",c:"8466.93.5085",r:"3.7%",d:786},{n:"SS Shaft",c:"8483.30.8090",r:"4.5%",d:702},{n:"Bearing",c:"8482.80.0085",r:"9.0%",d:1422}],
+  s7:{permits:[{law:"外為法",status:"該当なし",note:"輸入規制対象外"},{law:"関税定率法",status:"確認済",note:"減免税適用なし"},{law:"食品衛生法",status:"非該当",note:"工業部品のため適用外"}],checkedBy:"Trade Compliance Dept.",checkedDate:"2026-03-01"},
+  s8:{no:"IC-YOK-038471",d:"2026-03-20",tax:"¥1,038,522",st:"許可済"},
+  s9:{d:"2026-04-03",r:"合格",warehouse:"横浜倉庫 A棟",lot:"LOT-2026-04-001",rcvQty:[{n:"CNC Housing",expect:500,actual:500,result:"OK"},{n:"SS Shaft",expect:200,actual:200,result:"OK"},{n:"Ceramic Bearing",expect:1000,actual:1000,result:"OK"}]},
+  s10:{location:"横浜倉庫 A棟-3F",lots:[{lot:"LOT-2026-04-001",items:3,totalQty:1700,status:"在庫中",valMethod:"移動平均法",bookVal:"¥8,907,792"}],lastCount:"2026-04-05",nextCount:"2026-07-05"},
+  s11:{no:"SI-03847",d:"2026-03-20",fx:149.5,cif:7871175,du:435045,tx:601572,tot:8907792},
+  s12:{lcNego:{d:"2026-04-05",bank:"三菱UFJ銀行",ref:"NEGO-MUFG-038471",st:"買取完了",amt:"$52,650",fxApplied:149.5,jpyAmt:"¥7,871,175"},payments:[{t:"関税",a:"¥435,045",s:"済",d:"03-20"},{t:"消費税",a:"¥601,572",s:"済",d:"03-20"},{t:"L/C買取",a:"$52,650 (¥7,871,175)",s:"済",d:"04-05"}]},
+  s13:{items:[{n:"Housing",f:"¥6,353",l:"¥7,421"},{n:"Shaft",f:"¥11,661",l:"¥13,734"},{n:"Bearing",f:"¥2,362",l:"¥2,844"}],tot:"¥9,230,792",mg:"FOB比 17.3%増"}
+};
+var ID2={id:"IM-2026-002",step:5,sup:"Shanghai Steel Components",co:"China",cur:"USD",inco:"CIF LA",pay:"T/T 30d",
+  s0:{d:"2026-02-28",po:"PO-USM-1205",items:[{n:"Steel Plate (SS400)",q:100,u:"PCS",p:120},{n:"Pipe Fitting (SUS316)",q:500,u:"PCS",p:12.4}],tot:18200},
+  s1:{d:"2026-03-01",limit:"$100,000",used:"$18,200",avail:"$81,800",rating:"B+",reviewer:"Credit Dept.",expiry:"2026-09-30",note:"取引開始1年。与信枠拡大は次回レビュー時。"},
+  s2:{d:"2026-03-10",no:"CTR-058",lc:"-",bk:"-",exp:"-",ship:"2026-04-15",lcType:"-",lcStatus:"-"},
+  s3:null,s4:{inv:"INV-SH-0412",bl:"COSU-260412",v:"COSCO PRIDE",etd:"04-01",eta:"04-18"},
+  s5:[],s6:null,s7:null,s8:null,s9:null,s10:null,s11:null,s12:null,s13:null
+};
+var ID3={id:"IM-2026-003",step:1,sup:"Bayern Precision GmbH",co:"Germany",cur:"EUR",inco:"DAP",pay:"T/T 60d",
+  s0:{d:"2026-01-15",po:"PO-USM-1180",items:[{n:"Optical Lens Assembly",q:50,u:"SET",p:656}],tot:32800},
+  s1:null,s2:null,s3:null,s4:null,s5:null,s6:null,s7:null,s8:null,s9:null,s10:null,s11:null,s12:null,s13:null
+};
+// ═══ Export Deal Data ═══
+var ED1={id:"EX-2026-001",step:9,sup:"US Advanced Manufacturing Inc.",co:"USA",cur:"USD",inco:"FOB Yokohama",pay:"L/C at sight",
+  s0:{d:"2026-01-20",so:"SO-NPP-0087",items:[{n:"Precision Gear Assembly (SCM415)",q:300,u:"PCS",p:95},{n:"Titanium Fastener Kit (Ti-6Al-4V)",q:1000,u:"SET",p:28.5}],tot:57000},
+  s1:{d:"2026-01-22",limit:"$300,000",used:"$57,000",avail:"$243,000",rating:"A+",reviewer:"Credit Dept.",expiry:"2027-01-31",note:"米国大手。5年以上の取引実績。"},
+  s2:{d:"2026-01-25",checks:[{item:"外為法（安全保障貿易管理）",st:"確認済",note:"リスト規制・キャッチオール非該当"},{item:"米国再輸出規制(EAR)",st:"確認済",note:"EAR99相当。輸出許可不要"},{item:"仕向地スクリーニング",st:"クリア",note:"制裁対象国・エンドユーザー該当なし"},{item:"取引先スクリーニング",st:"クリア",note:"SDNリスト・Entity List非該当"}]},
+  s3:{items:[{n:"Precision Gear Assembly",cat:"非該当",reason:"輸出令別表第1該当なし"},{n:"Titanium Fastener Kit",cat:"非該当",reason:"パラメータシート確認済。基準値未満"}],no:"GH-0087",d:"2026-01-25"},
+  s4:{required:false,reason:"全品目非該当のためE/L不要",note:"該非判定書を社内保管（7年）"},
+  s5:{inv:"EXP-INV-0087",pl:"EXP-PL-0087",co:"CO-JP-0087",created:"2026-02-10"},
+  s6:{no:"EC-YOK-026-0087",d:"2026-02-12",st:"許可済"},
+  s7:{bl:"YMLU-YOK260087",v:"YM TRIUMPH",etd:"2026-02-15",eta:"2026-03-05"},
+  s8:{no:"SV-0087",d:"2026-02-15",fx:148.8,rev:8481600,entries:[{ac:"売掛金（外貨）",dr:"¥8,481,600",cr:""},{ac:"売上高",dr:"",cr:"¥8,481,600"}]},
+  s9:{invNo:"REQ-0087",d:"2026-02-16",due:"2026-03-18",amt:"$57,000",st:"送付済",deposit:{d:"2026-03-15",amt:"$57,000",bankRef:"WF-TT-20260315",autoMatch:"自動消込完了",arBefore:"¥8,481,600",arAfter:"¥0"}},
+  s10:null
+};
+var ED2={id:"EX-2026-002",step:3,sup:"PT Maju Teknik Indonesia",co:"Indonesia",cur:"USD",inco:"CIF Jakarta",pay:"T/T 30d",
+  s0:{d:"2026-03-01",so:"SO-NPP-0102",items:[{n:"CNC Aluminum Housing (A6061-T6)",q:200,u:"PCS",p:48},{n:"Steel Bracket Assembly",q:800,u:"PCS",p:12}],tot:19200},
+  s1:{d:"2026-03-02",limit:"$50,000",used:"$19,200",avail:"$30,800",rating:"B",reviewer:"Credit Dept.",expiry:"2026-12-31",note:"新規取引先。初回は小ロットで検証。"},
+  s2:null,s3:null,s4:null,s5:null,s6:null,s7:null,s8:null,s9:null,s10:null
+};
+var IMD=[ID1,ID2,ID3]; var EXD=[ED1,ED2];
+var ALLDEALS=IMD.concat(EXD);
+
+// ═══ Notifications Data ═══
+var NOTIFS=[
+  {id:1,type:"warn",icon:"⚠",title:"書類照合：重大不一致",desc:"IM-2026-001 Ceramic Bearing 数量差異 (50個)。B/L Amendment必要。",time:"2時間前",read:false,dealId:"IM-2026-001"},
+  {id:2,type:"info",icon:"📦",title:"入庫完了",desc:"IM-2026-001 横浜倉庫 A棟に入庫完了。1,700個検品合格。",time:"5時間前",read:false,dealId:"IM-2026-001"},
+  {id:3,type:"success",icon:"✅",title:"L/C決済完了",desc:"IM-2026-001 MUFG買取完了。$52,650 → ¥7,871,175",time:"1日前",read:true,dealId:"IM-2026-001"},
+  {id:4,type:"info",icon:"🚢",title:"船積確認",desc:"EX-2026-001 YM TRIUMPH ETD 2/15 横浜出港済。ETA 3/5 LA着予定。",time:"1日前",read:true,dealId:"EX-2026-001"},
+  {id:5,type:"success",icon:"💰",title:"入金消込完了",desc:"EX-2026-001 $57,000入金。売掛金自動消込完了。",time:"2日前",read:true,dealId:"EX-2026-001"},
+  {id:6,type:"warn",icon:"⏰",title:"与信期限アラート",desc:"IM-2026-002 Shanghai Steel 与信期限 2026-09-30。更新手続きを推奨。",time:"3日前",read:true,dealId:"IM-2026-002"},
+  {id:7,type:"info",icon:"📋",title:"新規案件登録",desc:"EX-2026-002 PT Maju Teknik Indonesia 向け $19,200",time:"3日前",read:true,dealId:"EX-2026-002"},
+  {id:8,type:"warn",icon:"🔍",title:"コンプラチェック待ち",desc:"EX-2026-002 安全保障・コンプライアンスチェック未実施。早期対応推奨。",time:"3日前",read:true,dealId:"EX-2026-002"}
+];
+
+// ═══ Timeline Data ═══
+var TIMELINE_IM1=[
+  {d:"2026-04-05",icon:"💰",color:"gn",title:"L/C買取完了",desc:"三菱UFJ銀行 $52,650 → ¥7,871,175"},
+  {d:"2026-04-03",icon:"📦",color:"gn",title:"検品・入庫完了",desc:"横浜倉庫 A棟 1,700個全数合格"},
+  {d:"2026-03-20",icon:"📝",color:"bl",title:"仕入伝票生成",desc:"SI-03847 合計 ¥8,907,792"},
+  {d:"2026-03-20",icon:"🏛",color:"gn",title:"通関許可",desc:"IC-YOK-038471 関税 ¥1,038,522"},
+  {d:"2026-03-16",icon:"🚢",color:"bl",title:"船積（ETD）",desc:"YM WELLNESS 横浜出港"},
+  {d:"2026-03-01",icon:"✅",color:"gn",title:"法規制チェック完了",desc:"外為法・関税定率法・食品衛生法 全て非該当"},
+  {d:"2026-02-20",icon:"📄",color:"bl",title:"契約・L/C開設",desc:"CTR-047 / LC-MUFG-3847"},
+  {d:"2026-02-12",icon:"🔍",color:"gn",title:"与信承認",desc:"格付A 枠$200,000"},
+  {d:"2026-02-10",icon:"📋",color:"bl",title:"発注登録",desc:"PO-USM-1192 $52,650"},
+];
+
+// ═══ AI Chat Responses ═══
+var AI_RESPONSES={
+  "IM-2026-001の状況":"IM-2026-001は現在Step 13（支払・L/C決済）まで完了しています。\n\n主要ポイント:\n• L/C買取: $52,650 (¥7,871,175) 完了\n• 関税+消費税: ¥1,038,522 納付済\n• 書類照合で1件重大不一致（Bearing数量差異）→ B/L Amendment対応要\n• 次のステップ: 原価計算の最終確定",
+  "書類不一致":"IM-2026-001で2件の書類不一致が検出されています。\n\n❌ 重大: Ceramic Bearing - B/L 1,050個 vs Invoice 1,000個（50個差異）→ B/L Amendmentが必要です。\n⚠ 注意: Shaft Assembly - 品名表記揺れ（B/L: SS Shaft vs Invoice: SUS304 Shaft）→ 品名統一を推奨",
+  "輸出コンプラ":"EX-2026-001のコンプライアンスチェック結果:\n\n✅ 外為法（安全保障貿易管理）: リスト規制・キャッチオール非該当\n✅ 米国再輸出規制(EAR): EAR99相当。輸出許可不要\n✅ 仕向地スクリーニング: 制裁対象国・エンドユーザー該当なし\n✅ 取引先スクリーニング: SDNリスト・Entity List非該当\n\n全品目「非該当」のためE/L不要です。",
+  "為替予約":"IM-2026-001の為替予約情報:\n\n• 予約レート: $1 = ¥149.50\n• 当日スポット: ¥151.20\n• 節約効果: ¥89,460\n• 決済日: 2026-04-15\n• 銀行: 三菱UFJ銀行 (FX-MUFG-2026-0312)\n\n為替予約により約0.9万円のコスト削減を実現しています。"
+};
+function getAIResponse(msg){
+  var m=msg.toLowerCase();
+  if(m.indexOf("im-2026-001")>=0&&m.indexOf("状況")>=0) return AI_RESPONSES["IM-2026-001の状況"];
+  if(m.indexOf("不一致")>=0||m.indexOf("照合")>=0||m.indexOf("discrepan")>=0) return AI_RESPONSES["書類不一致"];
+  if(m.indexOf("コンプラ")>=0||m.indexOf("安全保障")>=0||m.indexOf("compli")>=0) return AI_RESPONSES["輸出コンプラ"];
+  if(m.indexOf("為替")>=0||m.indexOf("fx")>=0||m.indexOf("予約")>=0) return AI_RESPONSES["為替予約"];
+  if(m.indexOf("案件")>=0&&m.indexOf("数")>=0) return "現在の案件状況:\n\n📥 輸入: 3件（完了間近1件、進行中1件、初期1件）\n📤 輸出: 2件（完了間近1件、進行中1件）\n\n合計取引額: $179,850\n最もアクティブ: IM-2026-001（Nippon Precision Parts）";
+  if(m.indexOf("リスク")>=0||m.indexOf("risk")>=0) return "現在のリスク一覧:\n\n🔴 高: IM-2026-001 書類不一致（Bearing数量差異）\n🟡 中: IM-2026-002 与信期限まで6ヶ月\n🟡 中: EX-2026-002 コンプラチェック未実施\n🟢 低: EX-2026-001 全ステップ正常進行中";
+  return "ご質問を分析中です。以下のようなトピックについてお答えできます:\n\n• 特定案件の状況確認\n• 書類不一致の詳細\n• コンプライアンス状況\n• 為替予約・リスク管理\n• 案件数・統計情報\n\nもう少し具体的にお聞きいただけますか？";
+}
+
+// ═══ Utility Components ═══
+function T(t,c){return h("span",{className:"tag "+c},t)}
+function NW(){return h("span",{className:"new-tag"},"NEW")}
+function Pip(p){var st=p.steps,d=p.deal,oc=p.onClick;return h("div",{className:"pipeline"},st.map(function(s,i){return h("div",{key:i,className:"pip "+(i<d.step?"pip-done":i===d.step?"pip-cur":"pip-fut"),onClick:function(){oc(i)}},h("b",null,(i+1<10?"0":"")+(i+1)),s.n)}))}
+function DB(p){return h("div",{className:"dbar"},p.steps.map(function(_,i){return h("div",{key:i,className:i<p.step?"brd":i===p.step?"brc":"brf"})}))}
+function Sec(p){return h("div",{className:"section"},h("div",{className:"sh",onClick:p.toggle},h("h3",null,"Step ",p.num," ",p.title," ",p.nw?NW():null," ",p.tag),h("span",{style:{color:"var(--ht)",fontSize:14}},p.open?"▲":"▼")),p.open?h("div",{className:"sb"},p.children):null)}
+function Inh(p){return h("div",{className:"inh"},h("b",null,"\u2B06 ",p.from,"から自動引継ぎ"),p.children)}
+function G(hds,rows){return h("table",{style:{marginTop:8}},h("thead",null,h("tr",null,hds.map(function(x,i){return h("th",{key:i},x)}))),h("tbody",null,rows.map(function(r,i){return h("tr",{key:i},r.map(function(c,j){return h("td",{key:j,style:j===0?{fontWeight:500}:null},c)}))})))}
+function KV(pairs){return h("div",{className:"g2"},pairs.map(function(p,i){return h("div",{key:i},h("span",{className:"k"},p[0]+": "),h("span",{className:"v"},p[1]))}))}
+
+// ═══ Notification Bell Component ═══
+function NotifBell(p){
+  var ns=us(false),show=ns[0],setShow=ns[1];
+  var nts=us(NOTIFS),notifs=nts[0],setNotifs=nts[1];
+  var unread=notifs.filter(function(n){return !n.read}).length;
+  function markAllRead(){setNotifs(notifs.map(function(n){return Object.assign({},n,{read:true})}))}
+  return h("div",{style:{position:"relative"}},
+    h("div",{className:"notif-bell",onClick:function(){setShow(!show)}},"\uD83D\uDD14",unread>0?h("span",{className:"notif-badge"},unread):null),
+    show?h("div",{className:"notif-panel"},
+      h("div",{className:"notif-header"},h("span",null,"\uD83D\uDD14 通知"),unread>0?h("button",{className:"btn sm bs",style:{padding:"3px 8px",fontSize:10},onClick:markAllRead},"全て既読"):null),
+      notifs.map(function(n){return h("div",{key:n.id,className:"notif-item"+(n.read?"":" notif-unread"),onClick:function(){if(p.onClickNotif)p.onClickNotif(n);setShow(false)}},
+        h("div",{className:"notif-icon",style:{background:n.type==="warn"?"var(--ambg)":n.type==="success"?"var(--gnbg)":"var(--blbg)"}},n.icon),
+        h("div",{className:"notif-content"},h("div",{className:"notif-title"},n.title),h("div",{className:"notif-desc"},n.desc),h("div",{className:"notif-time"},n.time)))})
+    ):null)
+}
+
+// ═══ AI Chat Component ═══
+function ChatWidget(){
+  var os=us(false),open=os[0],setOpen=os[1];
+  var ms=us([{id:0,bot:true,text:"こんにちは！BorderFlow AIアシスタントです。案件の状況確認、書類照合、コンプライアンス等についてお気軽にお聞きください。",time:"now"}]),msgs=ms[0],setMsgs=ms[1];
+  var is=us(""),input=is[0],setInput=is[1];
+  var ts=us(false),typing=ts[0],setTyping=ts[1];
+  var ref=ur(null);
+  ue(function(){if(ref.current)ref.current.scrollTop=ref.current.scrollHeight},[msgs,typing]);
+  function send(text){
+    var t=text||input;if(!t.trim())return;
+    var nid=msgs.length;
+    setMsgs(msgs.concat([{id:nid,bot:false,text:t,time:"now"}]));
+    setInput("");setTyping(true);
+    setTimeout(function(){
+      var resp=getAIResponse(t);
+      setMsgs(function(prev){return prev.concat([{id:prev.length,bot:true,text:resp,time:"now"}])});
+      setTyping(false);
+    },800+Math.random()*600);
+  }
+  var suggests=["IM-2026-001の状況は？","書類不一致の詳細","輸出コンプラ確認","為替予約の効果","リスク一覧"];
+  return h("div",null,
+    h("button",{className:"chat-fab",onClick:function(){setOpen(!open)}},open?"\u2715":"\uD83E\uDD16"),
+    open?h("div",{className:"chat-panel"},
+      h("div",{className:"chat-head"},h("span",{style:{fontSize:18}},"\uD83E\uDD16"),h("h3",null,"AI アシスタント"),h("button",{className:"chat-close",onClick:function(){setOpen(false)}},"\u2715")),
+      h("div",{className:"chat-msgs",ref:ref},
+        msgs.map(function(m){return h("div",{key:m.id,className:"chat-msg "+(m.bot?"bot":"user")},h("div",{style:{whiteSpace:"pre-wrap"}},m.text))}),
+        typing?h("div",{className:"typing-indicator"},h("span"),h("span"),h("span")):null),
+      msgs.length<=1?h("div",{className:"chat-suggest"},suggests.map(function(s,i){return h("span",{key:i,className:"chat-chip",onClick:function(){send(s)}},s)})):null,
+      h("div",{className:"chat-input-row"},
+        h("input",{value:input,placeholder:"質問を入力...",onChange:function(e){setInput(e.target.value)},onKeyDown:function(e){if(e.key==="Enter")send()}}),
+        h("button",{className:"chat-send",onClick:function(){send()}},"\u27A4"))
+    ):null)
+}
+
+// ═══ Dashboard Component ═══
+function Dashboard(p){
+  var totalVal=52650+18200+32800+57000+19200;
+  var imVal=52650+18200+32800;var exVal=57000+19200;
+  var totalDeals=5;var completedSteps=ID1.step+ID2.step+ID3.step+ED1.step+ED2.step;
+  var totalSteps=14+14+14+11+11;
+  var pct=Math.round(completedSteps/totalSteps*100);
+  var riskHigh=1,riskMed=2;
+  // Bar chart data - monthly volume
+  var months=[{m:"10月",v:38},{m:"11月",v:45},{m:"12月",v:52},{m:"1月",v:61},{m:"2月",v:72},{m:"3月",v:80}];
+  var maxV=80;
+  // Step distribution
+  var stepDist=[
+    {label:"初期 (1-3)",count:1,color:"var(--pu)"},
+    {label:"中盤 (4-7)",count:1,color:"var(--bl)"},
+    {label:"後半 (8-10)",count:1,color:"var(--am)"},
+    {label:"完了間近",count:2,color:"var(--gn)"}
+  ];
+  var totalC=5;
+  return h("div",null,
+    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}},
+      h("h2",{style:{fontSize:16,fontWeight:700}},"\uD83D\uDCCA ダッシュボード"),
+      h("button",{className:"btn bs sm",onClick:p.goHome},"\u2190 ホーム")),
+    // KPI Cards
+    h("div",{className:"dash-grid"},
+      h("div",{className:"kpi"},h("div",{className:"kpi-label"},"総案件数"),h("div",{className:"kpi-val",style:{color:"var(--bl)"}},totalDeals),h("div",{className:"kpi-delta kpi-up"},"\u2191 +2 今月")),
+      h("div",{className:"kpi"},h("div",{className:"kpi-label"},"総取引額"),h("div",{className:"kpi-val",style:{color:"var(--gn)"}},"$"+N(totalVal)),h("div",{className:"kpi-delta kpi-up"},"\u2191 +23% 前月比")),
+      h("div",{className:"kpi"},h("div",{className:"kpi-label"},"進捗率"),h("div",{className:"kpi-val",style:{color:"var(--tl)"}},pct+"%"),h("div",{className:"kpi-delta"},completedSteps+"/"+totalSteps+" ステップ")),
+      h("div",{className:"kpi"},h("div",{className:"kpi-label"},"リスク"),h("div",{className:"kpi-val",style:{color:"var(--rd)"}},riskHigh+riskMed),h("div",{className:"kpi-delta kpi-down"},riskHigh+" 高 / "+riskMed+" 中"))
+    ),
+    // Charts Row
+    h("div",{className:"chart-row"},
+      // Bar Chart - Monthly Volume
+      h("div",{className:"chart-box"},
+        h("h3",null,"月別取引ボリューム"),
+        h("div",{className:"bar-chart"},months.map(function(m,i){return h("div",{key:i,className:"bar-col"},h("div",{className:"bar-fill",style:{height:Math.round(m.v/maxV*100)+"%",background:i===months.length-1?"var(--bl)":"var(--blbg)"}}),h("div",{className:"bar-label"},m.m))}))),
+      // Donut-like breakdown
+      h("div",{className:"chart-box"},
+        h("h3",null,"案件ステージ分布"),
+        h("div",{className:"donut-wrap"},
+          // Simple horizontal stacked bar as donut substitute
+          h("div",{style:{width:120,height:120,position:"relative"}},
+            h("svg",{viewBox:"0 0 36 36",style:{width:"100%",height:"100%",transform:"rotate(-90deg)"}},
+              function(){var offset=0;return stepDist.map(function(s,i){var pct2=s.count/totalC*100;var dash=pct2+" "+(100-pct2);var el=h("circle",{key:i,cx:18,cy:18,r:15.9,fill:"none",stroke:s.color,strokeWidth:3,strokeDasharray:dash,strokeDashoffset:-offset});offset+=pct2;return el})}(),
+              h("text",{x:18,y:19,textAnchor:"middle",dominantBaseline:"central",style:{fontSize:7,fontWeight:700,fill:"var(--tx)",transform:"rotate(90deg)",transformOrigin:"18px 18px"}},totalC+"件"))),
+          h("div",{className:"donut-legend"},stepDist.map(function(s,i){return h("div",{key:i,className:"donut-legend-item"},h("div",{className:"dot",style:{background:s.color}}),h("span",null,s.label+" ("+s.count+")"))}))))
+    ),
+    // Risk & Currency Summary
+    h("div",{className:"chart-row"},
+      h("div",{className:"chart-box"},
+        h("h3",null,"\u26A0 リスクサマリー"),
+        h("div",{className:"risk-list"},
+          h("div",{className:"risk-item"},h("div",{className:"risk-icon",style:{background:"var(--rdbg)",color:"var(--rd)"}},"\u26A0"),h("div",null,h("div",{style:{fontWeight:600}},"書類不一致 (IM-2026-001)"),h("div",{style:{fontSize:10,color:"var(--sub)"}},"Ceramic Bearing 数量差異 50個"))),
+          h("div",{className:"risk-item"},h("div",{className:"risk-icon",style:{background:"var(--ambg)",color:"var(--am)"}},"\u23F0"),h("div",null,h("div",{style:{fontWeight:600}},"与信期限アラート (IM-2026-002)"),h("div",{style:{fontSize:10,color:"var(--sub)"}},"Shanghai Steel 2026-09-30期限"))),
+          h("div",{className:"risk-item"},h("div",{className:"risk-icon",style:{background:"var(--ambg)",color:"var(--am)"}},"\uD83D\uDD0D"),h("div",null,h("div",{style:{fontWeight:600}},"コンプラ未実施 (EX-2026-002)"),h("div",{style:{fontSize:10,color:"var(--sub)"}},"PT Maju Teknik 安全保障チェック待ち"))))),
+      h("div",{className:"chart-box"},
+        h("h3",null,"\uD83D\uDCB1 通貨・取引先サマリー"),
+        G(["取引先","国","通貨","金額","格付"],[
+          ["Nippon Precision","JP","USD","$52,650","A"],
+          ["Shanghai Steel","CN","USD","$18,200","B+"],
+          ["Bayern Precision","DE","EUR","€32,800","-"],
+          ["US Advanced Mfg","US","USD","$57,000","A+"],
+          ["PT Maju Teknik","ID","USD","$19,200","B"]
+        ]))
+    )
+  );
+}
+
+// ═══ Timeline Component ═══
+function TimelineView(p){
+  var tl=p.timeline||[];
+  return h("div",{className:"section",style:{marginTop:12}},
+    h("div",{className:"sh",onClick:p.toggle},
+      h("h3",null,"\uD83D\uDDD3 アクティビティタイムライン"),
+      h("span",{style:{color:"var(--ht)",fontSize:14}},p.open?"\u25B2":"\u25BC")),
+    p.open?h("div",{className:"sb"},
+      h("div",{className:"timeline"},tl.map(function(t,i){return h("div",{key:i,className:"tl-item"},
+        h("div",{className:"tl-dot tl-dot-"+t.color},t.icon),
+        h("div",{className:"tl-body"},h("div",{className:"tl-title"},t.title),h("div",{className:"tl-desc"},t.desc),h("div",{className:"tl-time"},t.d)))}))
+    ):null);
+}
+
+// ═══ Simulated OCR Data by file type ═══
+var OCR_TEMPLATES={
+  import_contract:{supplier:"Nippon Electronics Co., Ltd.",country:"Japan",currency:"USD",incoterms:"CIF",payment:"L/C at sight",contractNo:"CTR-2026-088",lcBank:"三菱UFJ銀行",shipDeadline:"2026-05-15",items:[{n:"Semiconductor Chip (IC-7400)",q:"2,000",u:"PCS",p:"18.50"},{n:"PCB Assembly Board",q:"500",u:"PCS",p:"45.00"},{n:"Connector Housing (USB-C)",q:"3,000",u:"PCS",p:"3.20"}]},
+  import_invoice:{supplier:"Dalian Machinery Corp.",country:"China",currency:"USD",incoterms:"FOB",payment:"T/T 60d",contractNo:"INV-DM-2026-041",items:[{n:"Steel Frame Assembly",q:"100",u:"SET",p:"320.00"},{n:"Hydraulic Cylinder",q:"50",u:"PCS",p:"185.00"}]},
+  export_contract:{supplier:"Global Parts Distributors LLC",country:"USA",currency:"USD",incoterms:"FOB Yokohama",payment:"L/C at sight",contractNo:"SO-EXP-2026-015",items:[{n:"Precision Gear Assembly",q:"500",u:"PCS",p:"88.00"},{n:"Titanium Bracket Kit",q:"1,200",u:"SET",p:"24.50"}]},
+  export_invoice:{supplier:"Hyundai Auto Parts Co.",country:"Korea",currency:"USD",incoterms:"CIF Busan",payment:"T/T 30d",contractNo:"SO-EXP-2026-022",items:[{n:"Engine Valve Spring",q:"5,000",u:"PCS",p:"4.80"},{n:"Cam Shaft (SCM435)",q:"200",u:"PCS",p:"92.00"}]}
+};
+function pickOCR(flow,fname){
+  var fn2=fname.toLowerCase();
+  if(flow==="import"){
+    if(fn2.indexOf("invoice")>=0||fn2.indexOf("inv")>=0) return OCR_TEMPLATES.import_invoice;
+    return OCR_TEMPLATES.import_contract;
+  } else {
+    if(fn2.indexOf("invoice")>=0||fn2.indexOf("inv")>=0) return OCR_TEMPLATES.export_invoice;
+    return OCR_TEMPLATES.export_contract;
+  }
+}
+
+// ═══ NewDealPage Component ═══
+function NewDealPage(p){
+  var Header=p.Header,goHome=p.goHome,goFlowFn=p.goFlow,fn=p.fn,flow=p.flow,steps=p.steps;
+  // Upload state
+  var ufs=us(null),uploadFile=ufs[0],setUploadFile=ufs[1]; // {name,size}
+  var ups=us("idle"),uploadState=ups[0],setUploadState=ups[1]; // idle|uploading|scanning|done
+  var upps=us(0),uploadProg=upps[0],setUploadProg=upps[1];
+  var ocrs=us(null),ocrData=ocrs[0],setOcrData=ocrs[1];
+  var drs=us(false),dragOver=drs[0],setDragOver=drs[1];
+  // Form fields
+  var f1=us(""),supplier=f1[0],setSupplier=f1[1];
+  var f2=us("Japan"),country=f2[0],setCountry=f2[1];
+  var f3=us("USD"),currency=f3[0],setCurrency=f3[1];
+  var f4=us("FOB"),incoterms=f4[0],setIncoterms=f4[1];
+  var f5=us(""),payment=f5[0],setPayment=f5[1];
+  var f6=us(""),contractNo=f6[0],setContractNo=f6[1];
+  var f7s=us([{n:"",q:"",u:"PCS",p:""}]),items=f7s[0],setItems=f7s[1];
+  // OCR scan steps
+  var scanSteps=["ファイル読込","テキスト抽出(OCR)","項目識別(AI)","データ検証","フォーム反映"];
+  var scanIdx=us(-1),scanStep=scanIdx[0],setScanStep=scanIdx[1];
+
+  function handleFile(file){
+    if(!file) return;
+    setUploadFile({name:file.name,size:(file.size/1024).toFixed(1)+"KB"});
+    setUploadState("uploading");setUploadProg(0);setScanStep(-1);setOcrData(null);
+    // Simulate upload progress
+    var prog=0;
+    var iv=setInterval(function(){
+      prog+=Math.random()*25+10;if(prog>100)prog=100;
+      setUploadProg(Math.round(prog));
+      if(prog>=100){clearInterval(iv);setUploadState("scanning");runScan(file.name)}
+    },200);
+  }
+  function runScan(fname){
+    var stepDelay=[400,600,800,500,300];
+    var idx=0;
+    function nextStep(){
+      setScanStep(idx);
+      if(idx<scanSteps.length-1){idx++;setTimeout(nextStep,stepDelay[idx])}
+      else{setTimeout(function(){applyOCR(fname)},400)}
+    }
+    nextStep();
+  }
+  function applyOCR(fname){
+    var data=pickOCR(flow,fname);
+    setOcrData(data);
+    setUploadState("done");
+    // Auto-fill form
+    setSupplier(data.supplier);
+    var countries=["Japan","USA","China","Germany","Indonesia","Korea"];
+    var countryMap={"Japan":"Japan","USA":"USA","China":"China","Germany":"Germany","Indonesia":"Indonesia","Korea":"Korea"};
+    for(var i=0;i<countries.length;i++){if(data.country===countries[i])setCountry(countries[i])}
+    var currencies=["USD","EUR","JPY","CNY"];
+    for(var i=0;i<currencies.length;i++){if(data.currency===currencies[i])setCurrency(currencies[i])}
+    var incos=["FOB","CIF","CFR","EXW","DDP","DAP"];
+    for(var i=0;i<incos.length;i++){if(data.incoterms.indexOf(incos[i])>=0)setIncoterms(incos[i])}
+    if(data.payment)setPayment(data.payment);
+    if(data.contractNo)setContractNo(data.contractNo);
+    if(data.items&&data.items.length>0){setItems(data.items.map(function(it){return{n:it.n,q:it.q,u:it.u,p:it.p}}))}
+  }
+  function removeFile(){setUploadFile(null);setUploadState("idle");setUploadProg(0);setOcrData(null);setScanStep(-1);setSupplier("");setCountry("Japan");setCurrency("USD");setIncoterms("FOB");setPayment("");setContractNo("");setItems([{n:"",q:"",u:"PCS",p:""}])}
+  function updateItem(idx,field,val){setItems(items.map(function(it,i){if(i===idx){var o=Object.assign({},it);o[field]=val;return o}return it}))}
+  function addItem(){setItems(items.concat([{n:"",q:"",u:"PCS",p:""}]))}
+  function removeItem(idx){if(items.length<=1)return;setItems(items.filter(function(_,i){return i!==idx}));}
+  var filled=uploadState==="done";
+  return h("div",null,
+    h(Header),
+    h("div",{className:"bc"},h("a",{onClick:goHome},"ホーム"),h("span",null," › "),h("a",{onClick:goFlowFn},fn),h("span",null," › "),"新規案件"),
+    // Upload Section
+    h("div",{className:"section"},h("div",{className:"sb"},
+      h("h3",{style:{fontSize:14,fontWeight:600,marginBottom:4}},"\uD83D\uDCC4 契約書アップロード"),
+      h("p",{style:{fontSize:11,color:"var(--sub)",marginBottom:14}},"契約書・Invoice・注文書をアップロードすると、AIが内容を読み取りフォームに自動反映します。"),
+      // Upload zone or file info
+      uploadState==="idle"?h("div",{className:"upload-zone"+(dragOver?" drag-over":""),
+        onDragOver:function(e){e.preventDefault();setDragOver(true)},
+        onDragLeave:function(){setDragOver(false)},
+        onDrop:function(e){e.preventDefault();setDragOver(false);if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])}},
+        h("input",{type:"file",accept:".pdf,.jpg,.jpeg,.png,.tiff,.docx,.xlsx",onChange:function(e){if(e.target.files[0])handleFile(e.target.files[0])}}),
+        h("div",{className:"uz-icon"},"\uD83D\uDCC1"),
+        h("div",{className:"uz-title"},"ファイルをドラッグ＆ドロップ、またはクリックして選択"),
+        h("div",{className:"uz-desc"},"対応形式: PDF, JPEG, PNG, TIFF, DOCX, XLSX（最大20MB）")
+      ):null,
+      // File info + progress
+      uploadFile&&uploadState!=="idle"?h("div",null,
+        h("div",{className:"upload-file-info"},
+          h("span",{className:"ufi-icon"},uploadFile.name.indexOf(".pdf")>=0?"\uD83D\uDCC4":uploadFile.name.indexOf(".xls")>=0?"\uD83D\uDCCA":"\uD83D\uDDBC"),
+          h("div",null,h("div",{className:"ufi-name"},uploadFile.name),h("div",{className:"ufi-size"},uploadFile.size)),
+          uploadState==="done"?h("span",{className:"ufi-remove",onClick:removeFile,title:"削除"},"\u2715"):null),
+        // Progress bar
+        uploadState==="uploading"?h("div",{className:"upload-progress"},
+          h("div",{className:"up-status"},h("span",null,"アップロード中..."),h("span",null,uploadProg+"%")),
+          h("div",{className:"up-bar-bg"},h("div",{className:"up-bar-fill",style:{width:uploadProg+"%"}}))
+        ):null,
+        // Scanning steps
+        uploadState==="scanning"?h("div",{style:{padding:"12px 0"}},
+          h("div",{style:{fontSize:12,fontWeight:600,marginBottom:8,color:"var(--bl)"}},"AI読取中..."),
+          scanSteps.map(function(s,i){return h("div",{key:i,className:"ocr-step"},
+            h("div",{className:"ocr-step-icon "+(i<scanStep?"ocr-step-done":i===scanStep?"ocr-step-active":"ocr-step-pending")},
+              i<scanStep?"✓":i===scanStep?"⟳":"○"),
+            h("span",{style:{color:i<=scanStep?"var(--tx)":"var(--ht)"}},s))})
+        ):null,
+        // OCR result summary
+        uploadState==="done"&&ocrData?h("div",{className:"ocr-result"},
+          h("h4",null,"✓ AI読取完了 — ",Object.keys(ocrData).filter(function(k){return ocrData[k]&&k!=="items"}).length+ocrData.items.length,"項目を自動反映"),
+          h("div",{className:"ocr-items"},
+            h("div",{className:"ocr-item"},h("span",{className:"ocr-check"},"✓"),h("span",{className:"ocr-label"},"取引先"),h("span",{className:"ocr-val"},ocrData.supplier)),
+            h("div",{className:"ocr-item"},h("span",{className:"ocr-check"},"✓"),h("span",{className:"ocr-label"},"国 / 通貨"),h("span",{className:"ocr-val"},ocrData.country+" / "+ocrData.currency)),
+            h("div",{className:"ocr-item"},h("span",{className:"ocr-check"},"✓"),h("span",{className:"ocr-label"},"インコタームズ"),h("span",{className:"ocr-val"},ocrData.incoterms)),
+            ocrData.payment?h("div",{className:"ocr-item"},h("span",{className:"ocr-check"},"✓"),h("span",{className:"ocr-label"},"支払条件"),h("span",{className:"ocr-val"},ocrData.payment)):null,
+            ocrData.contractNo?h("div",{className:"ocr-item"},h("span",{className:"ocr-check"},"✓"),h("span",{className:"ocr-label"},"契約/書類No"),h("span",{className:"ocr-val"},ocrData.contractNo)):null,
+            h("div",{className:"ocr-item"},h("span",{className:"ocr-check"},"✓"),h("span",{className:"ocr-label"},"品目"),h("span",{className:"ocr-val"},ocrData.items.length+"品目を検出"))
+          )
+        ):null
+      ):null
+    )),
+    // Form Section
+    h("div",{className:"section"},h("div",{className:"sb"},
+      h("h3",{style:{fontSize:14,fontWeight:600,marginBottom:4}},"新規案件登録"),
+      h("p",{style:{fontSize:11,color:"var(--sub)",marginBottom:14}},
+        filled?"契約書から読み取った内容が反映されています。必要に応じて修正してください。":
+        "入力データは全"+steps.length+"ステップに自動引継ぎ。与信チェック・コンプライアンス確認も自動実行されます。"),
+      h("div",{className:"fr"},
+        h("div",{className:"fg"+(filled&&supplier?" auto-filled":"")},h("label",null,"取引先名"),h("input",{value:supplier,onChange:function(e){setSupplier(e.target.value)},placeholder:"取引先名"})),
+        h("div",{className:"fg"+(filled&&country?" auto-filled":"")},h("label",null,"国"),h("select",{value:country,onChange:function(e){setCountry(e.target.value)}},["Japan","USA","China","Germany","Indonesia","Korea"].map(function(o){return h("option",{key:o},o)}))),
+        h("div",{className:"fg"+(filled&&currency?" auto-filled":"")},h("label",null,"通貨"),h("select",{value:currency,onChange:function(e){setCurrency(e.target.value)}},["USD","EUR","JPY","CNY"].map(function(o){return h("option",{key:o},o)}))),
+        h("div",{className:"fg"+(filled&&incoterms?" auto-filled":"")},h("label",null,"インコタームズ"),h("select",{value:incoterms,onChange:function(e){setIncoterms(e.target.value)}},["FOB","CIF","CFR","EXW","DDP","DAP"].map(function(o){return h("option",{key:o},o)}))),
+        h("div",{className:"fg"+(filled&&payment?" auto-filled":"")},h("label",null,"支払条件"),h("input",{value:payment,onChange:function(e){setPayment(e.target.value)},placeholder:"L/C at sight / T/T 30d"})),
+        h("div",{className:"fg"+(filled&&contractNo?" auto-filled":"")},h("label",null,"契約/書類No"),h("input",{value:contractNo,onChange:function(e){setContractNo(e.target.value)},placeholder:"CTR-XXXX / INV-XXXX"}))
+      ),
+      // Items table
+      h("div",{style:{marginTop:8}},
+        h("label",{style:{fontSize:11,fontWeight:600,color:filled?"var(--gn)":"var(--sub)",display:"block",marginBottom:6}},
+          "品目明細",filled?" ✓ AI読取":""),
+        h("table",{className:"items-table"},
+          h("thead",null,h("tr",null,h("th",null,"#"),h("th",{style:{width:"40%"}},"品名"),h("th",null,"数量"),h("th",null,"単位"),h("th",null,"単価"),h("th",{style:{width:30}}))),
+          h("tbody",null,items.map(function(it,i){return h("tr",{key:i},
+            h("td",{style:{color:"var(--ht)",fontWeight:600}},i+1),
+            h("td",null,h("input",{className:filled&&it.n?"ai-filled":"",value:it.n,onChange:function(e){updateItem(i,"n",e.target.value)},placeholder:"品名"})),
+            h("td",null,h("input",{className:filled&&it.q?"ai-filled":"",value:it.q,onChange:function(e){updateItem(i,"q",e.target.value)},placeholder:"0",style:{width:80}})),
+            h("td",null,h("select",{className:filled&&it.u?"ai-filled":"",value:it.u,onChange:function(e){updateItem(i,"u",e.target.value)},style:{width:60,padding:"5px 4px",border:"1px solid var(--bd)",borderRadius:5,fontSize:11,background:filled&&it.u?"var(--gnbg)":"var(--card)"}},["PCS","SET","KG","M","L","BOX"].map(function(o){return h("option",{key:o},o)}))),
+            h("td",null,h("input",{className:filled&&it.p?"ai-filled":"",value:it.p,onChange:function(e){updateItem(i,"p",e.target.value)},placeholder:"0.00",style:{width:90}})),
+            h("td",null,items.length>1?h("span",{style:{cursor:"pointer",color:"var(--rd)",fontSize:14},onClick:function(){removeItem(i)}},"\u2715"):null)
+          )}))
+        ),
+        h("button",{className:"add-row-btn",onClick:addItem},"＋ 品目を追加")
+      ),
+      // Total
+      items.some(function(it){return it.q&&it.p})?h("div",{style:{display:"flex",justifyContent:"flex-end",marginTop:12,fontSize:13,fontWeight:700}},
+        h("span",{style:{color:"var(--sub)",marginRight:8}},"合計: "),
+        h("span",null,currency+" "+N(items.reduce(function(s,it){var q=parseFloat(String(it.q).replace(/,/g,""))||0;var p2=parseFloat(it.p)||0;return s+q*p2},0).toFixed(2)))
+      ):null,
+      h("div",{style:{display:"flex",gap:8,justifyContent:"flex-end",marginTop:16}},
+        h("button",{className:"btn bs",onClick:goFlowFn},"キャンセル"),
+        h("button",{className:"btn bg",onClick:function(){alert("登録完了（"+items.length+"品目）");goFlowFn()}},"登録する"))
+    )),
+    h(ChatWidget)
+  );
+}
+
+// ═══ Main App ═══
+function App(){
+  var ps=us("home"),pg=ps[0],spg=ps[1];
+  var fs=us(null),flow=fs[0],sflow=fs[1];
+  var ds=us(null),deal=ds[0],sdeal=ds[1];
+  var os=us(-1),osec=os[0],sosec=os[1];
+  var ss=us(false),split=ss[0],ssplit=ss[1];
+  var tls=us(false),tlOpen=tls[0],stlOpen=tls[1];
+  // Search & Filter
+  var qs=us(""),query=qs[0],setQuery=qs[1];
+  var fst=us("all"),filterStep=fst[0],setFilterStep=fst[1];
+  var fcu=us("all"),filterCur=fcu[0],setFilterCur=fcu[1];
+  var srt=us("id"),sortBy=srt[0],setSortBy=srt[1];
+
+  function goHome(){spg("home");sdeal(null);ssplit(false);setQuery("");setFilterStep("all");setFilterCur("all")}
+  function goFlow(f){spg("flow");sflow(f);sdeal(null);setQuery("");setFilterStep("all");setFilterCur("all")}
+  function goDeal(d){spg("deal");sdeal(d);sosec(d.step);ssplit(false);stlOpen(false)}
+  function goNew(){spg("new")}
+  function goDash(){spg("dash")}
+  function tog(i){sosec(osec===i?-1:i)}
+  var steps=flow==="import"?IM:EX;
+  var deals=flow==="import"?IMD:EXD;
+  var fn=flow==="import"?"輸入業務":"輸出業務";
+
+  // Filter & search logic
+  function getFilteredDeals(){
+    var list=deals.slice();
+    if(query){var q=query.toLowerCase();list=list.filter(function(d){return d.id.toLowerCase().indexOf(q)>=0||d.sup.toLowerCase().indexOf(q)>=0||d.co.toLowerCase().indexOf(q)>=0})}
+    if(filterCur!=="all"){list=list.filter(function(d){return d.cur===filterCur})}
+    if(filterStep!=="all"){
+      if(filterStep==="early")list=list.filter(function(d){return d.step<4});
+      else if(filterStep==="mid")list=list.filter(function(d){return d.step>=4&&d.step<8});
+      else if(filterStep==="late")list=list.filter(function(d){return d.step>=8});
+    }
+    if(sortBy==="amount")list.sort(function(a,b){return b.s0.tot-a.s0.tot});
+    else if(sortBy==="step")list.sort(function(a,b){return b.step-a.step});
+    else if(sortBy==="date")list.sort(function(a,b){return b.s0.d>a.s0.d?1:-1});
+    return list;
+  }
+
+  // Header with notifications
+  function Header(){
+    return h("div",{className:"hdr"},
+      h("div",{className:"logo"},"B"),
+      h("div",null,h("h1",{style:{fontSize:17,fontWeight:700,margin:0}},"BorderFlow AI"),h("p",{style:{fontSize:10,color:"var(--sub)",margin:0}},"自律型貿易事務エージェント")),
+      h("div",{className:"hdr-right"},
+        h("button",{className:"btn bs sm",onClick:goDash,title:"ダッシュボード"},"\uD83D\uDCCA"),
+        h(NotifBell,{onClickNotif:function(n){
+          // Navigate to relevant deal
+          var d=ALLDEALS.find(function(x){return x.id===n.dealId});
+          if(d){
+            sflow(d.id.indexOf("IM")===0?"import":"export");
+            goDeal(d);
+          }
+        }})))
+  }
+
+  // ═══ HOME ═══
+  if(pg==="home") return h("div",null,
+    h(Header),
+    h("p",{style:{fontSize:13,color:"var(--sub)",marginBottom:16}},"業務フローを選択してください。"),
+    h("div",{className:"flows"},
+      h("div",{className:"fc",onClick:function(){goFlow("import")}},h("h2",null,"\uD83D\uDCE5 輸入業務"),h("p",null,"引合→与信→契約→保険/為替→書類→照合→通関→検品→在庫→伝票→支払→原価"),h("small",null,"全14ステップ")),
+      h("div",{className:"fc",onClick:function(){goFlow("export")}},h("h2",null,"\uD83D\uDCE4 輸出業務"),h("p",null,"受注→与信→コンプラ→該非→許可→書類→通関→船積→売上→請求/入金→為替"),h("small",null,"全11ステップ"))
+    ),
+    // Quick Stats on Home
+    h("div",{className:"dash-grid",style:{marginBottom:16}},
+      h("div",{className:"kpi",style:{cursor:"pointer"},onClick:goDash},h("div",{className:"kpi-label"},"輸入案件"),h("div",{className:"kpi-val",style:{color:"var(--bl)"}},IMD.length),h("div",{className:"kpi-delta"},"$"+N(52650+18200+32800))),
+      h("div",{className:"kpi",style:{cursor:"pointer"},onClick:goDash},h("div",{className:"kpi-label"},"輸出案件"),h("div",{className:"kpi-val",style:{color:"var(--gn)"}},EXD.length),h("div",{className:"kpi-delta"},"$"+N(57000+19200))),
+      h("div",{className:"kpi",style:{cursor:"pointer"},onClick:goDash},h("div",{className:"kpi-label"},"リスク"),h("div",{className:"kpi-val",style:{color:"var(--rd)"}},"3"),h("div",{className:"kpi-delta kpi-down"},"1高 / 2中")),
+      h("div",{className:"kpi",style:{cursor:"pointer"},onClick:goDash},h("div",{className:"kpi-label"},"今月完了"),h("div",{className:"kpi-val",style:{color:"var(--tl)"}},"2"),h("div",{className:"kpi-delta kpi-up"},"目標達成"))
+    ),
+    h(ChatWidget)
+  );
+
+  // ═══ DASHBOARD ═══
+  if(pg==="dash") return h("div",null,
+    h(Header),
+    h("div",{className:"bc"},h("a",{onClick:goHome},"ホーム"),h("span",null," › "),h("span",{style:{fontWeight:500}},"ダッシュボード")),
+    h(Dashboard,{goHome:goHome}),
+    h(ChatWidget)
+  );
+
+  // ═══ FLOW LIST ═══
+  if(pg==="flow"){
+    var filtered=getFilteredDeals();
+    return h("div",null,
+      h(Header),
+      h("div",{className:"bc"},h("a",{onClick:goHome},"ホーム"),h("span",null," › "),h("span",{style:{fontWeight:500}},fn)),
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}},
+        h("h2",{style:{fontSize:16,fontWeight:700}},flow==="import"?"\uD83D\uDCE5 輸入案件一覧":"\uD83D\uDCE4 輸出案件一覧"),
+        h("button",{className:"btn bg",onClick:goNew},"\uFF0B 新規案件")),
+      // Search & Filter Bar
+      h("div",{className:"search-bar"},
+        h("input",{placeholder:"\uD83D\uDD0D 案件ID・取引先・国名で検索...",value:query,onChange:function(e){setQuery(e.target.value)}}),
+        h("select",{value:filterStep,onChange:function(e){setFilterStep(e.target.value)}},
+          h("option",{value:"all"},"全ステージ"),h("option",{value:"early"},"初期 (1-3)"),h("option",{value:"mid"},"中盤 (4-7)"),h("option",{value:"late"},"後半 (8+)")),
+        h("select",{value:filterCur,onChange:function(e){setFilterCur(e.target.value)}},
+          h("option",{value:"all"},"全通貨"),h("option",{value:"USD"},"USD"),h("option",{value:"EUR"},"EUR"),h("option",{value:"JPY"},"JPY")),
+        h("select",{value:sortBy,onChange:function(e){setSortBy(e.target.value)}},
+          h("option",{value:"id"},"ID順"),h("option",{value:"amount"},"金額順"),h("option",{value:"step"},"進捗順"),h("option",{value:"date"},"日付順"))),
+      filtered.length===0?h("div",{className:"no-results"},"\uD83D\uDD0D 条件に一致する案件がありません"):
+      filtered.map(function(d){return h("div",{key:d.id,className:"deal-card",onClick:function(){goDeal(d)}},
+        h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}},
+          h("div",null,h("span",{style:{fontSize:14,fontWeight:700,color:"var(--bl)",marginRight:8}},d.id),h("span",{style:{fontSize:13,fontWeight:500}},d.sup)),
+          T(steps[d.step].n+" 進行中",d.step>=10?"tg":d.step>=5?"ta":"tp2")),
+        h("div",{style:{display:"flex",gap:12,fontSize:11,color:"var(--sub)"}},h("span",null,d.cur+" "+N(d.s0.tot)),h("span",null,d.inco),h("span",null,d.co),h("span",null,d.s0.items.length+"品目")),
+        h(DB,{steps:steps,step:d.step}))}),
+      h(ChatWidget))
+  }
+
+  // ═══ NEW (with contract upload) ═══
+  if(pg==="new") return h(NewDealPage,{Header:Header,goHome:goHome,goFlow:function(){goFlow(flow)},fn:fn,flow:flow,steps:steps});
+
+  // Extracted NewDealPage as inline function call is handled below
+
+  // ═══ DEAL DETAIL ═══
+  if(pg==="deal"&&deal){
+    var d=deal,isIm=flow==="import",sc=[];
+    if(isIm){
+      sc.push(h(Sec,{key:0,num:"01",title:"引合・発注",tag:T("登録済","tg"),open:osec===0,toggle:function(){tog(0)}},
+        KV([["発注日",d.s0.d],["PO",d.s0.po],["金額",d.cur+" "+N(d.s0.tot)],["条件",d.inco]]),
+        G(["品名","数量","単価","金額"],d.s0.items.map(function(i){return[i.n,i.q+" "+i.u,"$"+i.p,"$"+N(i.q*i.p)]}))));
+      sc.push(h(Sec,{key:1,num:"02",title:"与信管理",nw:true,tag:d.s1?T("承認済","tg"):T("未確認","ta"),open:osec===1,toggle:function(){tog(1)}},
+        d.s1?h("div",null,h(Inh,{from:"引合"},d.sup+" / "+d.cur+" "+N(d.s0.tot)),
+          KV([["与信枠",d.s1.limit],["使用済",d.s1.used],["残枠",d.s1.avail],["格付",d.s1.rating],["審査部門",d.s1.reviewer],["有効期限",d.s1.expiry]]),
+          h("div",{style:{marginTop:8,padding:"8px 12px",background:"var(--gnbg)",borderRadius:7,fontSize:11,color:"var(--gn)"}},"✓ "+d.s1.note)
+        ):h("div",null,h(Inh,{from:"引合"},d.sup),h("button",{className:"btn bg sm",onClick:function(){alert("与信チェック実行")}},"与信チェック実行"))));
+      if(d.s2) sc.push(h(Sec,{key:2,num:"03",title:"契約・L/C",tag:T("登録済","tg"),open:osec===2,toggle:function(){tog(2)}},
+        h(Inh,{from:"引合＋与信"},d.sup+" / 与信残枠: "+(d.s1?d.s1.avail:"-")),
+        KV([["契約No",d.s2.no],["L/C No",d.s2.lc],["L/C種別",d.s2.lcType||"-"],["L/C状態",d.s2.lcStatus||"-"],["開設銀行",d.s2.bk],["有効期限",d.s2.exp],["船積期限",d.s2.ship],["Amendment",d.s2.amendHistory||"なし"]])));
+      else sc.push(h(Sec,{key:2,num:"03",title:"契約・L/C",tag:T("未登録","ta"),open:osec===2,toggle:function(){tog(2)}},
+        h(Inh,{from:"引合＋与信"},d.sup),h("p",{style:{fontSize:11,color:"var(--sub)"}},"与信承認済み。契約条件を入力してください。")));
+      sc.push(h(Sec,{key:3,num:"04",title:"保険・為替予約",nw:true,tag:d.s3?T("手配済","tg"):T("未手配","ta"),open:osec===3,toggle:function(){tog(3)}},
+        d.s3?h("div",null,h(Inh,{from:"契約"},d.cur+" "+N(d.s0.tot)+" / "+d.inco),
+          h("h4",{style:{fontSize:11,fontWeight:600,color:"var(--bl)",marginBottom:6}},"海上保険"),
+          KV([["保険会社",d.s3.insurer],["証券番号",d.s3.policy],["保険料",d.s3.premium],["付保条件",d.s3.coverage]]),
+          h("h4",{style:{fontSize:11,fontWeight:600,color:"var(--bl)",margin:"12px 0 6px"}},"為替予約"),
+          KV([["予約種別",d.s3.fxType],["予約レート","$1 = ¥"+d.s3.fxRate],["予約銀行",d.s3.fxBank],["予約番号",d.s3.fxRef],["決済日",d.s3.fxMaturity],["当日スポット","¥"+d.s3.spotRate]]),
+          h("div",{style:{marginTop:8,padding:"8px 12px",background:"var(--gnbg)",borderRadius:7,fontSize:11,color:"var(--gn)"}},"✓ 為替予約による節約効果: "+d.s3.saving)
+        ):h("p",{style:{fontSize:11,color:"var(--sub)"}},"契約登録後に保険・為替予約を手配してください。")));
+      if(d.s4) sc.push(h(Sec,{key:4,num:"05",title:"書類受領・OCR",tag:T("OCR済","tg"),open:osec===4,toggle:function(){tog(4)}},
+        h(Inh,{from:"契約"},"L/C: "+(d.s2?d.s2.lc:"-")),
+        KV([["Invoice",d.s4.inv],["B/L",d.s4.bl],["船名",d.s4.v],["ETD→ETA",d.s4.etd+" → "+d.s4.eta]])));
+      if(d.s5) sc.push(h(Sec,{key:5,num:"06",title:"書類照合",tag:d.s5.length?T(d.s5.filter(function(x){return x.s==="high"}).length+"件重大","tr"):T("問題なし","tg"),open:osec===5,toggle:function(){tog(5)}},
+        d.s5.length?d.s5.map(function(x,i){return h("div",{key:i,className:"disc "+(x.s==="high"?"hi":"md")},
+          h("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:4}},T(x.s==="high"?"重大":"注意",x.s==="high"?"tr":"ta"),h("span",{style:{fontSize:12,fontWeight:600}},x.it)),
+          h("div",{className:"vs"},h("div",{className:"vb"},h("strong",null,x.a)),h("div",{className:"neq"},"≠"),h("div",{className:"vb"},h("strong",null,x.b))),
+          h("p",{style:{fontSize:11,color:"var(--sub)"}},x.dt))}):h("p",{style:{color:"var(--gn)"}},"✓ 不一致なし")));
+      if(d.s6) sc.push(h(Sec,{key:6,num:"07",title:"HS・関税",tag:T("判定済","tg"),open:osec===6,toggle:function(){tog(6)}},
+        h(Inh,{from:"品目データ"},d.s0.items.length+"品目を自動判定"),
+        G(["品名","HSコード","税率","関税額"],d.s6.map(function(x){return[x.n,h("span",{className:"hs"},x.c),x.r,"$"+N(x.d)]})),
+        h("div",{className:"tot"},h("span",null,"関税合計"),h("span",null,"$"+N(d.s6.reduce(function(s,x){return s+x.d},0))))));
+      sc.push(h(Sec,{key:7,num:"08",title:"許可申請・法規制",nw:true,tag:d.s7?T("確認済","tg"):T("未確認","ta"),open:osec===7,toggle:function(){tog(7)}},
+        d.s7?h("div",null,h(Inh,{from:"品目＋HS"},d.s0.items.length+"品目の法規制を確認"),
+          G(["法令","状態","備考"],d.s7.permits.map(function(p){return[p.law,T(p.status,p.status==="該当なし"||p.status==="非該当"||p.status==="確認済"?"tg":"ta"),p.note]})),
+          KV([["確認部門",d.s7.checkedBy],["確認日",d.s7.checkedDate]])
+        ):h("p",{style:{fontSize:11,color:"var(--sub)"}},"HSコード判定後に法規制チェックを実行します。")));
+      if(d.s8) sc.push(h(Sec,{key:8,num:"09",title:"通関申告",tag:T(d.s8.st,"tg"),open:osec===8,toggle:function(){tog(8)}},
+        h(Inh,{from:"HS＋法規制＋書類"},"申告No: "+d.s8.no),KV([["日付",d.s8.d],["税額",d.s8.tax]])));
+      if(d.s9) sc.push(h(Sec,{key:9,num:"10",title:"検品・入庫",tag:T(d.s9.r,"tg"),open:osec===9,toggle:function(){tog(9)}},
+        h(Inh,{from:"書類データ"},"OCRデータと照合して検品"),
+        KV([["検品日",d.s9.d],["倉庫",d.s9.warehouse],["ロットNo",d.s9.lot]]),
+        G(["品名","予定数量","実数量","結果"],d.s9.rcvQty.map(function(r){return[r.n,r.expect,r.actual,T(r.result,"tg")]}))));
+      sc.push(h(Sec,{key:10,num:"11",title:"在庫管理",nw:true,tag:d.s10?T("在庫中","tg"):T("未入庫","ta"),open:osec===10,toggle:function(){tog(10)}},
+        d.s10?h("div",null,h(Inh,{from:"入庫"},d.s10.location),
+          G(["ロットNo","品目数","総数量","評価方法","帳簿価額","状態"],d.s10.lots.map(function(l){return[l.lot,l.items,l.totalQty,l.valMethod,l.bookVal,T(l.status,"tg")]})),
+          KV([["前回棚卸",d.s10.lastCount],["次回棚卸予定",d.s10.nextCount]])
+        ):h("p",{style:{fontSize:11,color:"var(--sub)"}},"入庫完了後に在庫が登録されます。")));
+      if(d.s11) sc.push(h(Sec,{key:11,num:"12",title:"仕入伝票",tag:T("生成済","tg"),open:osec===11,toggle:function(){tog(11)}},
+        h(Inh,{from:"OCR＋関税＋為替予約"},"$1=¥"+d.s11.fx),
+        G(["科目","借方","貸方"],[["仕入高","¥"+N(d.s11.cif),""],["関税","¥"+N(d.s11.du),""],["仮払消費税","¥"+N(d.s11.tx),""],["買掛金","","¥"+N(d.s11.cif)],["未払税金","","¥"+N(d.s11.du+d.s11.tx)]]),
+        h("div",{className:"tot"},h("span",null,"原価合計"),h("span",null,"¥"+N(d.s11.tot)))));
+      if(d.s12) sc.push(h(Sec,{key:12,num:"13",title:"支払・L/C決済",tag:T("決済済","tg"),open:osec===12,toggle:function(){tog(12)}},
+        h(Inh,{from:"伝票＋L/C"},"L/C: "+(d.s2?d.s2.lc:"-")),
+        d.s12.lcNego?h("div",{style:{marginBottom:10}},
+          h("h4",{style:{fontSize:11,fontWeight:600,color:"var(--bl)",marginBottom:6}},"L/C買取（ネゴ）"),
+          KV([["買取日",d.s12.lcNego.d],["買取銀行",d.s12.lcNego.bank],["参照番号",d.s12.lcNego.ref],["買取状態",d.s12.lcNego.st],["買取額",d.s12.lcNego.amt],["適用レート","¥"+d.s12.lcNego.fxApplied],["円貨額",d.s12.lcNego.jpyAmt]])
+        ):null,
+        G(["種別","金額","日付","状態"],d.s12.payments.map(function(p){return[p.t,p.a,p.d,T(p.s==="済"?"決済済":"承認待ち",p.s==="済"?"tg":"ta")]}))));
+      if(d.s13) sc.push(h(Sec,{key:13,num:"14",title:"原価計算",tag:T("算出済","tg"),open:osec===13,toggle:function(){tog(13)}},
+        h(Inh,{from:"全ステップ統合"},"FOB+運賃+保険+関税+消費税"),
+        G(["品目","FOB","ランデッドコスト"],d.s13.items.map(function(c){return[c.n,c.f,c.l]})),
+        h("div",{className:"tot"},h("span",null,"合計"),h("span",null,d.s13.tot)),
+        h("div",{style:{marginTop:8,padding:"8px 12px",background:"var(--blbg)",borderRadius:7,fontSize:12,color:"var(--bl)",fontWeight:600}},d.s13.mg)));
+    } else {
+      // ═══ Export Steps ═══
+      sc.push(h(Sec,{key:0,num:"01",title:"受注・契約",tag:T("登録済","tg"),open:osec===0,toggle:function(){tog(0)}},
+        KV([["受注日",d.s0.d],["SO",d.s0.so],["金額",d.cur+" "+N(d.s0.tot)],["条件",d.inco]]),
+        G(["品名","数量","単価","金額"],d.s0.items.map(function(i){return[i.n,i.q+" "+i.u,"$"+i.p,"$"+N(i.q*i.p)]}))));
+      sc.push(h(Sec,{key:1,num:"02",title:"与信管理",nw:true,tag:d.s1?T("承認済","tg"):T("未確認","ta"),open:osec===1,toggle:function(){tog(1)}},
+        d.s1?h("div",null,h(Inh,{from:"受注"},d.sup+" / "+d.cur+" "+N(d.s0.tot)),
+          KV([["与信枠",d.s1.limit],["使用済",d.s1.used],["残枠",d.s1.avail],["格付",d.s1.rating],["有効期限",d.s1.expiry]]),
+          h("div",{style:{marginTop:8,padding:"8px 12px",background:"var(--gnbg)",borderRadius:7,fontSize:11,color:"var(--gn)"}},"✓ "+d.s1.note)
+        ):h("p",{style:{fontSize:11,color:"var(--sub)"}},"与信チェック未実施")));
+      sc.push(h(Sec,{key:2,num:"03",title:"安全保障・コンプラ",nw:true,tag:d.s2?T("確認済","tg"):T("未確認","ta"),open:osec===2,toggle:function(){tog(2)}},
+        d.s2?h("div",null,h(Inh,{from:"受注＋与信"},d.s0.items.length+"品目 → "+d.co),
+          G(["チェック項目","状態","備考"],d.s2.checks.map(function(c){return[c.item,T(c.st,c.st==="確認済"||c.st==="クリア"?"tg":"ta"),c.note]}))
+        ):h("div",null,h(Inh,{from:"受注"},d.s0.items.length+"品目の安全保障貿易管理チェックが必要"),
+          h("button",{className:"btn bg sm",onClick:function(){alert("コンプライアンスチェック実行")}},"AIコンプラチェック実行"))));
+      if(d.s3) sc.push(h(Sec,{key:3,num:"04",title:"該非判定",tag:T(d.s3.items[0].cat,"tg"),open:osec===3,toggle:function(){tog(3)}},
+        h(Inh,{from:"コンプラチェック"},"安全保障確認済み"),
+        KV([["判定日",d.s3.d],["判定No",d.s3.no]]),
+        G(["品名","判定","根拠"],d.s3.items.map(function(i){return[i.n,T(i.cat,"tg"),i.reason]}))));
+      sc.push(h(Sec,{key:4,num:"05",title:"輸出許可(E/L)",nw:true,tag:d.s4?T(d.s4.required?"申請中":"不要","tg"):T("未確認","ta"),open:osec===4,toggle:function(){tog(4)}},
+        d.s4?h("div",null,h(Inh,{from:"該非判定"},d.s4.reason),
+          h("div",{style:{padding:"8px 12px",background:d.s4.required?"var(--ambg)":"var(--gnbg)",borderRadius:7,fontSize:11,color:d.s4.required?"var(--am)":"var(--gn)"}},
+            d.s4.required?"⚠ E/L申請が必要です":"✓ "+d.s4.reason),
+          d.s4.note?h("p",{style:{fontSize:11,color:"var(--sub)",marginTop:6}},d.s4.note):null
+        ):h("p",{style:{fontSize:11,color:"var(--sub)"}},"該非判定後に確認されます。")));
+      if(d.s5) sc.push(h(Sec,{key:5,num:"06",title:"書類作成",tag:T("作成済","tg"),open:osec===5,toggle:function(){tog(5)}},
+        h(Inh,{from:"受注＋該非"},"品目・金額・仕向地を自動反映"),
+        KV([["Invoice",d.s5.inv],["P/L",d.s5.pl],["原産地証明",d.s5.co],["作成日",d.s5.created]])));
+      if(d.s6) sc.push(h(Sec,{key:6,num:"07",title:"輸出通関",tag:T(d.s6.st,"tg"),open:osec===6,toggle:function(){tog(6)}},
+        h(Inh,{from:"書類＋E/L"},"申告No: "+d.s6.no),KV([["申告日",d.s6.d]])));
+      if(d.s7) sc.push(h(Sec,{key:7,num:"08",title:"船積・B/L",tag:T("取得済","tg"),open:osec===7,toggle:function(){tog(7)}},
+        KV([["B/L",d.s7.bl],["船名",d.s7.v],["ETD→ETA",d.s7.etd+" → "+d.s7.eta]])));
+      if(d.s8) sc.push(h(Sec,{key:8,num:"09",title:"売上伝票",tag:T("生成済","tg"),open:osec===8,toggle:function(){tog(8)}},
+        h(Inh,{from:"B/L＋為替"},"$1=¥"+d.s8.fx),
+        G(["科目","借方","貸方"],d.s8.entries.map(function(e){return[e.ac,e.dr,e.cr]})),
+        h("div",{className:"tot"},h("span",null,"売上高"),h("span",null,"¥"+N(d.s8.rev)))));
+      if(d.s9) sc.push(h(Sec,{key:9,num:"10",title:"請求・入金・消込",tag:d.s9.deposit?T("消込済","tg"):T(d.s9.st,"ta"),open:osec===9,toggle:function(){tog(9)}},
+        h(Inh,{from:"売上伝票"},"請求額は売上データから自動算出"),
+        h("h4",{style:{fontSize:11,fontWeight:600,color:"var(--bl)",marginBottom:6}},"請求書"),
+        KV([["請求No",d.s9.invNo],["金額",d.s9.amt],["支払期日",d.s9.due],["状態",d.s9.st]]),
+        d.s9.deposit?h("div",{style:{marginTop:12}},
+          h("h4",{style:{fontSize:11,fontWeight:600,color:"var(--gn)",marginBottom:6}},"入金・消込"),
+          KV([["入金日",d.s9.deposit.d],["入金額",d.s9.deposit.amt],["銀行参照",d.s9.deposit.bankRef],["消込結果",d.s9.deposit.autoMatch],["消込前売掛",d.s9.deposit.arBefore],["消込後売掛",d.s9.deposit.arAfter]])
+        ):null));
+      if(d.step>=10) sc.push(h(Sec,{key:10,num:"11",title:"為替差損益",tag:T("未計算","ta"),open:osec===10,toggle:function(){tog(10)}},
+        h(Inh,{from:"売上＋入金＋予約レート"},"予約レート vs 実勢レートの差損益を自動算出")));
+    }
+
+    // Timeline for IM-2026-001
+    var tlData=d.id==="IM-2026-001"?TIMELINE_IM1:[];
+
+    return h("div",null,
+      h(Header),
+      h("div",{className:"bc"},h("a",{onClick:goHome},"ホーム"),h("span",null," › "),h("a",{onClick:function(){goFlow(flow)}},fn),h("span",null," › "),h("span",{style:{fontWeight:500}},d.id)),
+      h(Pip,{steps:steps,deal:d,onClick:function(i){tog(i)}}),
+      h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:16,flexWrap:"wrap"}},
+        T(d.id,"tb"),h("span",{style:{fontSize:13,fontWeight:600}},d.sup),
+        h("span",{style:{fontSize:12,color:"var(--sub)"}},d.cur+" "+N(d.s0.tot)+" | "+d.inco+" | "+d.pay),
+        h("button",{className:"btn bpu sm",style:{marginLeft:"auto"},onClick:function(){ssplit(!split)}},"✂ 分割")),
+      split?h("div",{className:"split"},
+        h("h4",{style:{fontSize:12,fontWeight:600,color:"var(--pu)",marginBottom:8}},"✂ 案件分割"),
+        h("div",{className:"fr"},h("div",{className:"fg"},h("label",null,"分割方法"),h("select",null,h("option",null,"出荷分割"),h("option",null,"支払分割"),h("option",null,"品目分割"))),h("div",{className:"fg"},h("label",null,"分割数"),h("select",null,h("option",null,"2"),h("option",null,"3")))),
+        h("div",{style:{display:"flex",gap:8}},h("button",{className:"btn bpu sm",onClick:function(){alert(d.id+" を分割");ssplit(false)}},"実行"),h("button",{className:"btn bs sm",onClick:function(){ssplit(false)}},"取消"))
+      ):null,
+      sc,
+      tlData.length>0?h(TimelineView,{timeline:tlData,open:tlOpen,toggle:function(){stlOpen(!tlOpen)}}):null,
+      h(ChatWidget));
+  }
+  return h("div",null,"Loading...");
+}
+ReactDOM.createRoot(document.getElementById("app")).render(h(App));
+</script>
+</body>
+</html>
