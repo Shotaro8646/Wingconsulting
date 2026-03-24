@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BorderFlow AI v12</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--bd:#e2e5ea;--tx:#1a1d23;--sub:#6b7280;--ht:#9ca3af;--bl:#1565c0;--blbg:#e8f1fb;--gn:#1D9E75;--gnbg:#e6f7f1;--rd:#c62828;--rdbg:#fce4ec;--am:#d97706;--ambg:#fef3c7;--pu:#7c3aed;--pubg:#ede9fe;--tl:#0e7490;--tlbg:#e0f7fa;--navy:#0C2340;--navyL:#14325A;--lb:#CAEEFB;--lbbg:#e8f6fd;--dn:#162D50}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--card:#181b23;--bd:#282d3a;--tx:#e5e7eb;--sub:#9ca3af;--ht:#6b7280;--bl:#60a5fa;--blbg:#1e293b;--gn:#34d399;--gnbg:#162a23;--rd:#f87171;--rdbg:#2d1a1e;--am:#fbbf24;--ambg:#2a2416;--pu:#a78bfa;--pubg:#1f1a2e;--tl:#22d3ee;--tlbg:#0c2a33;--navy:#0a1828;--navyL:#112240;--lb:#CAEEFB;--lbbg:#1a3040;--dn:#8FABC4}}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--navy);color:#fff;padding:16px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sb-logo{display:flex;align-items:center;gap:10px;padding:0 16px 20px;border-bottom:1px solid rgba(255,255,255,.1)}.sb-logo .logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0C2340,#6BB8D9);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}.sb-logo h1{font-size:15px;font-weight:700}.sb-logo p{font-size:9px;opacity:.6;margin:0}
+.sb-section{padding:12px 0 4px;margin:0 16px;font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:.4;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;font-size:13px;font-weight:500;transition:.12s;border-left:3px solid transparent}.sb-item:hover{background:var(--navyL)}.sb-item.active{background:var(--navyL);border-left-color:var(--lb);font-weight:600}.sb-item .sb-icon{width:20px;text-align:center;font-size:15px;flex-shrink:0}.sb-item .sb-cnt{margin-left:auto;font-size:10px;background:rgba(255,255,255,.15);padding:1px 7px;border-radius:8px}
+.sb-divider{height:1px;background:rgba(255,255,255,.08);margin:8px 16px}
+.sb-pat{display:flex;align-items:center;gap:8px;padding:6px 16px 6px 24px;cursor:pointer;font-size:11px;opacity:.7;transition:.12s}.sb-pat:hover{opacity:1;background:var(--navyL)}
+.main{margin-left:220px;flex:1;padding:24px 28px 60px;max-width:1200px}
+.page-title{font-size:18px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.chevrons{display:flex;margin-bottom:20px;overflow-x:auto;gap:0}.chev{position:relative;flex:1;min-width:54px;padding:8px 6px 8px 16px;font-size:7px;font-weight:600;line-height:1.2;text-align:center;cursor:pointer;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,0 100%,10px 50%);margin-left:-2px;transition:.12s}.chev:first-child{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,0 100%);padding-left:10px}.chev b{display:block;font-size:10px}.chev-done{background:var(--lb);color:var(--navy)}.chev-cur{background:var(--navy);color:#fff}.chev-fut{background:#dfe3e8;color:var(--ht)}
+@media(prefers-color-scheme:dark){.chev-fut{background:var(--bd)}}
+.deal-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:.15s}.deal-card:hover{border-color:var(--bl);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.dbar{display:flex;gap:1px;height:6px;border-radius:3px;overflow:hidden;margin-top:10px}.dbar div{flex:1;border-radius:2px}.brd{background:var(--lb)}.brc{background:var(--navy)}.brf{background:var(--bd)}
+.section{background:var(--card);border:1px solid var(--bd);border-radius:11px;margin-bottom:10px;overflow:hidden}.sh{padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.sh h3{font-size:13px;font-weight:600}.sb2{border-top:1px solid var(--bd);padding:14px 16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px}.g2 .k{color:var(--sub)}.g2 .v{font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:11px}th{padding:6px 8px;text-align:left;font-size:10px;color:var(--ht);background:var(--bg);border-bottom:1px solid var(--bd);font-weight:600}td{padding:7px 8px;border-bottom:1px solid var(--bd)}
+.tag{font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;white-space:nowrap}.tg{background:var(--gnbg);color:var(--gn)}.tb{background:var(--blbg);color:var(--bl)}.ta{background:var(--ambg);color:var(--am)}.tr{background:var(--rdbg);color:var(--rd)}.tp2{background:var(--pubg);color:var(--pu)}.tt{background:var(--tlbg);color:var(--tl)}
+.btn{padding:8px 16px;font-size:12px;font-weight:600;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.bg{background:var(--navy);color:#fff}.bb{background:var(--bl);color:#fff}.bs{background:var(--card);border:1px solid var(--bd);color:var(--sub)}.bpu{background:var(--pu);color:#fff}.sm{padding:5px 10px;font-size:11px;border-radius:6px}
+.nt{padding:10px 14px;background:var(--blbg);border-radius:8px;font-size:11px;color:var(--bl);line-height:1.6;margin:0 0 14px}
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);margin-bottom:16px}.bc a{color:var(--bl);cursor:pointer;text-decoration:none;font-weight:500}
+.disc{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:12px 14px;margin-bottom:8px}.disc.hi{border-left:3px solid var(--rd)}.disc.md{border-left:3px solid var(--am)}.disc.ok{border-left:3px solid var(--gn)}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin:6px 0}.vb{background:var(--bg);border-radius:5px;padding:5px 8px;font-size:11px}.neq{font-size:14px;color:var(--rd);font-weight:700;text-align:center}
+.hs-code{font-family:monospace;font-size:10px;background:var(--blbg);color:var(--bl);padding:2px 5px;border-radius:3px;font-weight:600}
+.sub-title{font-size:12px;font-weight:700;color:var(--bl);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--bd)}.sub-title:first-child{margin-top:0}
+.appr-flow{display:flex;gap:4px;align-items:center;margin:8px 0;flex-wrap:wrap}.appr-step{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600}.appr-step.done{background:var(--lbbg);color:var(--navy)}.appr-step.cur{background:var(--navy);color:#fff}.appr-step.fut{background:var(--bg);color:var(--ht)}.appr-arrow{color:var(--ht);font-size:12px}
+.lot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}.lot-card{background:var(--bg);border-radius:8px;padding:10px;font-size:11px}.lot-card b{display:block;font-size:12px;margin-bottom:4px}
+.pnl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.pnl-card{background:var(--bg);border-radius:8px;padding:12px;text-align:center}.pnl-card .num{font-size:20px;font-weight:700}.pnl-card .lbl{font-size:10px;color:var(--sub)}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.dash-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;text-align:center}.dash-card .num{font-size:28px;font-weight:700;color:var(--bl)}.dash-card .lbl{font-size:11px;color:var(--sub);margin-top:2px}
+.inv-tbl{background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:16px}.inv-tbl table{margin:0}.inv-tbl th{font-size:11px;padding:10px 12px}.inv-tbl td{font-size:12px;padding:10px 12px}
+/* ═ NEW DEAL ENTRY ═ */
+.entry-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.entry-card{background:var(--card);border:2px solid var(--bd);border-radius:16px;padding:28px 24px;text-align:center;cursor:pointer;transition:.2s}.entry-card:hover{border-color:var(--bl);box-shadow:0 6px 24px rgba(0,0,0,.08)}.entry-card .ec-icon{font-size:40px;margin-bottom:10px}.entry-card h3{font-size:15px;font-weight:700;margin-bottom:6px}.entry-card p{font-size:11px;color:var(--sub);line-height:1.5}
+.ocr-zone{border:2px dashed var(--bd);border-radius:12px;padding:24px;text-align:center;margin-bottom:16px;transition:.2s;cursor:pointer}.ocr-zone:hover{border-color:var(--bl);background:var(--blbg)}.ocr-zone.active{border-color:var(--lb);background:var(--lbbg)}
+.ocr-log{background:#0f1117;color:#34d399;border-radius:8px;padding:12px 14px;font-family:monospace;font-size:11px;line-height:1.8;margin-top:12px;max-height:200px;overflow-y:auto;text-align:left}
+.ai-detect{background:linear-gradient(135deg,var(--blbg),var(--lbbg));border:2px solid var(--lb);border-radius:12px;padding:16px 20px;margin:12px 0;display:flex;align-items:center;gap:14px}.ai-detect .ai-icon{font-size:28px;flex-shrink:0}.ai-detect h4{font-size:13px;font-weight:700;margin-bottom:2px}.ai-detect p{font-size:11px;color:var(--sub)}
+.pat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.pat{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;cursor:pointer;transition:.15s;position:relative}.pat:hover{border-color:var(--bl);box-shadow:0 4px 16px rgba(0,0,0,.06)}.pat .p-icon{font-size:24px;margin-bottom:8px}.pat h3{font-size:13px;font-weight:700;margin-bottom:4px}.pat p{font-size:10px;color:var(--sub);line-height:1.5}.pat .p-flow{font-size:9px;color:var(--ht);margin-top:8px}.pat .p-steps{font-size:9px;color:var(--bl);font-weight:600;margin-top:6px}.pat .p-badge{position:absolute;top:10px;right:10px;font-size:8px;padding:2px 6px;border-radius:3px;font-weight:700}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-bottom:12px}.fg{display:flex;flex-direction:column;gap:3px}.fg label{font-size:11px;font-weight:600;color:var(--sub)}.fg input,.fg select{padding:7px 10px;border:1px solid var(--bd);border-radius:6px;font-size:12px;background:var(--card);color:var(--tx);font-family:inherit}.fg input:focus,.fg select:focus{outline:none;border-color:var(--bl)}.fg input.filled{border-color:var(--lb);background:var(--lbbg)}
+.voyage-track{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
+.voyage-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.voyage-bar{position:relative;height:40px;background:var(--bg);border-radius:20px;overflow:hidden;margin-bottom:8px}
+.voyage-fill{height:100%;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:.3s}
+.voyage-ports{display:flex;justify-content:space-between;font-size:10px;color:var(--sub)}
+.voyage-ship{position:absolute;top:50%;transform:translateY(-50%);font-size:18px}
+.cust-detail{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
+.credit-bar{height:24px;background:var(--bg);border-radius:12px;overflow:hidden;display:flex;margin:8px 0}
+.credit-bar div{height:100%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff}
+.credit-edit{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+.credit-edit .fg input{padding:6px 8px;font-size:11px}
+.split-wrap{display:flex;gap:0;min-height:calc(100vh - 48px)}
+.split-left{width:340px;min-width:340px;border-right:1px solid var(--bd);padding-right:16px;overflow-y:auto;max-height:calc(100vh - 48px);position:sticky;top:0}
+.split-right{flex:1;padding-left:20px;overflow-y:auto;min-width:0}
+.search-box{position:relative;margin-bottom:12px}
+.search-box input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--bd);border-radius:8px;font-size:12px;background:var(--card);color:var(--tx);font-family:inherit}
+.search-box input:focus{outline:none;border-color:var(--navy)}
+.search-box .s-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--ht)}
+.deal-mini{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:.12s}
+.deal-mini:hover{border-color:var(--navy)}
+.deal-mini.sel{border-color:var(--navy);background:var(--lbbg);border-width:2px}
+.deal-mini .dm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.deal-mini .dm-id{font-size:12px;font-weight:700;color:var(--navy)}
+.deal-mini .dm-sup{font-size:11px;font-weight:500;margin-left:6px}
+.deal-mini .dm-meta{font-size:10px;color:var(--sub);display:flex;gap:8px;flex-wrap:wrap}
+.deal-mini .dm-bar{display:flex;gap:1px;height:4px;border-radius:2px;overflow:hidden;margin-top:5px}
+.deal-mini .dm-bar div{flex:1;border-radius:1px}
+.empty-detail{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:var(--ht);text-align:center}
+.empty-detail .ed-icon{font-size:48px;margin-bottom:12px;opacity:.4}
+.empty-detail p{font-size:13px}
+@media(max-width:1000px){.split-wrap{flex-direction:column}.split-left{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--bd);padding-right:0;padding-bottom:12px;max-height:320px;position:static}.split-right{padding-left:0;padding-top:16px}}
+
+.tp-im{background:#d0e2f4;color:#1a3a5c}.tp-id{background:#d5f0f0;color:#0e5e6e}.tp-ex{background:#e6ddf7;color:#5b34a0}.tp-b2{background:#fde8c8;color:#8a5a08}.tp-of{background:#d0eceb;color:#0a5c57}.tp-do{background:#dde4ed;color:#334155}.tp-ag{background:#e8eaed;color:#4b5563}
+.tpos{border:1.5px solid;background:transparent;font-weight:700}.tpos-l{border-color:var(--navy);color:var(--navy)}.tpos-s{border-color:var(--rd);color:var(--rd)}
+.tst-done{background:var(--lbbg);color:#1a3a5c}.tst-cur{background:var(--navy);color:#fff}.tst-pend{background:var(--bg);color:var(--ht)}
+.legend-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:14px;font-size:10px;color:var(--sub)}
+.legend-bar .lg-title{font-weight:700;color:var(--tx);margin-right:4px}
+.legend-bar .lg-sep{width:1px;height:16px;background:var(--bd);margin:0 6px}
+.unit-conv{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:10px 0}
+.unit-conv h4{font-size:12px;font-weight:700;margin-bottom:8px;color:var(--navy)}
+.uc-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.uc-row input{width:100px;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;font-size:12px;background:var(--card);color:var(--tx)}.uc-row select{padding:6px 8px;border:1px solid var(--bd);border-radius:6px;font-size:11px;background:var(--card);color:var(--tx)}.uc-row .uc-eq{font-size:14px;font-weight:700;color:var(--navy)}.uc-row .uc-result{font-size:14px;font-weight:700;color:var(--navy);min-width:80px}
+.tdb-section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
+.tdb-upload{border:2px dashed var(--bd);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:.2s;margin:10px 0}.tdb-upload:hover{border-color:var(--navy);background:var(--lbbg)}
+.tdb-result{background:var(--lbbg);border:1px solid var(--lb);border-radius:10px;padding:14px;margin:10px 0}
+.tdb-rating{display:flex;gap:16px;margin:8px 0;flex-wrap:wrap}.tdb-rating .tdb-score{text-align:center;padding:10px 16px;background:var(--bg);border-radius:8px;min-width:80px}.tdb-rating .tdb-score .num{font-size:22px;font-weight:700;color:var(--navy)}.tdb-rating .tdb-score .lbl{font-size:9px;color:var(--sub)}
+.dup-card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center}.dup-card:hover{border-color:var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.chart-wrap{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 16px 12px;margin-bottom:16px}
+.chart-wrap h4{font-size:13px;font-weight:700;margin-bottom:12px}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-legend{display:flex;gap:16px;margin-top:8px;font-size:10px;color:var(--sub)}.chart-legend span{display:flex;align-items:center;gap:4px}.chart-legend i{width:10px;height:3px;border-radius:2px;display:inline-block}
+@media(max-width:800px){.sidebar{width:60px;padding:10px 0}.sb-logo h1,.sb-logo p,.sb-item span:not(.sb-icon),.sb-section,.sb-pat span,.sb-item .sb-cnt{display:none}.sb-item{justify-content:center;padding:10px 0;border-left:none}.sb-pat{justify-content:center;padding:6px 0}.main{margin-left:60px;padding:16px}.dash-grid,.entry-grid{grid-template-columns:1fr 1fr}.pat-grid{grid-template-columns:1fr 1fr}.chev{min-width:40px;font-size:6px}.lot-grid{grid-template-columns:1fr}.fr{grid-template-columns:1fr}.chart-row{grid-template-columns:1fr}}
+@media(max-width:480px){.pat-grid,.entry-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+var h=React.createElement,us=React.useState,N=function(n){return typeof n==="number"?n.toLocaleString():n};
+var SN={inq:"引合・発注",credit:"与信管理",contract:"契約・L/C",insurance:"保険・為替予約",ocr:"書類受領・OCR",recon:"書類照合",hs:"HS・関税",compliance:"許可申請・法規制",customs:"通関申告",inspect:"検品・入庫",inventory:"在庫管理",voucher_buy:"仕入伝票",payment:"支払・L/C決済",cost:"原価計算",order:"受注・契約",security:"安全保障・コンプラ",gaih:"該非判定",el:"輸出許可(E/L)",shipdoc:"書類作成",ex_customs:"輸出通関",ship:"船積・B/L",voucher_sell:"売上伝票",invoice_ar:"請求・入金・消込",fxgl:"為替差損益",buy_contract:"買契約",sell_contract:"売契約",recon_both:"照合(売買両面)",ship_mgmt:"船積管理",simultaneous:"同時計上",pay_recv:"支払/入金",tp:"移転価格確認",ac_netting:"A/Cネッティング",domestic_ship:"出荷・配送",fee:"手数料計上",agent_invoice:"手数料請求"};
+var PAT_STEPS={im_stock:["inq","credit","contract","insurance","ocr","recon","hs","compliance","customs","inspect","inventory","voucher_buy","payment","cost"],im_direct:["inq","credit","contract","insurance","ocr","recon","hs","compliance","customs","voucher_buy","payment","cost"],"export":["order","credit","security","gaih","el","shipdoc","ex_customs","ship","voucher_sell","invoice_ar","fxgl"],b2b:["order","credit","buy_contract","sell_contract","security","recon_both","ship_mgmt","simultaneous","pay_recv","fxgl"],offshore:["order","credit","security","buy_contract","sell_contract","tp","shipdoc","ship_mgmt","simultaneous","ac_netting","fxgl"],domestic:["inq","credit","contract","domestic_ship","voucher_buy","voucher_sell","payment","invoice_ar"],agent:["order","credit","contract","fee","agent_invoice"]};
+var PAT_IDS=["im_stock","im_direct","export","b2b","offshore","domestic","agent"];
+var PN={im_stock:"輸入在庫販売",im_direct:"輸入直送","export":"輸出",b2b:"三国間(B2B)",offshore:"オフショア",domestic:"国内取引",agent:"仲介"};
+var PD={im_stock:"海外から仕入→国内倉庫で在庫→国内顧客に販売",im_direct:"海外から仕入→倉庫を経由せず国内顧客に直送","export":"日本から海外顧客に販売",b2b:"海外A→海外B（日本を経由しない）",offshore:"海外子会社経由の取引",domestic:"日本国内の仕入販売",agent:"契約当事者にならず仲介"};
+var PF={im_stock:"海外→日本倉庫→国内",im_direct:"海外→日本(直送)","export":"日本→海外",b2b:"海外A→海外B",offshore:"子会社経由",domestic:"日本→日本",agent:"仲介のみ"};
+var PB={im_stock:{b:"輸入在庫",c:"tp-im"},im_direct:{b:"輸入直送",c:"tp-id"},"export":{b:"輸出",c:"tp-ex"},b2b:{b:"三国間",c:"tp-b2"},offshore:{b:"オフショア",c:"tp-of"},domestic:{b:"国内",c:"tp-do"},agent:{b:"仲介",c:"tp-ag"}};
+var PI={im_stock:"📥",im_direct:"📦","export":"📤",b2b:"🔄",offshore:"🌐",domestic:"🏠",agent:"🤝"};
+var AI_STEPS={credit:1,insurance:1,ocr:1,recon:1,hs:1,compliance:1,customs:1,voucher_buy:1,payment:1,cost:1,security:1,gaih:1,el:1,shipdoc:1,ex_customs:1,voucher_sell:1,invoice_ar:1,fxgl:1,recon_both:1,simultaneous:1,pay_recv:1,tp:1,ac_netting:1,fee:1,agent_invoice:1};
+
+// ═══ 化学品商社向けデモデータ ═══
+var DEALS=[
+{id:"CHM-001",pat:"im_stock",step:12,sup:"BASF SE",co:"Germany",cur:"USD",inco:"CIF Yokohama",tot:284000,position:"long",
+ items:[{n:"エチレングリコール(MEG)",q:200,u:"MT",p:820,hs:"2905.31"},{n:"トルエンジイソシアネート(TDI)",q:80,u:"MT",p:1550,hs:"2929.10"}],
+ data:{position:"long",contract_type:"individual",trade_type:"bulk",allowance:"±3%",price_type:"confirmed",
+  approval:{status:"approved",flow:[{role:"事務",name:"中村",date:"02-05",st:"done"},{role:"営業",name:"松田",date:"02-06",st:"done"},{role:"課長",name:"吉田",date:"02-07",st:"done"},{role:"部長",name:"高橋",date:"02-07",st:"done"}]},
+  link:{buyNo:"BC-CHM-047",sellNo:"SC-CHM-091",linkType:"買先行売繋ぎ",linkStatus:"紐付済"},
+  pnl_estimate:{revenue:312400,cogs:284000,duty:8520,freight:4200,insurance:380,margin:15300,marginRate:"4.9%"},
+  settlement:[{type:"L/C at sight",pct:100,bank:"三菱UFJ銀行"}],
+  credit:{limit:"$500,000",used:"$284,000",avail:"$216,000",rating:"AA",expiry:"2027-03-31",grades:[{type:"成約残高",limit:"$500,000",bal:"$284,000"},{type:"債権残高",limit:"$300,000",bal:"$0"}]},
+  contract:{no:"CTR-CHM-047",lc:"LC-MUFG-7821",type:"個別契約",lang:"EN",sign:{status:"署名済",signer:"高橋部長",date:"02-10"}},
+  insurance:{marine:{insurer:"東京海上日動",policy:"MP-CHM-7821",premium:"¥56,000",coverage:"ICC(A) + 戦争危険",check:"✓ 付保済"},fx:{type:"先物予約",rate:149.80,bank:"三菱UFJ銀行",ref:"FX-CHM-0847",maturity:"2026-04-20",spot:151.50,saving:"¥483,600"}},
+  ocr:{inv:"INV-BASF-26-0412",bl:"HAPAG-HH2604821",pl:"PL-BASF-26-0412",confidence:"99.1%",pages:8},
+  recon:{summary:{total:12,matched:11,warning:1,critical:0},items:[{field:"MEG Net Weight",doc1:"P/L",val1:"200.45 MT",doc2:"B/L",val2:"200.00 MT",severity:"warning"}]},
+  hs:[{n:"MEG",c:"2905.31",rate:"3.1%",duty:5084,eval:"包括評価"},{n:"TDI",c:"2929.10",rate:"2.8%",duty:3472,eval:"個別評価"}],
+  compliance:{checks:[{law:"化審法(化学物質審査規制法)",result:"既存化学物質",by:"品質保証部",date:"02-12"},{law:"毒劇法(毒物及び劇物取締法)",result:"TDI: 劇物該当",by:"品質保証部",date:"02-12"},{law:"消防法",result:"MEG: 第4類危険物",by:"安全管理部",date:"02-13"},{law:"輸入貿易管理令",result:"非該当",by:"貿易管理部",date:"02-12"}]},
+  customs:{no:"IC-YOK-CHM-0412",date:"2026-03-10",naccs:"NACCS連携済",duty:"¥1,279,306",consumptionTax:"¥428,940",broker:"日新海運",method:"B/L基準",bonded:false},
+  inspect:{basis:"B/L基準",basisNote:"B/L入手日=仕入計上日",lots:[
+    {id:"LOT-M01",item:"MEG",qty:200,grade:"Industrial",status:"合格",attr:"純度99.5%/比重1.113/引火点111°C",dmg:false},
+    {id:"LOT-T01",item:"TDI",qty:78,grade:"A",status:"合格",attr:"純度99.7%/NCO含量48.2%",dmg:false},
+    {id:"LOT-T02",item:"TDI",qty:2,grade:"-",status:"ダメージ品",attr:"ドラム缶2本漏洩/廃棄処分",dmg:true}],qtyFinal:"揚地ファイナル",partial:false},
+  inventory:{location:{wh:"川崎危険物倉庫 C棟",type:"預託倉庫",operator:"日本通運(株)",trustLimit:"¥200,000,000",trustUsed:"¥85,000,000"},
+    lots:[{id:"LOT-M01",item:"MEG 200MT",qty:200,val:"¥24,529,600",evalMethod:"移動平均法",attr:"タンク貯蔵/純度99.5%"},{id:"LOT-T01",item:"TDI 78MT",qty:78,val:"¥18,107,640",evalMethod:"個別原価法",attr:"ドラム缶/純度99.7%"},{id:"LOT-T02",item:"TDI(損)",qty:2,val:"¥0",evalMethod:"-",attr:"ダメージ品/評価損計上済"}],
+    transit:{type:"未着在庫",virtualWH:"未着倉庫(横浜)",status:"入庫済"},totalQty:280,totalVal:"¥42,637,240",
+    stocktake:{lastDate:"2026-02-28",method:"在庫照合",result:"差異なし",nextDate:"2026-03-31"}},
+  voucher:{fx:149.80,tot:42637240,basis:"B/L基準",breakdown:[{item:"商品代(MEG)",amt:"¥24,529,600"},{item:"商品代(TDI)",amt:"¥18,107,640"},{item:"関税",amt:"¥1,279,306"},{item:"輸入消費税(仮払)",amt:"¥428,940"},{item:"海上運賃",amt:"¥628,800"},{item:"保険料",amt:"¥56,000"},{item:"国内輸送費",amt:"¥185,000"}]},
+  payment:[{t:"関税・消費税",a:"¥1,708,246",method:"NACCS口座振替",date:"03-10",s:"済"},{t:"海上運賃",a:"¥628,800",method:"TT送金",date:"03-12",s:"済"},{t:"L/C買取",a:"$284,000",method:"L/C at sight",date:"03-15",s:"済",negoBank:"三菱UFJ銀行",negoRef:"NEGO-MUFG-7821",negoFx:149.80}],
+  cost:{method:"品目別ランデッドコスト",items:[{n:"MEG",fob:"$164,000",duty:"¥5,084",freight:"¥2,400",ins:"¥220",landed:"¥24,891,304",unit:"¥124,457/MT"},{n:"TDI",fob:"$124,000",duty:"¥3,472",freight:"¥1,800",ins:"¥160",landed:"¥18,671,072",unit:"¥233,388/MT"}],totalLanded:"¥43,562,376",fxApplied:"¥149.80"}}},
+{id:"CHM-002",pat:"export",step:6,sup:"Wanhua Chemical (中国)",co:"China",cur:"USD",inco:"FOB Yokohama",tot:178500,position:"short",
+ items:[{n:"電子材料用高純度イソプロピルアルコール(IPA)",q:50,u:"MT",p:2200,hs:"2905.12"},{n:"半導体用フォトレジスト溶剤",q:30,u:"MT",p:1950,hs:"2914.12"}],
+ data:{position:"short",credit:{limit:"$400,000",used:"$178,500",avail:"$221,500",rating:"A"},
+  approval:{status:"approved",flow:[{role:"営業",name:"岡田",date:"01-25",st:"done"},{role:"課長",name:"吉田",date:"01-26",st:"done"}]},
+  security:{checks:["外為法: 非該当(汎用品)","EAR: EAR99","仕向地: 中国(一部注意)→許可済","SDN: 非該当","エンドユース確認: 民生用途確認済"]},
+  gaih:{result:"非該当",items:["IPA: リスト規制非該当","フォトレジスト溶剤: パラメータ確認済(半導体用途だが規制未満)"]},el:{required:false},
+  shipdoc:{inv:"EXP-INV-CHM-0156",pl:"EXP-PL-CHM-0156",origin:"CO-JP-0156"},
+  ex_customs:{no:"EC-YOK-CHM-0156",tax:"-",naccs:"NACCS連携済"},
+  ship:{bl:"OOCL-YOK260156",v:"OOCL TOKYO",basis:"船積基準",basisNote:"B/L発行日=売上計上日",etd:"03-18",eta:"03-22"},
+  voucher_sell:{fx:149.20,rev:26629200},pnl_estimate:{revenue:178500,cogs:142000,margin:36500,marginRate:"20.4%"}}},
+{id:"CHM-003",pat:"b2b",step:5,sup:"PTT Global Chemical → SK Chemicals",co:"Thailand→Korea",cur:"USD",inco:"CIF Busan",tot:425000,position:"long",
+ items:[{n:"アクリル酸(AA)",q:500,u:"MT",p:850,hs:"2916.11"}],
+ data:{position:"long",credit:{limit:"$800,000",used:"$425,000",avail:"$375,000",rating:"AA"},
+  approval:{status:"approved",flow:[{role:"営業",name:"松田",date:"02-15",st:"done"},{role:"部長",name:"高橋",date:"02-16",st:"done"}]},
+  link:{buyNo:"BC-CHM-103",sellNo:"SC-CHM-204",linkType:"売買同時登録",linkStatus:"紐付済"},
+  buy_contract:{no:"BC-CHM-103",sup:"PTT Global Chemical PCL",terms:"FOB Map Ta Phut"},
+  sell_contract:{no:"SC-CHM-204",cust:"SK Chemicals Co., Ltd.",terms:"CIF Busan"},
+  security:{checks:["外為法: N/A(三国間)","仕向地: 韓国→Clear"]},
+  recon_both:{buyInv:"INV-PTT-0412",sellInv:"INV-SK-0087",status:"照合完了",items:8,matched:8},
+  ship_mgmt:{bl:"EVERGREEN-BKK260412",v:"EVER GLOBE",etd:"03-22",eta:"04-02",partial:true,partialNote:"500MT中 300MT積(1/2) / 第2船200MT: 4月中旬予定"},
+  simultaneous:{buyAmt:"$340,000",sellAmt:"$425,000",margin:"$85,000 (20.0%)"},
+  pnl_estimate:{revenue:425000,cogs:340000,margin:85000,marginRate:"20.0%"}}},
+{id:"CHM-004",pat:"im_direct",step:9,sup:"Dow Chemical",co:"USA",cur:"USD",inco:"CFR Nagoya",tot:156000,position:"long",
+ items:[{n:"ポリウレタン原料(MDI)",q:120,u:"MT",p:1300,hs:"2929.10"}],
+ data:{position:"long",credit:{limit:"$300,000",used:"$156,000",avail:"$144,000",rating:"AA"},
+  contract:{no:"CTR-CHM-089",lc:"LC-SMBC-4521"},
+  insurance:{marine:{insurer:"損保ジャパン",policy:"MP-CHM-4521",premium:"¥42,000",coverage:"ICC(A)",check:"✓ 付保済"}},
+  ocr:{inv:"INV-DOW-26-0089",bl:"MSC-HOU260089",confidence:"98.4%",pages:6},
+  recon:{summary:{total:8,matched:8,warning:0,critical:0},items:[]},
+  hs:[{n:"MDI",c:"2929.10",rate:"2.8%",duty:4368,eval:"包括評価"}],
+  compliance:{checks:[{law:"化審法",result:"既存化学物質",by:"品質保証部",date:"02-20"},{law:"毒劇法",result:"劇物該当",by:"品質保証部",date:"02-20"},{law:"消防法",result:"非該当",by:"安全管理部",date:"02-21"}]},
+  customs:{no:"IC-NGY-CHM-0089",date:"2026-03-08",naccs:"NACCS連携済",duty:"¥654,192",consumptionTax:"¥218,064",broker:"名港海運",method:"B/L基準"},
+  pnl_estimate:{revenue:171600,cogs:156000,duty:4368,margin:11232,marginRate:"6.5%"}}},
+{id:"CHM-005",pat:"offshore",step:4,sup:"旭化成SG → PT Chandra Asri",co:"SG→ID",cur:"USD",inco:"CIF Jakarta",tot:198000,
+ items:[{n:"スチレンモノマー(SM)",q:300,u:"MT",p:660,hs:"2902.50"}],
+ data:{position:"long",credit:{limit:"$400,000",used:"$198,000",avail:"$202,000",rating:"A+"},
+  security:{checks:["外為法: N/A","仕向地: インドネシア→Clear"]},
+  buy_contract:{no:"BC-SG-CHM-031",sup:"旭化成Chemical Singapore",terms:"FOB Singapore"},
+  sell_contract:{no:"SC-ID-CHM-031",cust:"PT Chandra Asri Petrochemical",terms:"CIF Jakarta"},
+  tp:{method:"TNMM",margin:"4%",status:"確認済"},
+  pnl_estimate:{revenue:198000,cogs:190080,margin:7920,marginRate:"4.0%"}}},
+{id:"CHM-006",pat:"domestic",step:6,sup:"三井化学(株)",co:"Japan",cur:"JPY",inco:"DDP",tot:12800000,
+ items:[{n:"エポキシ樹脂(jER828)",q:20,u:"MT",p:640000,hs:""},{n:"硬化剤(DICY)",q:5,u:"MT",p:480000,hs:""}],
+ data:{credit:{limit:"¥30,000,000",used:"¥12,800,000",avail:"¥17,200,000",rating:"A+"},
+  contract:{no:"DC-CHM-221"},domestic_ship:{wh:"千葉危険物倉庫",d:"2026-03-25",basis:"出荷基準"},
+  voucher_buy:{tot:12800000},voucher_sell:{tot:14720000},
+  pnl_estimate:{revenue:14720000,cogs:12800000,margin:1920000,marginRate:"13.0%"}}},
+{id:"CHM-007",pat:"agent",step:2,sup:"仲介: Solvay → 住友化学",co:"Belgium→Japan",cur:"USD",inco:"CIF",tot:4500,
+ items:[{n:"仲介手数料(過酸化水素取引)",q:1,u:"LOT",p:4500}],
+ data:{credit:{limit:"N/A",used:"N/A",avail:"N/A",rating:"-"},contract:{no:"AG-CHM-015",note:"手数料率3% on $150,000"},
+  fee:{rate:"3%",base:"$150,000",amount:"$4,500",jpyAmount:"¥673,200"}}},
+{id:"CHM-008",pat:"im_stock",step:3,sup:"Evonik Industries",co:"Germany",cur:"EUR",inco:"CIF Kobe",tot:167000,position:"long",
+ items:[{n:"酸化チタン(TiO2)",q:100,u:"MT",p:1350,hs:"2823.00"},{n:"シリカ(沈降法)",q:50,u:"MT",p:700,hs:"2811.22"}],
+ data:{position:"long",credit:{limit:"€300,000",used:"€167,000",avail:"€133,000",rating:"A"},
+  contract:{no:"CTR-CHM-112",lc:"LC-SMTB-9012"},
+  approval:{status:"pending",flow:[{role:"事務",name:"中村",date:"03-18",st:"done"},{role:"営業",name:"岡田",date:"03-19",st:"done"},{role:"課長",name:"吉田",date:"-",st:"cur"},{role:"部長",name:"高橋",date:"-",st:"fut"}]},
+  pnl_estimate:{revenue:192050,cogs:167000,margin:25050,marginRate:"13.0%"}}},
+{id:"CHM-009",pat:"b2b",step:2,sup:"Sabic → Lotte Chemical",co:"Saudi→Korea",cur:"USD",inco:"CIF Ulsan",tot:580000,position:"long",
+ items:[{n:"ポリエチレン(HDPE)",q:1000,u:"MT",p:580,hs:"3901.20"}],
+ data:{position:"long",credit:{limit:"$1,000,000",used:"$580,000",avail:"$420,000",rating:"AAA"},
+  link:{buyNo:"BC-CHM-201",sellNo:"SC-CHM-301",linkType:"売買同時登録",linkStatus:"紐付済"},
+  buy_contract:{no:"BC-CHM-201",sup:"Sabic (Saudi Basic Industries)",terms:"FOB Jubail"},
+  sell_contract:{no:"SC-CHM-301",cust:"Lotte Chemical Corp.",terms:"CIF Ulsan"},
+  pnl_estimate:{revenue:580000,cogs:464000,margin:116000,marginRate:"20.0%"}}},
+{id:"CHM-010",pat:"export",step:1,sup:"台湾プラスチック(FCFC)",co:"Taiwan",cur:"USD",inco:"FOB Kobe",tot:95000,position:"short",
+ items:[{n:"特殊アクリル樹脂",q:15,u:"MT",p:4200,hs:"3906.90"},{n:"UV硬化型コーティング剤",q:10,u:"MT",p:3200,hs:"3208.20"}],
+ data:{position:"short",credit:{limit:"$200,000",used:"$95,000",avail:"$105,000",rating:"A"},
+  pnl_estimate:{revenue:95000,cogs:71000,margin:24000,marginRate:"25.3%"}}}
+];
+
+var CUSTOMERS=[
+{id:"CUS-001",name:"BASF SE",country:"Germany",type:"仕入先",rating:"AA",deals:2,total:"$451,000",credit:{contract:{limit:"$500,000",used:"$284,000",type:"成約残高"},receivable:{limit:"$300,000",used:"$0",type:"債権残高"},advance:{limit:"$50,000",used:"$0",type:"前渡金残高"}},lastReview:"2026-01-15",nextReview:"2027-01-15",contact:"Klaus Weber",regulatory:"化審法既存/毒劇法対象品あり"},
+{id:"CUS-002",name:"Wanhua Chemical",country:"China",type:"売先",rating:"A",deals:1,total:"$178,500",credit:{contract:{limit:"$400,000",used:"$178,500",type:"成約残高"},receivable:{limit:"$250,000",used:"$0",type:"債権残高"},advance:{limit:"$0",used:"$0",type:"前渡金残高"}},lastReview:"2025-12-01",nextReview:"2026-12-01",contact:"Li Wei",regulatory:"輸出管理(中国向け)"},
+{id:"CUS-003",name:"PTT Global Chemical",country:"Thailand",type:"仕入先",rating:"AA",deals:1,total:"$340,000",credit:{contract:{limit:"$800,000",used:"$425,000",type:"成約残高"},receivable:{limit:"$500,000",used:"$0",type:"債権残高"},advance:{limit:"$100,000",used:"$0",type:"前渡金残高"}},lastReview:"2026-02-01",nextReview:"2027-02-01",contact:"Somchai P.",regulatory:"-"},
+{id:"CUS-004",name:"SK Chemicals",country:"Korea",type:"売先",rating:"AA",deals:1,total:"$425,000",credit:{contract:{limit:"$600,000",used:"$425,000",type:"成約残高"},receivable:{limit:"$400,000",used:"$0",type:"債権残高"},advance:{limit:"$0",used:"$0",type:"前渡金残高"}},lastReview:"2026-01-20",nextReview:"2027-01-20",contact:"Kim Jihoon",regulatory:"-"},
+{id:"CUS-005",name:"Dow Chemical",country:"USA",type:"仕入先",rating:"AA",deals:1,total:"$156,000",credit:{contract:{limit:"$300,000",used:"$156,000",type:"成約残高"},receivable:{limit:"$200,000",used:"$0",type:"債権残高"},advance:{limit:"$30,000",used:"$0",type:"前渡金残高"}},lastReview:"2025-11-01",nextReview:"2026-11-01",contact:"John Smith",regulatory:"-"},
+{id:"CUS-006",name:"三井化学",country:"Japan",type:"仕入先",rating:"A+",deals:1,total:"\u00a512,800,000",credit:{contract:{limit:"\u00a530,000,000",used:"\u00a512,800,000",type:"成約残高"},receivable:{limit:"\u00a520,000,000",used:"\u00a50",type:"債権残高"},advance:{limit:"\u00a50",used:"\u00a50",type:"前渡金残高"}},lastReview:"2026-03-01",nextReview:"2027-03-01",contact:"佐々木太郎",regulatory:"-"},
+{id:"CUS-007",name:"Evonik Industries",country:"Germany",type:"仕入先",rating:"A",deals:1,total:"EUR167,000",credit:{contract:{limit:"EUR300,000",used:"EUR167,000",type:"成約残高"},receivable:{limit:"EUR200,000",used:"EUR0",type:"債権残高"},advance:{limit:"EUR0",used:"EUR0",type:"前渡金残高"}},lastReview:"2026-02-15",nextReview:"2027-02-15",contact:"Anna Mueller",regulatory:"化審法未確認あり"},
+{id:"CUS-008",name:"旭化成Chemical SG",country:"Singapore",type:"子会社",rating:"A+",deals:1,total:"$198,000",credit:{contract:{limit:"$400,000",used:"$198,000",type:"成約残高"},receivable:{limit:"$200,000",used:"$0",type:"債権残高"},advance:{limit:"$0",used:"$0",type:"前渡金残高"}},lastReview:"2026-03-01",nextReview:"2027-03-01",contact:"Tan Wei Lin",regulatory:"移転価格管理対象"}
+];
+var VOYAGES=[
+{id:"VOY-001",deal:"CHM-002",bl:"OOCL-YOK260156",vessel:"OOCL TOKYO",from:"Yokohama",to:"Shanghai",etd:"03-18",eta:"03-22",progress:65,status:"輸送中",cargo:"IPA 50MT + フォトレジスト溶剤 30MT",value:"$178,500",insured:true},
+{id:"VOY-002",deal:"CHM-003",bl:"EVERGREEN-BKK260412",vessel:"EVER GLOBE",from:"Map Ta Phut",to:"Busan",etd:"03-22",eta:"04-02",progress:20,status:"出港済",cargo:"アクリル酸(AA) 300MT (1/2)",value:"$255,000",insured:true},
+{id:"VOY-003",deal:"CHM-005",bl:"PIL-SG260031",vessel:"KOTA LESTARI",from:"Singapore",to:"Jakarta",etd:"03-25",eta:"03-28",progress:0,status:"積込中",cargo:"スチレンモノマー(SM) 300MT",value:"$198,000",insured:true},
+{id:"VOY-004",deal:"CHM-008",bl:"-",vessel:"-",from:"Hamburg",to:"Kobe",etd:"未定",eta:"未定",progress:0,status:"未手配",cargo:"TiO2 100MT + シリカ 50MT",value:"EUR167,000",insured:false}
+];
+
+function T(t,c){return h("span",{className:"tag "+c},t)}
+function KV(pairs){return h("div",{className:"g2"},pairs.map(function(p,i){return h("div",{key:i},h("span",{className:"k"},p[0]+": "),h("span",{className:"v"},p[1]))}))}
+function G(hds,rows){return h("table",{style:{marginTop:8}},h("thead",null,h("tr",null,hds.map(function(x,i){return h("th",{key:i},x)}))),h("tbody",null,rows.map(function(r,i){return h("tr",{key:i},r.map(function(c,j){return h("td",{key:j,style:j===0?{fontWeight:500}:null},c)}))})))}
+function Sub(t){return h("div",{className:"sub-title"},t)}
+function Sec(p){return h("div",{className:"section"},h("div",{className:"sh",onClick:p.toggle},h("h3",null,"Step ",p.num," ",p.title," ",p.ai?T("AI","tb"):null," ",p.tag),h("span",{style:{color:"var(--ht)",fontSize:14}},p.open?"▲":"▼")),p.open?h("div",{className:"sb2"},p.children):null)}
+function ApprFlow(flow){return h("div",{className:"appr-flow"},flow.map(function(a,i){return[i>0?h("span",{key:"a"+i,className:"appr-arrow"},"→"):null,h("div",{key:i,className:"appr-step "+a.st},a.st==="done"?"✓ ":"",a.role," ",a.name," ",a.date&&a.date!=="-"?("("+a.date+")"):"")]}))}
+function Legend(){return h("div",{className:"legend-bar"},
+    h("span",{className:"lg-title"},"凡例:"),
+    h("span",{className:"lg-title"},"取引パターン"),
+    T("輸入在庫","tp-im"),T("輸入直送","tp-id"),T("輸出","tp-ex"),T("三国間","tp-b2"),T("オフショア","tp-of"),T("国内","tp-do"),T("仲介","tp-ag"),
+    h("span",{className:"lg-sep"}),
+    h("span",{className:"lg-title"},"ポジション"),
+    h("span",{className:"tag tpos tpos-l"},"L: Long"),h("span",{className:"tag tpos tpos-s"},"S: Short"),
+    h("span",{className:"lg-sep"}),
+    h("span",{className:"lg-title"},"進捗"),
+    T("完了","tst-done"),T("進行中","tst-cur"),T("未着手","tst-pend"))}
+function Chevrons(props){return h("div",{className:"chevrons"},props.steps.map(function(s,i){return h("div",{key:i,className:"chev "+(i<props.cur?"chev-done":i===props.cur?"chev-cur":"chev-fut"),onClick:props.onClick?function(){props.onClick(i)}:null},h("b",null,s.num),s.name)}))}
+
+function App(){
+  var _pg=us("deals"),pg=_pg[0],spg=_pg[1];
+  var _dl=us(null),deal=_dl[0],sdeal=_dl[1];
+  var _os=us(-1),osec=_os[0],sosec=_os[1];
+  // New deal states
+  var _nm=us("choose"),newMode=_nm[0],snewMode=_nm[1]; // "choose","pattern","ai_upload","form"
+  var _np=us(null),newPat=_np[0],snewPat=_np[1];
+  var _oc=us(false),ocrDone=_oc[0],socrDone=_oc[1];
+  var _ol=us([]),ocrLogs=_ol[0],socrLogs=_ol[1];
+  var _of=us(null),ocrFile=_of[0],socrFile=_of[1];
+  var _fn=us(""),fName=_fn[0],sfName=_fn[1];
+  var _fi=us(""),fItem=_fi[0],sfItem=_fi[1];
+  var _fq=us(""),fQty=_fq[0],sfQty=_fq[1];
+  var _ad=us(null),aiDetect=_ad[0],saiDetect=_ad[1];
+  var _sc=us(null),selCust=_sc[0],sselCust=_sc[1];
+  var _sq=us(""),searchQ=_sq[0],ssearchQ=_sq[1];
+  function dupDeal(d){spg("new");snewMode("form");snewPat(d.pat);sfName(d.sup);sfItem(d.items.map(function(it){return it.n}).join(" / "));sfQty(d.items.map(function(it){return it.q+" "+it.u+"/$"+it.p}).join(", "));saiDetect(null);socrDone(false);socrLogs([]);socrFile(null)}
+  var _uv=us(1),ucVal=_uv[0],sucVal=_uv[1];var _uf=us("MT"),ucFrom=_uf[0],sucFrom=_uf[1];var _ut=us("KG"),ucTo=_ut[0],sucTo=_ut[1];
+  var UC_RATES={"MT":{"KG":1000,"LB":2204.62,"L":1000,"GAL":264.172,"BAG_25":40,"BAG_50":20,"DRUM_200":5},
+    "KG":{"MT":0.001,"LB":2.20462,"L":1,"GAL":0.264172},
+    "LB":{"KG":0.453592,"MT":0.000453592},
+    "L":{"KG":1,"MT":0.001,"GAL":0.264172},
+    "GAL":{"L":3.78541,"KG":3.78541,"MT":0.00378541}};
+  function ucConvert(){var r=UC_RATES[ucFrom];if(r&&r[ucTo])return(ucVal*r[ucTo]).toFixed(3);if(UC_RATES[ucTo]&&UC_RATES[ucTo][ucFrom])return(ucVal/UC_RATES[ucTo][ucFrom]).toFixed(3);return"-"}
+  function UnitConverter(){return h("div",{className:"unit-conv"},h("h4",null,"⚖ 単位換算"),h("div",{className:"uc-row"},
+    h("input",{type:"number",value:ucVal,onChange:function(e){sucVal(parseFloat(e.target.value)||0)},step:"any"}),
+    h("select",{value:ucFrom,onChange:function(e){sucFrom(e.target.value)}},["MT","KG","LB","L","GAL","BAG_25","BAG_50","DRUM_200"].map(function(u){return h("option",{key:u,value:u},u)})),
+    h("span",{className:"uc-eq"},"="),
+    h("span",{className:"uc-result"},ucConvert()),
+    h("select",{value:ucTo,onChange:function(e){sucTo(e.target.value)}},["MT","KG","LB","L","GAL","BAG_25","BAG_50","DRUM_200"].map(function(u){return h("option",{key:u,value:u},u)})),
+    h("span",{style:{fontSize:9,color:"var(--ht)",marginLeft:8}},"※化学品は比重により重量/容積換算が異なります")))}
+  function resetNew(){sselCust(null);snewMode("choose");snewPat(null);socrDone(false);socrLogs([]);socrFile(null);sfName("");sfItem("");sfQty("");saiDetect(null)}
+  function nav(p){spg(p);sdeal(null);sselCust(null);resetNew()}
+  function goDeal(d){spg("deals");sdeal(d);sosec(d.step)}
+  function goNewPat(pid){spg("new");snewMode("form");snewPat(pid);socrDone(false);socrLogs([]);socrFile(null);sfName("");sfItem("");sfQty("");saiDetect(null)}
+  function tog(i){sosec(osec===i?-1:i)}
+  function getSteps(pid){return(PAT_STEPS[pid]||[]).map(function(sk,i){return{key:sk,num:(i+1<10?"0":"")+(i+1),name:SN[sk],ai:AI_STEPS[sk]||0}})}
+  // AI-OCR: detects pattern + fills form
+  function runAiOCR(){
+    var msgs=["ファイル読み込み中...","AI-OCR解析開始...","テキスト抽出完了（信頼度: 99.2%）",
+      "📄 書類種別を判定: 売買契約書(Sale Contract)",
+      "🔍 取引先を検出: BASF SE (Ludwigshafen, Germany)",
+      "🔍 インコタームズを検出: CIF Yokohama",
+      "🔍 通貨・金額を検出: USD 284,000.00",
+      "🧪 品目を抽出中...",
+      "  → エチレングリコール(MEG) 200MT × $820/MT",
+      "  → トルエンジイソシアネート(TDI) 80MT × $1,550/MT",
+      "🤖 取引パターンを自動判定中...",
+      "  ✓ 仕入先: 海外(ドイツ) / 倉庫: 国内指定あり → 【輸入在庫販売】と判定",
+      "✅ 完了。取引パターンと案件情報をフォームに自動反映しました。"];
+    msgs.forEach(function(m,i){setTimeout(function(){
+      socrLogs(function(p){return p.concat([m])});
+      if(i===msgs.length-1){socrDone(true);snewPat("im_stock");
+        saiDetect({pat:"im_stock",confidence:"96.8%",reason:"海外仕入先(DE) + 国内倉庫指定 + バルク化学品"});
+        sfName("BASF SE");sfItem("エチレングリコール(MEG) / トルエンジイソシアネート(TDI)");sfQty("200MT/$820, 80MT/$1,550");
+        snewMode("form")}
+    },350*(i+1))});}
+
+  var menuItems=[
+    {id:"deals",icon:"📋",label:"案件一覧",cnt:DEALS.length},
+    {id:"new",icon:"＋",label:"新規登録"},
+    {id:"inventory",icon:"📦",label:"在庫管理"},
+    {id:"customers",icon:"👥",label:"取引先管理",cnt:CUSTOMERS.length},
+    {id:"logistics",icon:"🚢",label:"物流追跡"},
+    {id:"dashboard",icon:"📊",label:"ダッシュボード"}
+  ];
+  var Sidebar=h("div",{className:"sidebar"},
+    h("div",{className:"sb-logo"},h("div",{className:"logo"},"B"),h("div",null,h("h1",null,"BorderFlow AI"),h("p",null,"自律型貿易事務エージェント"))),
+    h("div",{className:"sb-section"},"メニュー"),
+    menuItems.map(function(m){return h("div",{key:m.id,className:"sb-item"+((pg===m.id||(pg==="deal"&&m.id==="deals"))?" active":""),onClick:function(){nav(m.id)}},h("span",{className:"sb-icon"},m.icon),h("span",null,m.label),m.cnt?h("span",{className:"sb-cnt"},m.cnt):null)}),
+    h("div",{className:"sb-divider"}),
+    h("div",{className:"sb-section"},"取引パターン"),
+    PAT_IDS.map(function(pid){return h("div",{key:pid,className:"sb-pat",onClick:function(){goNewPat(pid)}},h("span",null,PI[pid]),h("span",null,PN[pid]))}),
+    h("div",{className:"sb-divider"}));
+
+  // ═══ DEALS (Split Pane) ═══
+  function DealsPage(){
+    var q=searchQ.toLowerCase();
+    var filtered=DEALS.filter(function(d){if(!q)return true;return d.id.toLowerCase().indexOf(q)>=0||d.sup.toLowerCase().indexOf(q)>=0||PN[d.pat].indexOf(q)>=0||d.items.some(function(it){return it.n.toLowerCase().indexOf(q)>=0})||d.cur.toLowerCase().indexOf(q)>=0||(d.co||"").toLowerCase().indexOf(q)>=0});
+    var leftPane=h("div",{className:"split-left"},
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
+        h("span",{style:{fontSize:15,fontWeight:700}},"案件一覧"),
+        h("button",{className:"btn bg sm",onClick:function(){nav("new")}},"+ 新規")),
+      h(Legend,null),
+      h("div",{className:"search-box"},
+        h("span",{className:"s-icon"},"🔍"),
+        h("input",{placeholder:"案件ID・取引先・品目で検索...",value:searchQ,onChange:function(e){ssearchQ(e.target.value)}})),
+      h("div",{style:{fontSize:10,color:"var(--ht)",marginBottom:8}},filtered.length+"/"+DEALS.length+" 件"),
+      filtered.map(function(d){var steps=getSteps(d.pat);var isSel=deal&&deal.id===d.id;
+        return h("div",{key:d.id,className:"deal-mini"+(isSel?" sel":""),onClick:function(){sdeal(d);sosec(d.step)}},
+          h("div",{className:"dm-top"},
+            h("div",null,h("span",{className:"dm-id"},d.id),h("span",{className:"dm-sup"},d.sup)),
+            T(PN[d.pat],PB[d.pat].c)),
+          h("div",{className:"dm-meta"},h("span",null,d.cur+" "+N(d.tot)),d.data.position?h("span",{className:"tag tpos "+(d.data.position==="long"?"tpos-l":"tpos-s")},d.data.position==="long"?"L":"S"):null,h("span",null,steps[d.step]?steps[d.step].name:"完了")),
+          h("div",{className:"dm-bar"},steps.map(function(_,i){return h("div",{key:i,style:{background:i<d.step?"var(--lb)":i===d.step?"var(--navy)":"var(--bd)"}})})))}));
+    var rightPane;
+    if(deal){rightPane=DealDetail(deal)}
+    else{rightPane=h("div",{className:"empty-detail"},h("div",{className:"ed-icon"},"📋"),h("p",null,"案件をクリックすると詳細が表示されます"))}
+    return h("div",{className:"split-wrap"},leftPane,h("div",{className:"split-right"},rightPane))}
+
+  // ═══ NEW DEAL ═══
+  function NewPage(){
+    // Step 1: Choose entry method
+    if(newMode==="choose") return h("div",null,
+      h("div",{className:"page-title"},"新規案件登録"),
+      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:20}},"登録方法を選択してください。"),
+      h("div",{className:"entry-grid"},
+        h("div",{className:"entry-card",onClick:function(){snewMode("ai_upload")}},
+          h("div",{className:"ec-icon"},"🤖"),h("h3",null,"書類アップロードから自動登録"),
+          h("p",null,"契約書・Invoice・注文書をアップロードすると、AIが書類を読み取り、取引パターンを自動判定して案件情報を自動入力します。")),
+        h("div",{className:"entry-card",onClick:function(){snewMode("pattern")}},
+          h("div",{className:"ec-icon"},"📋"),h("h3",null,"取引パターンを指定して登録"),
+          h("p",null,"7つの取引パターンから選択し、手動で案件情報を入力します。")),
+        h("div",{className:"entry-card",onClick:function(){snewMode("duplicate")}},
+          h("div",{className:"ec-icon"},"📋"),h("h3",null,"過去案件を複製して登録"),
+          h("p",null,"過去の案件情報をコピーして新規案件を作成します。取引先・品目・条件がそのまま引き継がれます。"))));
+    // Step 2a: AI upload
+    if(newMode==="ai_upload") return h("div",null,
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},"書類アップロード")),
+      h("div",{className:"page-title"},"🤖 書類からAI自動登録"),
+      h("div",{className:"nt"},"契約書・Invoice・注文書・B/L・Packing Listをアップロードしてください。AIが書類種別を判定し、取引パターンの自動選択、取引先・品目・金額の自動入力を行います。"),
+      h("div",{className:"ocr-zone"+(ocrDone?" active":""),onClick:function(){if(!ocrFile){var inp=document.createElement("input");inp.type="file";inp.accept=".pdf,.jpg,.png,.xlsx";inp.onchange=function(e){socrFile(e.target.files[0])};inp.click()}}},
+        h("div",{style:{fontSize:36}},ocrDone?"✅":"📄"),
+        h("div",{style:{fontSize:14,fontWeight:600,marginTop:6}},ocrFile?"ファイル読み込み済":"書類をドロップまたはクリックして選択"),
+        h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:4}},ocrFile?ocrFile.name:"対応形式: PDF / 画像(JPG,PNG) / Excel"),
+        ocrFile&&!ocrDone?h("button",{className:"btn bg",style:{marginTop:12},onClick:function(e){e.stopPropagation();runAiOCR()}},"🤖 AI解析を実行"):null,
+        !ocrFile?h("div",{style:{marginTop:10,fontSize:11,color:"var(--bl)"}},"ファイルを選択"):null,
+        ocrLogs.length>0?h("div",{className:"ocr-log"},ocrLogs.map(function(l,i){return h("div",{key:i},"▸ "+l)})):null));
+    // Step 2c: Duplicate from past deal
+    if(newMode==="duplicate") return h("div",null,
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},"過去案件から複製")),
+      h("div",{className:"page-title"},"複製元の案件を選択"),
+      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:16}},"案件をクリックすると、取引先・品目・条件をコピーした新規登録フォームが開きます。"),
+      DEALS.map(function(d){return h("div",{key:d.id,className:"dup-card",onClick:function(){dupDeal(d)}},
+        h("div",null,
+          h("div",{style:{display:"flex",gap:8,alignItems:"center",marginBottom:4}},h("span",{style:{fontWeight:700,color:"var(--navy)"}},d.id),T(PN[d.pat],PB[d.pat].c),d.data.position?h("span",{className:"tag tpos "+((d.data.position||d.position)==="long"?"tpos-l":"tpos-s")},(d.data.position||d.position)==="long"?"L":"S"):null),
+          h("div",{style:{fontSize:12,fontWeight:500}},d.sup),
+          h("div",{style:{fontSize:11,color:"var(--sub)"}},d.items.map(function(it){return it.n}).join(", ")+" | "+d.cur+" "+N(d.tot))),
+        h("span",{style:{fontSize:18,color:"var(--navy)"}},"→"))}));
+    // Step 2b: Pattern select
+    if(newMode==="pattern") return h("div",null,
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},"パターン選択")),
+      h("div",{className:"page-title"},"取引パターンを選択"),
+      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:16}},"パターンに応じて必要なステップが自動構成されます。"),
+      h("div",{className:"pat-grid"},PAT_IDS.map(function(pid){var steps=getSteps(pid);return h("div",{key:pid,className:"pat",onClick:function(){snewPat(pid);snewMode("form")}},
+        h("div",{className:"p-badge tag "+PB[pid].c},PB[pid].b),h("div",{className:"p-icon"},PI[pid]),h("h3",null,PN[pid]),h("p",null,PD[pid]),
+        h("div",{className:"p-flow"},"📍 "+PF[pid]),h("div",{className:"p-steps"},steps.length+"ステップ"))})));
+    // Step 3: Form
+    if(newMode==="form"&&newPat){var steps=getSteps(newPat);
+    return h("div",null,
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},PI[newPat]+" "+PN[newPat])),
+      aiDetect?h("div",{className:"ai-detect"},h("div",{className:"ai-icon"},"🤖"),h("div",null,
+        h("h4",null,"AIが取引パターンを自動判定しました"),
+        h("p",null,"判定結果: ",h("strong",null,PI[newPat]+" "+PN[newPat])," （信頼度: "+aiDetect.confidence+"）"),
+        h("p",null,"根拠: "+aiDetect.reason),
+        h("button",{className:"btn bs sm",style:{marginTop:6},onClick:function(){saiDetect(null);snewMode("pattern")}},"パターンを変更"))):null,
+      h("div",{style:{marginBottom:4,fontSize:11,fontWeight:600,color:"var(--sub)"}},"自動構成ステップ（"+steps.length+"ステップ）"),
+      Chevrons({steps:steps,cur:-1}),
+      !aiDetect?h("div",{className:"ocr-zone"+(ocrDone?" active":""),onClick:function(){if(!ocrFile){var inp=document.createElement("input");inp.type="file";inp.accept=".pdf,.jpg,.png,.xlsx";inp.onchange=function(e){socrFile(e.target.files[0])};inp.click()}}},
+        h("div",{style:{fontSize:28}},ocrDone?"✅":"📄"),
+        h("div",{style:{fontSize:13,fontWeight:600,marginTop:4}},"📄 書類からAI自動入力"),
+        h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:4}},ocrFile?ocrFile.name:"契約書・Invoice等をアップロードすると項目を自動入力"),
+        ocrFile&&!ocrDone?h("button",{className:"btn bg sm",style:{marginTop:10},onClick:function(e){e.stopPropagation();runAiOCR()}},"🤖 AI-OCR実行"):null,
+        !ocrFile?h("div",{style:{marginTop:8,fontSize:11,color:"var(--bl)"}},"ファイルを選択"):null,
+        ocrLogs.length>0?h("div",{className:"ocr-log"},ocrLogs.map(function(l,i){return h("div",{key:i},"▸ "+l)})):null):null,
+      h("div",{className:"section"},h("div",{className:"sb2"},
+        h("h3",{style:{fontSize:14,fontWeight:600,marginBottom:14}},"案件情報"),
+        h("div",{className:"fr"},
+          h("div",{className:"fg"},h("label",null,"取引先名"),h("input",{value:fName,onChange:function(e){sfName(e.target.value)},className:fName?"filled":"",placeholder:"取引先名"})),
+          h("div",{className:"fg"},h("label",null,"国"),h("select",null,["Japan","USA","China","Germany","Thailand","Indonesia","Korea","Singapore","Belgium","Saudi Arabia","Taiwan"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"通貨"),h("select",null,["USD","EUR","JPY","CNY"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"インコタームズ"),h("select",null,["FOB","CIF","CFR","EXW","DDP","DAP","FCA"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"決済条件"),h("select",null,["L/C at sight","L/C 60d","L/C 90d","TT送金","D/P","D/A"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"ポジション"),h("select",null,["Long（買先行）","Short（売先行）","売買同時"].map(function(o){return h("option",{key:o},o)}))),
+          newPat==="b2b"?h("div",{className:"fg"},h("label",null,"仕入先（買側）"),h("input",{})):null,
+          newPat==="b2b"?h("div",{className:"fg"},h("label",null,"販売先（売側）"),h("input",{})):null,
+          newPat==="offshore"?h("div",{className:"fg"},h("label",null,"経由子会社"),h("input",{})):null,
+          newPat==="agent"?h("div",{className:"fg"},h("label",null,"手数料率"),h("input",{placeholder:"3%"})):null,
+          h("div",{className:"fg"},h("label",null,"品目"),h("input",{value:fItem,onChange:function(e){sfItem(e.target.value)},className:fItem?"filled":"",placeholder:"品名（化学品名・CAS No.）"})),
+          h("div",{className:"fg"},h("label",null,"数量・単価"),h("input",{value:fQty,onChange:function(e){sfQty(e.target.value)},className:fQty?"filled":"",placeholder:"200 MT / $820"}))),
+        h(UnitConverter,null),
+        h("div",{style:{display:"flex",gap:8,justifyContent:"flex-end",marginTop:16}},
+          h("button",{className:"btn bs",onClick:function(){nav("deals")}},"キャンセル"),
+          h("button",{className:"btn bg",onClick:function(){alert("登録完了。"+steps.length+"ステップのワークフローが自動構成されました。");nav("deals")}},"案件登録")))))}
+    return h("div",null,"Loading...")}
+
+  // ═══ INVENTORY ═══
+  function InventoryPage(){return h("div",null,h("div",{className:"page-title"},"在庫管理"),
+    h("div",{className:"dash-grid"},h("div",{className:"dash-card"},h("div",{className:"num"},"5"),h("div",{className:"lbl"},"倉庫拠点")),h("div",{className:"dash-card"},h("div",{className:"num"},"580"),h("div",{className:"lbl"},"総在庫(MT)")),h("div",{className:"dash-card"},h("div",{className:"num"},"¥73.4M"),h("div",{className:"lbl"},"在庫金額")),h("div",{className:"dash-card"},h("div",{className:"num"},"0"),h("div",{className:"lbl"},"洋上在庫"))),
+    Sub("倉庫別在庫"),
+    h("div",{className:"inv-tbl"},G(["倉庫","種別","管理者","品目","数量","金額"],
+      [["川崎危険物倉庫 C棟",T("預託","ta"),"日本通運","3","280 MT","¥42.6M"],
+       ["千葉危険物倉庫",T("預託","ta"),"日本ロジテム","2","25 MT","¥12.8M"],
+       ["神戸タンクターミナル",T("通常","tg"),"自社","1","300 MT","¥18.0M"],
+       ["未着倉庫",T("未着","tp2"),"-","0","0","¥0"],
+       ["SG保税倉庫",T("海外","tt"),"旭化成SG","1","300 MT","¥0(移転価格)"]])),
+    Sub("ロット別在庫（川崎危険物倉庫 C棟）"),
+    DEALS[0].data.inventory?h("div",{className:"lot-grid"},DEALS[0].data.inventory.lots.map(function(l){return h("div",{key:l.id,className:"lot-card"},h("b",null,l.id," ",l.attr&&l.attr.includes("ダメージ")?T("損","tr"):T(l.evalMethod,"tb")),h("div",null,l.item),h("div",null,"数量: "+N(l.qty)+(typeof l.qty==="number"&&l.qty>0?" MT":"")+" / "+l.val),h("div",{style:{fontSize:10,color:"var(--ht)"}},l.attr))})):null,
+    h(UnitConverter,null),
+    Sub("棚卸スケジュール"),
+    h("div",{className:"inv-tbl"},G(["倉庫","前回","方法","結果","次回"],
+      [["川崎危険物倉庫","2026-02-28",T("在庫照合","tb"),"差異なし","2026-03-31"],["千葉危険物倉庫","2026-01-31",T("実地棚卸","ta"),"差異 1件(調整済)","2026-06-30"],["神戸タンクターミナル","2026-02-15",T("検尺","tb"),"差異なし","2026-03-15"]])))}
+
+  // CUSTOMERS
+  function CustomersPage(){
+    if(selCust){var c=selCust;
+      function creditPct(cr){if(!cr.limit||cr.limit==="N/A")return 0;var lim=parseFloat(cr.limit.replace(/[^0-9.]/g,"")),used=parseFloat(cr.used.replace(/[^0-9.]/g,""));return lim>0?Math.round(used/lim*100):0}
+      return h("div",null,
+        h("div",{className:"bc"},h("a",{onClick:function(){sselCust(null)}},"← 取引先一覧"),h("span",null," › "),h("span",{style:{fontWeight:500}},c.name)),
+        h("div",{className:"page-title"},c.name," ",T(c.type,c.type==="仕入先"?"tb":c.type==="売先"?"tg":"tt")," ",T(c.rating,"tp2")),
+        h("div",{className:"cust-detail"},Sub("基本情報"),KV([["国",c.country],["担当者",c.contact],["前回与信審査",c.lastReview],["次回審査予定",c.nextReview],["法規制メモ",c.regulatory||"-"]])),
+        h("div",{className:"cust-detail"},Sub("与信限度管理"),
+          ["contract","receivable","advance"].map(function(k){var cr=c.credit[k];if(!cr||cr.limit==="N/A")return null;var pct=creditPct(cr);
+            return h("div",{key:k,style:{marginBottom:12}},
+              h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:4}},h("span",{style:{fontWeight:600}},cr.type),h("span",null,cr.used+" / "+cr.limit+" (",pct,"%)")),
+              h("div",{className:"credit-bar"},h("div",{style:{width:Math.max(pct,2)+"%",background:pct>80?"var(--rd)":pct>50?"var(--am)":"var(--gn)"}},pct>15?pct+"%":""),h("div",{style:{width:(100-Math.max(pct,2))+"%",background:"var(--bg)"}})))}),
+          Sub("外部信用情報連携"),
+          h("div",{className:"tdb-section"},
+            h("div",{style:{display:"flex",gap:12,marginBottom:10}},
+              h("div",{className:"tdb-upload",style:{flex:1},onClick:function(){alert("TDBレポートをアップロードしました（デモ）")}},h("div",{style:{fontSize:18}},"📊"),h("div",{style:{fontSize:11,fontWeight:600}},"TDB企業レポート"),h("div",{style:{fontSize:10,color:"var(--sub)"}},"PDF/CSVをアップロード")),
+              h("div",{className:"tdb-upload",style:{flex:1},onClick:function(){alert("商工会レポートをアップロードしました（デモ）")}},h("div",{style:{fontSize:18}},"🏛"),h("div",{style:{fontSize:11,fontWeight:600}},"商工会信用レポート"),h("div",{style:{fontSize:10,color:"var(--sub)"}},"PDF/CSVをアップロード")),
+              h("div",{className:"tdb-upload",style:{flex:1},onClick:function(){alert("D&Bレポートをアップロードしました（デモ）")}},h("div",{style:{fontSize:18}},"🌐"),h("div",{style:{fontSize:11,fontWeight:600}},"D&B / S&P"),h("div",{style:{fontSize:10,color:"var(--sub)"}},"海外取引先向け"))),
+            h("div",{className:"tdb-result"},
+              h("div",{style:{fontSize:12,fontWeight:700,marginBottom:6}},"📊 最新取込結果（TDB企業レポート 2026-01-15）"),
+              h("div",{className:"tdb-rating"},
+                h("div",{className:"tdb-score"},h("div",{className:"num"},c.rating),h("div",{className:"lbl"},"社内格付")),
+                h("div",{className:"tdb-score"},h("div",{className:"num"},c.rating==="AA"?"68":c.rating==="A+"?"62":c.rating==="A"?"55":"48"),h("div",{className:"lbl"},"TDBスコア")),
+                h("div",{className:"tdb-score"},h("div",{className:"num"},c.rating==="AA"?"A1":c.rating==="A+"?"A2":c.rating==="A"?"B1":"B2"),h("div",{className:"lbl"},"TDB格付")),
+                h("div",{className:"tdb-score"},h("div",{className:"num"},c.country!=="Japan"?(c.rating==="AA"?"7A2":"6A2"):"-"),h("div",{className:"lbl"},"D&Bレーティング"))),
+              h("div",{style:{fontSize:10,color:"var(--sub)",marginTop:6}},"※外部レポートの格付が社内格付と乖離している場合、AIが自動アラートを生成します。"),
+              h("button",{className:"btn bg sm",style:{marginTop:8},onClick:function(){alert("TDB格付を社内格付に反映しました（デモ）")}},"外部格付を社内格付に反映"))),
+          Sub("与信枠設定（変更）"),
+          h("div",{className:"credit-edit"},h("div",{className:"fg"},h("label",null,"成約残高限度"),h("input",{defaultValue:c.credit.contract.limit})),h("div",{className:"fg"},h("label",null,"債権残高限度"),h("input",{defaultValue:c.credit.receivable.limit})),h("div",{className:"fg"},h("label",null,"前渡金限度"),h("input",{defaultValue:c.credit.advance.limit}))),
+          h("div",{style:{display:"flex",gap:8,justifyContent:"flex-end",marginTop:8}},h("button",{className:"btn bg sm",onClick:function(){alert("与信枠を更新しました（デモ）")}},"保存"))),
+        h("div",{className:"cust-detail"},Sub("関連案件"),h("div",{className:"inv-tbl"},G(["案件","品目","金額","状態"],DEALS.filter(function(d){return d.sup.indexOf(c.name.split(" ")[0])>=0||d.sup.indexOf(c.name.split("(")[0])>=0}).map(function(d){var steps=getSteps(d.pat);return[h("span",{style:{fontWeight:600,color:"var(--navy)",cursor:"pointer"},onClick:function(){goDeal(d)}},d.id),d.items.map(function(it){return it.n}).join(", "),d.cur+" "+N(d.tot),T(steps[d.step]?steps[d.step].name:"完了",steps[d.step]?"tst-cur":"tst-done")]})))));}
+    return h("div",null,h("div",{className:"page-title"},"取引先管理"),
+      h("div",{className:"dash-grid"},h("div",{className:"dash-card"},h("div",{className:"num"},CUSTOMERS.length),h("div",{className:"lbl"},"取引先数")),h("div",{className:"dash-card"},h("div",{className:"num"},"5"),h("div",{className:"lbl"},"仕入先")),h("div",{className:"dash-card"},h("div",{className:"num"},"2"),h("div",{className:"lbl"},"売先")),h("div",{className:"dash-card"},h("div",{className:"num"},"1"),h("div",{className:"lbl"},"与信注意"))),
+      Sub("取引先一覧"),
+      h("div",{className:"inv-tbl"},G(["取引先","国","種別","格付","取引総額","与信利用率","次回審査"],CUSTOMERS.map(function(c){var pct=0;if(c.credit.contract.limit&&c.credit.contract.limit!=="N/A"){var lim=parseFloat(c.credit.contract.limit.replace(/[^0-9.]/g,"")),used=parseFloat(c.credit.contract.used.replace(/[^0-9.]/g,""));if(lim>0)pct=Math.round(used/lim*100)}
+        return[h("span",{style:{fontWeight:600,color:"var(--navy)",cursor:"pointer"},onClick:function(){sselCust(c)}},c.name),c.country,T(c.type,c.type==="仕入先"?"tb":c.type==="売先"?"tg":"tt"),T(c.rating,"tp2"),c.total,pct>0?h("span",{style:{display:"flex",alignItems:"center",gap:4}},h("span",{style:{width:50,height:6,borderRadius:3,background:"var(--bg)",display:"inline-block",position:"relative",overflow:"hidden"}},h("span",{style:{position:"absolute",left:0,top:0,height:"100%",width:pct+"%",borderRadius:3,background:pct>80?"var(--rd)":pct>50?"var(--am)":"var(--gn)"}})),h("span",{style:{fontSize:10}},pct+"%")):"-",c.nextReview]}))),
+      Sub("与信超過アラート"),
+      h("div",{className:"disc md"},h("div",{style:{display:"flex",gap:6,marginBottom:4}},T("注意","ta"),h("span",{style:{fontSize:12,fontWeight:600}},"SK Chemicals — 成約残高利用率 71%")),h("div",{style:{fontSize:11,color:"var(--sub)"}},"与信枠 $600,000 に対し $425,000 使用中。CHM-003の残り200MT船積で$170,000追加予定 → 超過リスクあり")))}
+
+  // LOGISTICS (with Voyage Tracker)
+  function VoyageCard(pr){var v=pr.v;var bgc=v.progress>0?(v.progress>=100?"var(--lb)":"var(--lb)"):"var(--bd)";
+    return h("div",{className:"voyage-track"},
+      h("div",{className:"voyage-header"},h("div",null,h("span",{style:{fontSize:14,fontWeight:700,color:"var(--navy)",marginRight:8}},v.deal),h("span",{style:{fontSize:12,fontWeight:500}},v.vessel||"未手配")," ",T(v.status,v.status==="輸送中"?"ta":v.status==="出港済"?"ta":v.status==="積込中"?"tb":v.status==="入港済"?"tg":"tr")),h("div",{style:{fontSize:11,color:"var(--sub)"}},v.value," ",v.insured?T("付保済","tg"):T("未付保","tr"))),
+      h("div",{style:{fontSize:11,color:"var(--sub)",marginBottom:6}},v.cargo),
+      h("div",{className:"voyage-bar"},h("div",{className:"voyage-fill",style:{width:Math.max(v.progress,3)+"%",background:bgc}},v.progress>10?v.progress+"%":""),v.progress>0&&v.progress<100?h("div",{className:"voyage-ship",style:{left:"calc("+v.progress+"% - 12px)"}},"\u{1F6A2}"):null),
+      h("div",{className:"voyage-ports"},h("span",null,"\u{1F3ED} ",v.from," (ETD:",v.etd,")"),h("span",null,"\u{1F3D7} ",v.to," (ETA:",v.eta,")")))}
+  function LogisticsPage(){return h("div",null,h("div",{className:"page-title"},"物流追跡"),
+    h("div",{className:"dash-grid"},h("div",{className:"dash-card"},h("div",{className:"num"},"2"),h("div",{className:"lbl"},"洋上在庫")),h("div",{className:"dash-card"},h("div",{className:"num"},"$433K"),h("div",{className:"lbl"},"洋上金額")),h("div",{className:"dash-card"},h("div",{className:"num"},"1"),h("div",{className:"lbl"},"積込中")),h("div",{className:"dash-card"},h("div",{className:"num"},"1"),h("div",{className:"lbl"},"未手配"))),
+    Sub("\u{1F6A2} 洋上在庫・輸送ステータス"),
+    h("div",{className:"nt"},"船積済で未入庫の洋上在庫をリアルタイム追跡。進捗バーはETD/ETAから算出した推定位置を表示。"),
+    VOYAGES.map(function(v){return h(VoyageCard,{key:v.id,v:v})}),
+    Sub("船積一覧"),
+    h("div",{className:"inv-tbl"},G(["案件","B/L","船名","品目","ETD→ETA","計上基準","状態"],
+      [["CHM-001","HAPAG-HH2604821","HAMBURG EXPRESS","MEG/TDI","02-28→03-10","B/L基準",T("入庫済","tg")],["CHM-002","OOCL-YOK260156","OOCL TOKYO","IPA/溶剤","03-18→03-22","船積基準",T("輸送中","ta")],["CHM-003","EVERGREEN-BKK260412","EVER GLOBE","アクリル酸","03-22→04-02","船積基準",T("輸送中","ta")],["CHM-004","MSC-HOU260089","MSC ANNA","MDI","03-01→03-15","B/L基準",T("入庫済","tg")],["CHM-008","-","-","TiO2/シリカ","-","-",T("未手配","tb")]])),
+    Sub("パーシャルシップメント"),
+    h("div",{className:"disc md"},h("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:4}},h("span",{style:{fontWeight:600}},"CHM-003: アクリル酸 500MT"),T("1/2","ta")),h("div",{style:{fontSize:11,color:"var(--sub)"}},"第1船: 300MT (EVER GLOBE 03-22出港) / 第2船: 200MT (4月中旬予定)")),
+    Sub("危険物輸送ステータス"),
+    h("div",{className:"inv-tbl"},G(["案件","品目","UN番号","危険物クラス","SDS","容器"],
+      [["CHM-001","TDI","UN2078","Class 6.1(毒物)",T("有","tg"),"ドラム缶"],["CHM-001","MEG","-","非危険物",T("有","tg"),"ISOタンク"],["CHM-004","MDI","UN2489","Class 6.1(毒物)",T("有","tg"),"ドラム缶"],["CHM-005","SM","UN2055","Class 3(引火性)",T("有","tg"),"ISOタンク"]])))}
+
+
+  // SVG Charts
+  function LineChart(pr){var w=pr.w||440,ht=pr.ht||180,pd={t:20,r:16,b:32,l:52},cw=w-pd.l-pd.r,ch=ht-pd.t-pd.b,ser=pr.series,lbs=pr.labels,allV=[];ser.forEach(function(s){s.data.forEach(function(v){allV.push(v)})});var mx=Math.max.apply(null,allV)*1.18,mn=0;function gx(i){return pd.l+(i/(lbs.length-1))*cw}function gy(v){return pd.t+ch-((v-mn)/(mx-mn))*ch}var els=[],gl=5;for(var g=0;g<=gl;g++){var gv=mn+((mx-mn)/gl)*g,yy=gy(gv);els.push(h("line",{key:"gl"+g,x1:pd.l,x2:w-pd.r,y1:yy,y2:yy,stroke:"var(--bd)",strokeWidth:.5}));els.push(h("text",{key:"gt"+g,x:pd.l-6,y:yy+3,textAnchor:"end",fontSize:9,fill:"var(--ht)"},gv>=1e6?"$"+(gv/1e6).toFixed(1)+"M":gv>=1e3?"$"+(gv/1e3).toFixed(0)+"K":""+Math.round(gv)))}lbs.forEach(function(lb,i){els.push(h("text",{key:"lb"+i,x:gx(i),y:ht-6,textAnchor:"middle",fontSize:9,fill:"var(--ht)"},lb))});ser.forEach(function(s,si){var pts=s.data.map(function(v,i){return gx(i)+","+gy(v)}).join(" ");var ar=pts+","+gx(s.data.length-1)+","+(pd.t+ch)+","+gx(0)+","+(pd.t+ch);els.push(h("polygon",{key:"a"+si,points:ar,fill:s.color,opacity:.08}));els.push(h("polyline",{key:"l"+si,points:pts,fill:"none",stroke:s.color,strokeWidth:2.5,strokeLinecap:"round",strokeLinejoin:"round"}));s.data.forEach(function(v,i){els.push(h("circle",{key:"d"+si+i,cx:gx(i),cy:gy(v),r:3.5,fill:"#fff",stroke:s.color,strokeWidth:2}))})});return h("svg",{viewBox:"0 0 "+w+" "+ht,style:{width:"100%",height:"auto"}},els)}
+  function BarChart(pr){var w=pr.w||440,ht=pr.ht||200,pd={t:16,r:16,b:40,l:52},cw=w-pd.l-pd.r,ch=ht-pd.t-pd.b,its=pr.items,mx=Math.max.apply(null,its.map(function(x){return x.val}))*1.18,bw=Math.min(34,cw/its.length*.6),gap=(cw-bw*its.length)/(its.length+1),els=[],gl=4;for(var g=0;g<=gl;g++){var gv=(mx/gl)*g,yy=pd.t+ch-((gv/mx)*ch);els.push(h("line",{key:"gl"+g,x1:pd.l,x2:w-pd.r,y1:yy,y2:yy,stroke:"var(--bd)",strokeWidth:.5}));els.push(h("text",{key:"gt"+g,x:pd.l-6,y:yy+3,textAnchor:"end",fontSize:9,fill:"var(--ht)"},gv>=1e6?"$"+(gv/1e6).toFixed(1)+"M":gv>=1e3?"$"+(gv/1e3).toFixed(0)+"K":"$"+Math.round(gv)))}its.forEach(function(it,i){var bx=pd.l+gap+(bw+gap)*i,bh=(it.val/mx)*ch,by=pd.t+ch-bh;els.push(h("rect",{key:"b"+i,x:bx,y:by,width:bw,height:bh,rx:3,fill:it.color||"var(--bl)"}));els.push(h("text",{key:"bv"+i,x:bx+bw/2,y:by-5,textAnchor:"middle",fontSize:9,fontWeight:600,fill:it.color||"var(--bl)"},it.val>=1e3?"$"+(it.val/1e3).toFixed(0)+"K":"$"+it.val));els.push(h("text",{key:"bl"+i,x:bx+bw/2,y:ht-6,textAnchor:"middle",fontSize:8,fill:"var(--ht)"},it.label))});return h("svg",{viewBox:"0 0 "+w+" "+ht,style:{width:"100%",height:"auto"}},els)}
+  var MO=["Oct","Nov","Dec","Jan","Feb","Mar"],TR=[320000,480000,410000,560000,720000,890000],TM=[28000,52000,38000,61000,85000,98000],TD=[3,5,4,6,8,10];
+  function DashboardPage(){return h("div",null,h("div",{className:"page-title"},"ダッシュボード"),
+    h("div",{className:"dash-grid"},h("div",{className:"dash-card"},h("div",{className:"num"},DEALS.length),h("div",{className:"lbl"},"案件数")),h("div",{className:"dash-card"},h("div",{className:"num"},"$2.1M"),h("div",{className:"lbl"},"取引総額")),h("div",{className:"dash-card"},h("div",{className:"num"},"$98K"),h("div",{className:"lbl"},"今月粗利")),h("div",{className:"dash-card"},h("div",{className:"num"},"11.0%"),h("div",{className:"lbl"},"平均粗利率"))),
+    h("div",{className:"chart-row"},
+      h("div",{className:"chart-wrap"},h("h4",null,"月次取引額・粗利トレンド"),LineChart({labels:MO,series:[{data:TR,color:"#1565c0"},{data:TM,color:"#1D9E75"}]}),h("div",{className:"chart-legend"},h("span",null,h("i",{style:{background:"#1565c0"}}),"取引額"),h("span",null,h("i",{style:{background:"#1D9E75"}}),"粗利"))),
+      h("div",{className:"chart-wrap"},h("h4",null,"案件別粗利（今月）"),BarChart({items:[{label:"CHM-001",val:15300,color:"#1565c0"},{label:"CHM-002",val:36500,color:"#1D9E75"},{label:"CHM-003",val:85000,color:"#7c3aed"},{label:"CHM-004",val:11232,color:"#0e7490"},{label:"CHM-005",val:7920,color:"#d97706"},{label:"CHM-006",val:12800,color:"#c62828"}]}))),
+    h("div",{className:"chart-row"},
+      h("div",{className:"chart-wrap"},h("h4",null,"月次案件数推移"),LineChart({labels:MO,series:[{data:TD,color:"#7c3aed"}],ht:150}),h("div",{className:"chart-legend"},h("span",null,h("i",{style:{background:"#7c3aed"}}),"案件数"))),
+      h("div",{className:"chart-wrap"},h("h4",null,"取引パターン別金額"),BarChart({items:[{label:"輸入在庫",val:451000,color:"#1D9E75"},{label:"輸出",val:273500,color:"#7c3aed"},{label:"三国間",val:1005000,color:"#d97706"},{label:"直送",val:156000,color:"#0e7490"},{label:"ｵﾌｼｮｱ",val:198000,color:"#1565c0"},{label:"国内",val:85300,color:"#c62828"},{label:"仲介",val:4500,color:"#9ca3af"}]}))),
+    Sub("案件別損益"),
+    h("div",{className:"inv-tbl"},G(["案件","パターン","取引先","金額","粗利率"],DEALS.filter(function(d){return d.data.pnl_estimate}).map(function(d){return[h("span",{style:{fontWeight:600}},d.id),T(PN[d.pat],PB[d.pat].c),d.sup,d.cur+" "+N(d.tot),h("span",{style:{fontWeight:600,color:parseFloat(d.data.pnl_estimate.marginRate)>10?"var(--gn)":"var(--am)"}},d.data.pnl_estimate.marginRate)]}))),
+    Sub("化学品法規制チェック状況"),
+    h("div",{className:"inv-tbl"},G(["案件","化審法","毒劇法","消防法","輸出管理"],
+      [["CHM-001",T("既存","tg"),T("TDI:劇物","ta"),T("MEG:4類","ta"),"-"],["CHM-002","-","-","-",T("確認済","tg")],["CHM-004",T("既存","tg"),T("MDI:劇物","ta"),T("非該当","tg"),"-"],["CHM-008",T("未確認","tr"),T("未確認","tr"),T("未確認","tr"),"-"]])))}
+
+
+  // ═══ DEAL DETAIL ═══
+  function DealDetail(d){var steps=getSteps(d.pat),dt=d.data||{},sc=[];
+    steps.forEach(function(s,i){var isDone=i<d.step,isCur=i===d.step;var tag=isDone?T("完了","tst-done"):isCur?T("進行中","tst-cur"):T("未着手","tst-pend");var ch=[];var k=s.key;
+      if(k==="inq"||k==="order"){
+        if(dt.approval)ch.push(Sub("承認ワークフロー"),ApprFlow(dt.approval.flow));
+        ch.push(Sub("成約情報"));ch.push(KV([["成約種別",dt.contract_type||"-"],["取引形態",dt.trade_type||"-"],["ポジション",(dt.position||d.position)==="long"?"Long（買先行）":"Short（売先行）"],["受渡許容量",dt.allowance||"-"],["単価種別",dt.price_type||"-"]]));
+        if(dt.link)ch.push(Sub("売買紐付"),KV([["買成約No",dt.link.buyNo],["売成約No",dt.link.sellNo],["紐付パターン",dt.link.linkType],["状態",dt.link.linkStatus]]));
+        ch.push(Sub("品目明細"));ch.push(G(["品名","数量","単価","金額","HS"],d.items.map(function(it){return[it.n,it.q+" "+it.u,"$"+it.p,d.cur+" "+N(it.q*it.p),it.hs?h("span",{className:"hs-code"},it.hs):"-"]})));
+        if(dt.pnl_estimate)ch.push(Sub("概算損益"),KV([["売上","$"+N(dt.pnl_estimate.revenue)],["仕入","$"+N(dt.pnl_estimate.cogs)],["粗利","$"+N(dt.pnl_estimate.margin)+" ("+dt.pnl_estimate.marginRate+")"]]));}
+      if(k==="credit"&&dt.credit)ch.push(KV([["与信枠",dt.credit.limit],["使用済",dt.credit.used],["残枠",dt.credit.avail||"-"],["格付",dt.credit.rating],["有効期限",dt.credit.expiry||"-"]]));
+      if((k==="contract"||k==="buy_contract"||k==="sell_contract")&&(dt[k]||dt.contract)){var cd=dt[k]||dt.contract;ch.push(KV([["契約No",cd.no],["L/C",cd.lc||cd.terms||cd.note||"-"]]));}
+      if(k==="insurance"&&dt.insurance){if(dt.insurance.marine){var m=dt.insurance.marine;ch.push(Sub("海上保険"),KV([["保険会社",m.insurer],["証券No",m.policy],["保険料",m.premium],["条件",m.coverage]]));}if(dt.insurance.fx){var fx=dt.insurance.fx;ch.push(Sub("為替予約"),KV([["予約レート","¥"+fx.rate],["スポット","¥"+fx.spot],["節約効果",fx.saving]]));}}
+      if(k==="ocr"&&dt.ocr)ch.push(KV([["Invoice",dt.ocr.inv],["B/L",dt.ocr.bl],["信頼度",dt.ocr.confidence]]));
+      if(k==="recon"&&dt.recon){var rs=dt.recon.summary;ch.push(h("div",{style:{display:"flex",gap:12,marginBottom:8}},h("span",null,"全"+rs.total+"項目"),T("一致:"+rs.matched,"tg"),rs.warning?T("注意:"+rs.warning,"ta"):null,rs.critical?T("重大:"+rs.critical,"tr"):null));
+        dt.recon.items.forEach(function(x,j){ch.push(h("div",{key:j,className:"disc "+(x.severity==="critical"?"hi":"md")},h("div",{style:{display:"flex",gap:6,marginBottom:4}},T(x.severity==="critical"?"重大":"注意",x.severity==="critical"?"tr":"ta"),h("span",{style:{fontSize:12,fontWeight:600}},x.field)),h("div",{className:"vs"},h("div",{className:"vb"},h("strong",null,x.doc1+": "+x.val1)),h("div",{className:"neq"},"≠"),h("div",{className:"vb"},h("strong",null,x.doc2+": "+x.val2)))));});}
+      if(k==="hs"&&dt.hs)ch.push(G(["品名","HS","税率","関税","評価"],dt.hs.map(function(x){return[x.n,h("span",{className:"hs-code"},x.c),x.rate,"$"+N(x.d),x.eval||"-"]})));
+      if(k==="compliance"&&dt.compliance)ch.push(G(["法令","結果","確認部門","日付"],dt.compliance.checks.map(function(c2){return[c2.law,T(c2.result,c2.result.includes("非該当")||c2.result.includes("適合")||c2.result.includes("既存")?"tg":c2.result.includes("該当")?"ta":"tb"),c2.by,c2.date]})));
+      if(k==="security"&&dt.security)dt.security.checks.forEach(function(c2,j){ch.push(h("div",{key:j,style:{fontSize:11,color:"var(--gn)",padding:"2px 0"}},"✓ "+c2));});
+      if(k==="gaih"&&dt.gaih){ch.push(h("p",{style:{fontSize:12,fontWeight:600,color:"var(--gn)"}},dt.gaih.result));dt.gaih.items.forEach(function(x,j){ch.push(h("div",{key:j,style:{fontSize:11,color:"var(--sub)",padding:"2px 0"}},"• "+x));});}
+      if(k==="el"&&dt.el!==undefined)ch.push(h("div",{style:{padding:"8px 12px",background:dt.el.required?"var(--ambg)":"var(--gnbg)",borderRadius:7,fontSize:11,color:dt.el.required?"var(--am)":"var(--gn)"}},dt.el.required?"⚠ E/L申請が必要":"✓ E/L不要"));
+      if((k==="customs"||k==="ex_customs")&&(dt.customs||dt.ex_customs)){var cu=dt.customs||dt.ex_customs;ch.push(KV([["申告No",cu.no],["NACCS",cu.naccs||"-"],["通関業者",cu.broker||"-"],["関税",cu.duty||"-"],["消費税",cu.consumptionTax||"-"]]));}
+      if(k==="inspect"&&dt.inspect){ch.push(Sub("計上基準"),KV([["基準",dt.inspect.basis],["数量確定",dt.inspect.qtyFinal||"-"]]));ch.push(Sub("入庫ロット"));ch.push(G(["Lot","品名","数量","等級","状態","属性"],dt.inspect.lots.map(function(l){return[l.id,l.item,l.qty,l.grade,l.dmg?T("ダメージ","tr"):T(l.status,"tg"),h("span",{style:{fontSize:10}},l.attr)]})));}
+      if(k==="inventory"&&dt.inventory){var inv=dt.inventory;ch.push(Sub("倉庫"),KV([["倉庫",inv.location.wh],["種別",inv.location.type],["管理者",inv.location.operator]]));if(inv.location.trustLimit)ch.push(Sub("預託限度"),KV([["限度額",inv.location.trustLimit],["使用済",inv.location.trustUsed]]));ch.push(Sub("ロット別"));ch.push(G(["Lot","品名","数量","金額","評価方法"],inv.lots.map(function(l){return[l.id,l.item,N(l.qty),l.val,l.evalMethod]})));if(inv.stocktake)ch.push(Sub("棚卸"),KV([["前回",inv.stocktake.lastDate],["方法",inv.stocktake.method],["次回",inv.stocktake.nextDate]]));}
+      if(k==="shipdoc"&&dt.shipdoc)ch.push(KV([["Invoice",dt.shipdoc.inv],["P/L",dt.shipdoc.pl||"-"],["原産地証明",dt.shipdoc.origin||"-"]]));
+      if((k==="ship"||k==="ship_mgmt")&&(dt.ship||dt.ship_mgmt)){var sh2=dt.ship||dt.ship_mgmt;ch.push(KV([["B/L",sh2.bl],["船名",sh2.v],["ETD→ETA",(sh2.etd||"-")+"→"+(sh2.eta||"-")]]));if(sh2.basis)ch.push(Sub("売上計上基準"),KV([["基準",sh2.basis]]));if(sh2.partial)ch.push(Sub("パーシャル"),h("div",{className:"disc md"},h("span",{style:{fontSize:11}},sh2.partialNote)));}
+      if(k==="recon_both"&&dt.recon_both)ch.push(KV([["買側Invoice",dt.recon_both.buyInv],["売側Invoice",dt.recon_both.sellInv],["照合",dt.recon_both.status]]));
+      if(k==="voucher_buy"&&(dt.voucher||dt.voucher_buy)){var vb=dt.voucher||dt.voucher_buy;if(vb.breakdown){ch.push(G(["項目","金額"],vb.breakdown.map(function(b){return[b.item,b.amt]})));}}
+      if(k==="voucher_sell"&&dt.voucher_sell)ch.push(KV([["為替","¥"+dt.voucher_sell.fx],["売上","¥"+N(dt.voucher_sell.rev||dt.voucher_sell.tot)]]));
+      if(k==="simultaneous"&&dt.simultaneous)ch.push(KV([["仕入",dt.simultaneous.buyAmt],["売上",dt.simultaneous.sellAmt],["粗利",dt.simultaneous.margin]]));
+      if((k==="payment"||k==="pay_recv")&&dt.payment)ch.push(G(["種別","金額","方法","日付","状態"],dt.payment.map(function(p2){return[p2.t,p2.a,p2.method||"-",p2.date||"-",T(p2.s==="済"?"済":"…",p2.s==="済"?"tg":"ta")]})));
+      if(k==="cost"&&dt.cost){ch.push(G(["品名","FOB","関税","運賃","保険","ランデッドコスト","単価"],dt.cost.items.map(function(c2){return[c2.n,c2.fob,c2.duty,c2.freight,c2.ins,h("strong",null,c2.landed),c2.unit]})));}
+      if(k==="tp"&&dt.tp)ch.push(KV([["算定方法",dt.tp.method],["マージン",dt.tp.margin],["状態",dt.tp.status]]));
+      if(k==="ac_netting")ch.push(h("p",{style:{fontSize:11,color:"var(--sub)"}},"グループ間ネッティング。差額のみ実送金。"));
+      if(k==="domestic_ship"&&dt.domestic_ship)ch.push(KV([["倉庫",dt.domestic_ship.wh],["出荷日",dt.domestic_ship.d],["基準",dt.domestic_ship.basis||"-"]]));
+      if(k==="fee"&&dt.fee)ch.push(KV([["率",dt.fee.rate],["対象",dt.fee.base],["手数料",dt.fee.amount],["円貨",dt.fee.jpyAmount]]));
+      if(k==="agent_invoice"||k==="invoice_ar")ch.push(h("p",{style:{fontSize:11,color:"var(--sub)"}},"請求書自動生成→入金消込"));
+      if(k==="fxgl")ch.push(h("p",{style:{fontSize:11,color:"var(--sub)"}},"為替予約 vs 実勢レートの差損益自動計算"));
+      if(ch.length===0)ch.push(h("p",{style:{fontSize:11,color:"var(--ht)"}},"前ステップ完了後に自動引継ぎ"));
+      sc.push(h(Sec,{key:i,num:s.num,title:s.name,ai:s.ai,tag:tag,open:osec===i,toggle:function(){tog(i)}},ch));});
+    return h("div",null,
+      Chevrons({steps:steps,cur:d.step,onClick:function(i){tog(i)}}),
+      h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:16,flexWrap:"wrap"}},h("span",{className:"tag",style:{background:"var(--navy)",color:"#fff"}},d.id),T(PN[d.pat],PB[d.pat].c),(dt.position||d.position)?h("span",{className:"tag tpos "+((dt.position||d.position)==="long"?"tpos-l":"tpos-s")},(dt.position||d.position)==="long"?"Long":"Short"):null,h("span",{style:{fontSize:13,fontWeight:600}},d.sup),h("span",{style:{fontSize:12,color:"var(--sub)"}},d.cur+" "+N(d.tot)+" | "+d.inco),h("button",{className:"btn bs sm",style:{marginLeft:"auto"},onClick:function(){dupDeal(d)}},"📋 複製して新規登録")),
+      sc);}
+
+  var content;
+  if(pg==="deals")content=DealsPage();else if(pg==="new")content=NewPage();else if(pg==="customers")content=CustomersPage();else if(pg==="inventory")content=InventoryPage();else if(pg==="logistics")content=LogisticsPage();else if(pg==="dashboard")content=DashboardPage();else content=DealsPage();
+  return h("div",{style:{display:"flex",minHeight:"100vh"}},Sidebar,h("div",{className:"main"},content));
+}
+ReactDOM.createRoot(document.getElementById("app")).render(h(App));
+</script>
+</body>
+</html>
