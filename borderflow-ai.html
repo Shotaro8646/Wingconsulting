@@ -104,84 +104,13 @@ table{width:100%;border-collapse:collapse;font-size:11px}th{padding:6px 8px;text
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script>
 var h=React.createElement,us=React.useState,N=function(n){return typeof n==="number"?n.toLocaleString():n};
-// ═══ i18n ═══
-var _LANG="ja";
-var I18N={ja:{
-  subtitle:"自律型貿易事務エージェント",menu:"メニュー",deals:"案件一覧",newDeal:"新規登録",inventoryMenu:"在庫管理",customersMenu:"取引先管理",logisticsMenu:"物流追跡",dashboardMenu:"ダッシュボード",tradePat:"取引パターン",
-  newBtn:"+ 新規",search:"案件ID・取引先・品目で検索...",items:"件",selectDeal:"案件をクリックすると詳細が表示されます",
-  newTitle:"新規案件登録",selectMethod:"登録方法を選択してください。",
-  aiUpload:"書類アップロードから自動登録",aiUploadDesc:"契約書・Invoice・注文書をアップロードすると、AIが書類を読み取り、取引パターンを自動判定して案件情報を自動入力します。",
-  patSelect:"取引パターンを指定して登録",patSelectDesc:"7つの取引パターンから選択し、手動で案件情報を入力します。",
-  dupEntry:"過去案件を複製して登録",dupEntryDesc:"過去の案件情報をコピーして新規案件を作成します。取引先・品目・条件がそのまま引き継がれます。",
-  backSelect:"← 登録方法選択",docUpload:"書類アップロード",aiAutoReg:"🤖 書類からAI自動登録",
-  aiUploadNote:"契約書・Invoice・注文書・B/L・Packing Listをアップロードしてください。AIが書類種別を判定し、取引パターンの自動選択、取引先・品目・金額の自動入力を行います。",
-  fileLoaded:"ファイル読み込み済",dropOrClick:"書類をドロップまたはクリックして選択",
-  supportedFormats:"対応形式: PDF / 画像(JPG,PNG) / Excel",selectFile:"ファイルを選択",runAiOcr:"🤖 AI解析を実行",
-  dupFrom:"複製元の案件を選択",dupFromDesc:"案件をクリックすると、取引先・品目・条件をコピーした新規登録フォームが開きます。",
-  patSelectTitle:"取引パターンを選択",patSelectNote:"パターンに応じて必要なステップが自動構成されます。",
-  aiDetected:"AIが取引パターンを自動判定しました",changePat:"パターンを変更",
-  autoSteps:"自動構成ステップ",steps:"ステップ",aiAutoInput:"📄 書類からAI自動入力",uploadHint:"契約書・Invoice等をアップロードすると項目を自動入力",aiOcrExec:"🤖 AI-OCR実行",
-  dealInfo:"案件情報",supplier:"取引先名",country:"国",currency:"通貨",incoterms:"インコタームズ",settlement:"決済条件",position:"ポジション",
-  posLong:"Long（買先行）",posShort:"Short（売先行）",posSimul:"売買同時",
-  buySupplier:"仕入先（買側）",sellCustomer:"販売先（売側）",subsidiary:"経由子会社",feeRate:"手数料率",
-  itemName:"品目",qtyPrice:"数量・単価",itemPlaceholder:"品名（化学品名・CAS No.）",qtyPlaceholder:"200 MT / $820",
-  cancel:"キャンセル",register:"案件登録",registered:"登録完了。",workflowCreated:"ステップのワークフローが自動構成されました。",
-  copyNewDeal:"📋 複製して新規登録",legend:"凡例:",legendPat:"取引パターン",legendPos:"ポジション",legendProgress:"進捗",
-  done:"完了",inProgress:"進行中",notStarted:"未着手",
-  inventoryTitle:"在庫管理",whName:"倉庫",whType:"種別",whOperator:"管理者",whItems:"品目",whQty:"数量",whValue:"金額",
-  whLocations:"倉庫拠点",totalStock:"総在庫(MT)",stockValue:"在庫金額",transitStock:"洋上在庫",
-  custTitle:"取引先管理",custCount:"取引先数",custBuy:"仕入先",custSell:"売先",custAlert:"与信注意",
-  logTitle:"物流追跡",transitValue:"洋上金額",
-  dashTitle:"ダッシュボード",dealCount:"案件数",tradeTotalAmt:"取引総額",monthlyProfit:"今月粗利",avgMargin:"平均粗利率",
-  unitConv:"⚖ 単位換算",unitNote:"※化学品は比重により重量/容積換算が異なります",prevStep:"前ステップ完了後に自動引継ぎ",
-  langToggle:"English"
-},en:{
-  subtitle:"Autonomous Trade Operations Agent",menu:"Menu",deals:"Deal List",newDeal:"New Deal",inventoryMenu:"Inventory",customersMenu:"Customers",logisticsMenu:"Logistics",dashboardMenu:"Dashboard",tradePat:"Trade Patterns",
-  newBtn:"+ New",search:"Search by ID, partner, item...",items:" deals",selectDeal:"Click a deal to view details",
-  newTitle:"New Deal Registration",selectMethod:"Select a registration method.",
-  aiUpload:"Auto-register from Document",aiUploadDesc:"Upload a contract, invoice, or PO. AI reads the document, auto-detects the trade pattern, and fills in deal information.",
-  patSelect:"Register by Trade Pattern",patSelectDesc:"Select from 7 trade patterns and manually enter deal information.",
-  dupEntry:"Duplicate from Past Deal",dupEntryDesc:"Copy a past deal to create a new one. Partner, items, and terms are carried over.",
-  backSelect:"← Back to Methods",docUpload:"Document Upload",aiAutoReg:"🤖 Auto-register from Document",
-  aiUploadNote:"Upload a contract, invoice, PO, B/L, or Packing List. AI will detect document type, auto-select the trade pattern, and fill in partner, items, and amounts.",
-  fileLoaded:"File loaded",dropOrClick:"Drop or click to select a document",
-  supportedFormats:"Supported: PDF / Image (JPG, PNG) / Excel",selectFile:"Select file",runAiOcr:"🤖 Run AI Analysis",
-  dupFrom:"Select a Deal to Duplicate",dupFromDesc:"Click a deal to open the form with its partner, items, and terms pre-filled.",
-  patSelectTitle:"Select Trade Pattern",patSelectNote:"Required steps are auto-configured based on the pattern.",
-  aiDetected:"AI auto-detected the trade pattern",changePat:"Change Pattern",
-  autoSteps:"Auto-configured Steps",steps:" steps",aiAutoInput:"📄 Auto-fill from Document",uploadHint:"Upload a contract/invoice to auto-fill fields",aiOcrExec:"🤖 Run AI-OCR",
-  dealInfo:"Deal Information",supplier:"Partner Name",country:"Country",currency:"Currency",incoterms:"Incoterms",settlement:"Payment Terms",position:"Position",
-  posLong:"Long (Buy First)",posShort:"Short (Sell First)",posSimul:"Simultaneous",
-  buySupplier:"Buy-side Supplier",sellCustomer:"Sell-side Customer",subsidiary:"Subsidiary",feeRate:"Commission Rate",
-  itemName:"Items",qtyPrice:"Qty / Unit Price",itemPlaceholder:"Item name (Chemical / CAS No.)",qtyPlaceholder:"200 MT / $820",
-  cancel:"Cancel",register:"Register Deal",registered:"Registration complete. ",workflowCreated:" step workflow auto-configured.",
-  copyNewDeal:"📋 Duplicate & Register",legend:"Legend:",legendPat:"Trade Pattern",legendPos:"Position",legendProgress:"Progress",
-  done:"Done",inProgress:"In Progress",notStarted:"Pending",
-  inventoryTitle:"Inventory Management",whName:"Warehouse",whType:"Type",whOperator:"Operator",whItems:"Items",whQty:"Qty",whValue:"Value",
-  whLocations:"Warehouses",totalStock:"Total Stock (MT)",stockValue:"Stock Value",transitStock:"In Transit",
-  custTitle:"Customer Management",custCount:"Customers",custBuy:"Suppliers",custSell:"Buyers",custAlert:"Credit Alert",
-  logTitle:"Logistics Tracking",transitValue:"Transit Value",
-  dashTitle:"Dashboard",dealCount:"Deals",tradeTotalAmt:"Total Amount",monthlyProfit:"Monthly Profit",avgMargin:"Avg Margin",
-  unitConv:"⚖ Unit Converter",unitNote:"* Weight/volume conversion varies by specific gravity",prevStep:"Auto-inherited after previous step",
-  langToggle:"日本語"
-}};
-function LL(k){return(I18N[_LANG]||I18N.ja)[k]||I18N.ja[k]||k}
-var SN_JA={inq:"引合・発注",credit:"与信管理",contract:"契約・L/C",insurance:"保険・為替予約",ocr:"書類受領・OCR",recon:"書類照合",hs:"HS・関税",compliance:"許可申請・法規制",customs:"通関申告",inspect:"検品・入庫",inventory:"在庫管理",voucher_buy:"仕入伝票",payment:"支払・L/C決済",cost:"原価計算",order:"受注・契約",security:"安全保障・コンプラ",gaih:"該非判定",el:"輸出許可(E/L)",shipdoc:"書類作成",ex_customs:"輸出通関",ship:"船積・B/L",voucher_sell:"売上伝票",invoice_ar:"請求・入金・消込",fxgl:"為替差損益",buy_contract:"買契約",sell_contract:"売契約",recon_both:"照合(売買両面)",ship_mgmt:"船積管理",simultaneous:"同時計上",pay_recv:"支払/入金",tp:"移転価格確認",ac_netting:"A/Cネッティング",domestic_ship:"出荷・配送",fee:"手数料計上",agent_invoice:"手数料請求"};
-var SN_EN={inq:"Inquiry/PO",credit:"Credit Check",contract:"Contract/L/C",insurance:"Insurance/FX Hedge",ocr:"Document OCR",recon:"Doc Matching",hs:"HS/Tariff",compliance:"Permits/Compliance",customs:"Customs Declaration",inspect:"Inspection/Receipt",inventory:"Inventory",voucher_buy:"Purchase Voucher",payment:"Payment/L/C Settlement",cost:"Cost Calculation",order:"Order/Contract",security:"Security/Compliance",gaih:"Export Classification",el:"Export License",shipdoc:"Document Preparation",ex_customs:"Export Customs",ship:"Shipping/B/L",voucher_sell:"Sales Voucher",invoice_ar:"Invoice/Collection",fxgl:"FX Gain/Loss",buy_contract:"Buy Contract",sell_contract:"Sell Contract",recon_both:"Matching (Buy/Sell)",ship_mgmt:"Shipment Mgmt",simultaneous:"Simultaneous Booking",pay_recv:"Payment/Receipt",tp:"Transfer Pricing",ac_netting:"A/C Netting",domestic_ship:"Delivery",fee:"Commission Booking",agent_invoice:"Commission Invoice"};
-function getSN(){return _LANG==="en"?SN_EN:SN_JA}
-var SN=SN_JA;
+var SN={inq:"引合・発注",credit:"与信管理",contract:"契約・L/C",insurance:"保険・為替予約",ocr:"書類受領・OCR",recon:"書類照合",hs:"HS・関税",compliance:"許可申請・法規制",customs:"通関申告",inspect:"検品・入庫",inventory:"在庫管理",voucher_buy:"仕入伝票",payment:"支払・L/C決済",cost:"原価計算",order:"受注・契約",security:"安全保障・コンプラ",gaih:"該非判定",el:"輸出許可(E/L)",shipdoc:"書類作成",ex_customs:"輸出通関",ship:"船積・B/L",voucher_sell:"売上伝票",invoice_ar:"請求・入金・消込",fxgl:"為替差損益",buy_contract:"買契約",sell_contract:"売契約",recon_both:"照合(売買両面)",ship_mgmt:"船積管理",simultaneous:"同時計上",pay_recv:"支払/入金",tp:"移転価格確認",ac_netting:"A/Cネッティング",domestic_ship:"出荷・配送",fee:"手数料計上",agent_invoice:"手数料請求"};
 var PAT_STEPS={im_stock:["inq","credit","contract","insurance","ocr","recon","hs","compliance","customs","inspect","inventory","voucher_buy","payment","cost"],im_direct:["inq","credit","contract","insurance","ocr","recon","hs","compliance","customs","voucher_buy","payment","cost"],"export":["order","credit","security","gaih","el","shipdoc","ex_customs","ship","voucher_sell","invoice_ar","fxgl"],b2b:["order","credit","buy_contract","sell_contract","security","recon_both","ship_mgmt","simultaneous","pay_recv","fxgl"],offshore:["order","credit","security","buy_contract","sell_contract","tp","shipdoc","ship_mgmt","simultaneous","ac_netting","fxgl"],domestic:["inq","credit","contract","domestic_ship","voucher_buy","voucher_sell","payment","invoice_ar"],agent:["order","credit","contract","fee","agent_invoice"]};
 var PAT_IDS=["im_stock","im_direct","export","b2b","offshore","domestic","agent"];
-var PN_JA={im_stock:"輸入在庫販売",im_direct:"輸入直送","export":"輸出",b2b:"三国間(B2B)",offshore:"オフショア",domestic:"国内取引",agent:"仲介"};
-var PN_EN={im_stock:"Import & Stock",im_direct:"Import Direct","export":"Export",b2b:"Intermediary (B2B)",offshore:"Offshore",domestic:"Domestic",agent:"Agent"};
-var PD_JA={im_stock:"海外から仕入→国内倉庫で在庫→国内顧客に販売",im_direct:"海外から仕入→倉庫を経由せず国内顧客に直送","export":"日本から海外顧客に販売",b2b:"海外A→海外B（日本を経由しない）",offshore:"海外子会社経由の取引",domestic:"日本国内の仕入販売",agent:"契約当事者にならず仲介"};
-var PD_EN={im_stock:"Import overseas → Stock in local warehouse → Sell domestically",im_direct:"Import overseas → Ship direct to domestic customer","export":"Sell from Japan to overseas customer",b2b:"Overseas A → Overseas B (not via Japan)",offshore:"Trade via overseas subsidiary",domestic:"Domestic buy & sell",agent:"Brokerage without being a contracting party"};
-var PF_JA={im_stock:"海外→日本倉庫→国内",im_direct:"海外→日本(直送)","export":"日本→海外",b2b:"海外A→海外B",offshore:"子会社経由",domestic:"日本→日本",agent:"仲介のみ"};
-var PF_EN={im_stock:"Overseas→JP Warehouse→Domestic",im_direct:"Overseas→JP (Direct)","export":"JP→Overseas",b2b:"Overseas A→Overseas B",offshore:"Via Subsidiary",domestic:"JP→JP",agent:"Brokerage Only"};
-var PB_JA={im_stock:{b:"輸入在庫",c:"tp-im"},im_direct:{b:"輸入直送",c:"tp-id"},"export":{b:"輸出",c:"tp-ex"},b2b:{b:"三国間",c:"tp-b2"},offshore:{b:"オフショア",c:"tp-of"},domestic:{b:"国内",c:"tp-do"},agent:{b:"仲介",c:"tp-ag"}};
-var PB_EN={im_stock:{b:"Import Stock",c:"tp-im"},im_direct:{b:"Import Direct",c:"tp-id"},"export":{b:"Export",c:"tp-ex"},b2b:{b:"B2B",c:"tp-b2"},offshore:{b:"Offshore",c:"tp-of"},domestic:{b:"Domestic",c:"tp-do"},agent:{b:"Agent",c:"tp-ag"}};
-var PN=PN_JA,PD=PD_JA,PF=PF_JA,PB=PB_JA;
-function switchLangVars(){SN=_LANG==="en"?SN_EN:SN_JA;PN=_LANG==="en"?PN_EN:PN_JA;PD=_LANG==="en"?PD_EN:PD_JA;PF=_LANG==="en"?PF_EN:PF_JA;PB=_LANG==="en"?PB_EN:PB_JA}
+var PN={im_stock:"輸入在庫販売",im_direct:"輸入直送","export":"輸出",b2b:"三国間(B2B)",offshore:"オフショア",domestic:"国内取引",agent:"仲介"};
+var PD={im_stock:"海外から仕入→国内倉庫で在庫→国内顧客に販売",im_direct:"海外から仕入→倉庫を経由せず国内顧客に直送","export":"日本から海外顧客に販売",b2b:"海外A→海外B（日本を経由しない）",offshore:"海外子会社経由の取引",domestic:"日本国内の仕入販売",agent:"契約当事者にならず仲介"};
+var PF={im_stock:"海外→日本倉庫→国内",im_direct:"海外→日本(直送)","export":"日本→海外",b2b:"海外A→海外B",offshore:"子会社経由",domestic:"日本→日本",agent:"仲介のみ"};
+var PB={im_stock:{b:"輸入在庫",c:"tp-im"},im_direct:{b:"輸入直送",c:"tp-id"},"export":{b:"輸出",c:"tp-ex"},b2b:{b:"三国間",c:"tp-b2"},offshore:{b:"オフショア",c:"tp-of"},domestic:{b:"国内",c:"tp-do"},agent:{b:"仲介",c:"tp-ag"}};
 var PI={im_stock:"📥",im_direct:"📦","export":"📤",b2b:"🔄",offshore:"🌐",domestic:"🏠",agent:"🤝"};
 var AI_STEPS={credit:1,insurance:1,ocr:1,recon:1,hs:1,compliance:1,customs:1,voucher_buy:1,payment:1,cost:1,security:1,gaih:1,el:1,shipdoc:1,ex_customs:1,voucher_sell:1,invoice_ar:1,fxgl:1,recon_both:1,simultaneous:1,pay_recv:1,tp:1,ac_netting:1,fee:1,agent_invoice:1};
 
@@ -307,22 +236,18 @@ function Sub(t){return h("div",{className:"sub-title"},t)}
 function Sec(p){return h("div",{className:"section"},h("div",{className:"sh",onClick:p.toggle},h("h3",null,"Step ",p.num," ",p.title," ",p.ai?T("AI","tb"):null," ",p.tag),h("span",{style:{color:"var(--ht)",fontSize:14}},p.open?"▲":"▼")),p.open?h("div",{className:"sb2"},p.children):null)}
 function ApprFlow(flow){return h("div",{className:"appr-flow"},flow.map(function(a,i){return[i>0?h("span",{key:"a"+i,className:"appr-arrow"},"→"):null,h("div",{key:i,className:"appr-step "+a.st},a.st==="done"?"✓ ":"",a.role," ",a.name," ",a.date&&a.date!=="-"?("("+a.date+")"):"")]}))}
 function Legend(){return h("div",{className:"legend-bar"},
-    h("span",{className:"lg-title"},LL("legend")),
-    h("span",{className:"lg-title"},LL("legendPat")),
-    T(PB.im_stock.b,"tp-im"),T(PB.im_direct.b,"tp-id"),T(PB["export"].b,"tp-ex"),T(PB.b2b.b,"tp-b2"),T(PB.offshore.b,"tp-of"),T(PB.domestic.b,"tp-do"),T(PB.agent.b,"tp-ag"),
+    h("span",{className:"lg-title"},"凡例:"),
+    h("span",{className:"lg-title"},"取引パターン"),
+    T("輸入在庫","tp-im"),T("輸入直送","tp-id"),T("輸出","tp-ex"),T("三国間","tp-b2"),T("オフショア","tp-of"),T("国内","tp-do"),T("仲介","tp-ag"),
     h("span",{className:"lg-sep"}),
-    h("span",{className:"lg-title"},LL("legendPos")),
+    h("span",{className:"lg-title"},"ポジション"),
     h("span",{className:"tag tpos tpos-l"},"L: Long"),h("span",{className:"tag tpos tpos-s"},"S: Short"),
     h("span",{className:"lg-sep"}),
-    h("span",{className:"lg-title"},LL("legendProgress")),
-    T(LL("done"),"tst-done"),T(LL("inProgress"),"tst-cur"),T(LL("notStarted"),"tst-pend"))}
+    h("span",{className:"lg-title"},"進捗"),
+    T("完了","tst-done"),T("進行中","tst-cur"),T("未着手","tst-pend"))}
 function Chevrons(props){return h("div",{className:"chevrons"},props.steps.map(function(s,i){return h("div",{key:i,className:"chev "+(i<props.cur?"chev-done":i===props.cur?"chev-cur":"chev-fut"),onClick:props.onClick?function(){props.onClick(i)}:null},h("b",null,s.num),s.name)}))}
 
 function App(){
-  var _lang=us("ja"),lang=_lang[0],slang=_lang[1];
-  _LANG=lang;switchLangVars();
-  function toggleLang(){slang(lang==="ja"?"en":"ja")}
-  var L=LL;
   var _pg=us("deals"),pg=_pg[0],spg=_pg[1];
   var _dl=us(null),deal=_dl[0],sdeal=_dl[1];
   var _os=us(-1),osec=_os[0],sosec=_os[1];
@@ -346,13 +271,13 @@ function App(){
     "L":{"KG":1,"MT":0.001,"GAL":0.264172},
     "GAL":{"L":3.78541,"KG":3.78541,"MT":0.00378541}};
   function ucConvert(){var r=UC_RATES[ucFrom];if(r&&r[ucTo])return(ucVal*r[ucTo]).toFixed(3);if(UC_RATES[ucTo]&&UC_RATES[ucTo][ucFrom])return(ucVal/UC_RATES[ucTo][ucFrom]).toFixed(3);return"-"}
-  function UnitConverter(){return h("div",{className:"unit-conv"},h("h4",null,LL("unitConv")),h("div",{className:"uc-row"},
+  function UnitConverter(){return h("div",{className:"unit-conv"},h("h4",null,"⚖ 単位換算"),h("div",{className:"uc-row"},
     h("input",{type:"number",value:ucVal,onChange:function(e){sucVal(parseFloat(e.target.value)||0)},step:"any"}),
     h("select",{value:ucFrom,onChange:function(e){sucFrom(e.target.value)}},["MT","KG","LB","L","GAL","BAG_25","BAG_50","DRUM_200"].map(function(u){return h("option",{key:u,value:u},u)})),
     h("span",{className:"uc-eq"},"="),
     h("span",{className:"uc-result"},ucConvert()),
     h("select",{value:ucTo,onChange:function(e){sucTo(e.target.value)}},["MT","KG","LB","L","GAL","BAG_25","BAG_50","DRUM_200"].map(function(u){return h("option",{key:u,value:u},u)})),
-    h("span",{style:{fontSize:9,color:"var(--ht)",marginLeft:8}},LL("unitNote")))}
+    h("span",{style:{fontSize:9,color:"var(--ht)",marginLeft:8}},"※化学品は比重により重量/容積換算が異なります")))}
   function resetNew(){sselCust(null);snewMode("choose");snewPat(null);socrDone(false);socrLogs([]);socrFile(null);sfName("");sfItem("");sfQty("");saiDetect(null)}
   function nav(p){spg(p);sdeal(null);sselCust(null);resetNew()}
   function goDeal(d){spg("deals");sdeal(d);sosec(d.step)}
@@ -382,21 +307,20 @@ function App(){
 
   var menuItems=[
     {id:"deals",icon:"📋",label:"案件一覧",cnt:DEALS.length},
-    {id:"new",icon:"＋",label:L("newDeal")},
-    {id:"inventory",icon:"📦",label:L("inventoryMenu")},
-    {id:"customers",icon:"👥",label:L("customersMenu"),cnt:CUSTOMERS.length},
-    {id:"logistics",icon:"🚢",label:L("logisticsMenu")},
-    {id:"dashboard",icon:"📊",label:L("dashboardMenu")}
+    {id:"new",icon:"＋",label:"新規登録"},
+    {id:"inventory",icon:"📦",label:"在庫管理"},
+    {id:"customers",icon:"👥",label:"取引先管理",cnt:CUSTOMERS.length},
+    {id:"logistics",icon:"🚢",label:"物流追跡"},
+    {id:"dashboard",icon:"📊",label:"ダッシュボード"}
   ];
   var Sidebar=h("div",{className:"sidebar"},
-    h("div",{className:"sb-logo"},h("div",{className:"logo"},"B"),h("div",null,h("h1",null,"BorderFlow AI"),h("p",null,L("subtitle")))),
-    h("div",{className:"sb-section"},L("menu")),
+    h("div",{className:"sb-logo"},h("div",{className:"logo"},"B"),h("div",null,h("h1",null,"BorderFlow AI"),h("p",null,"自律型貿易事務エージェント"))),
+    h("div",{className:"sb-section"},"メニュー"),
     menuItems.map(function(m){return h("div",{key:m.id,className:"sb-item"+((pg===m.id||(pg==="deal"&&m.id==="deals"))?" active":""),onClick:function(){nav(m.id)}},h("span",{className:"sb-icon"},m.icon),h("span",null,m.label),m.cnt?h("span",{className:"sb-cnt"},m.cnt):null)}),
     h("div",{className:"sb-divider"}),
-    h("div",{className:"sb-section"},L("tradePat")),
+    h("div",{className:"sb-section"},"取引パターン"),
     PAT_IDS.map(function(pid){return h("div",{key:pid,className:"sb-pat",onClick:function(){goNewPat(pid)}},h("span",null,PI[pid]),h("span",null,PN[pid]))}),
-    h("div",{className:"sb-divider"}),
-    h("div",{className:"sb-item",onClick:toggleLang},h("span",{className:"sb-icon"},"🌐"),h("span",null,L("langToggle"))));
+    h("div",{className:"sb-divider"}));
 
   // ═══ DEALS (Split Pane) ═══
   function DealsPage(){
@@ -404,13 +328,13 @@ function App(){
     var filtered=DEALS.filter(function(d){if(!q)return true;return d.id.toLowerCase().indexOf(q)>=0||d.sup.toLowerCase().indexOf(q)>=0||PN[d.pat].indexOf(q)>=0||d.items.some(function(it){return it.n.toLowerCase().indexOf(q)>=0})||d.cur.toLowerCase().indexOf(q)>=0||(d.co||"").toLowerCase().indexOf(q)>=0});
     var leftPane=h("div",{className:"split-left"},
       h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
-        h("span",{style:{fontSize:15,fontWeight:700}},L("deals")),
-        h("button",{className:"btn bg sm",onClick:function(){nav("new")}},L("newBtn"))),
+        h("span",{style:{fontSize:15,fontWeight:700}},"案件一覧"),
+        h("button",{className:"btn bg sm",onClick:function(){nav("new")}},"+ 新規")),
       h(Legend,null),
       h("div",{className:"search-box"},
         h("span",{className:"s-icon"},"🔍"),
-        h("input",{placeholder:L("search"),value:searchQ,onChange:function(e){ssearchQ(e.target.value)}})),
-      h("div",{style:{fontSize:10,color:"var(--ht)",marginBottom:8}},filtered.length+"/"+DEALS.length+L("items")),
+        h("input",{placeholder:"案件ID・取引先・品目で検索...",value:searchQ,onChange:function(e){ssearchQ(e.target.value)}})),
+      h("div",{style:{fontSize:10,color:"var(--ht)",marginBottom:8}},filtered.length+"/"+DEALS.length+" 件"),
       filtered.map(function(d){var steps=getSteps(d.pat);var isSel=deal&&deal.id===d.id;
         return h("div",{key:d.id,className:"deal-mini"+(isSel?" sel":""),onClick:function(){sdeal(d);sosec(d.step)}},
           h("div",{className:"dm-top"},
@@ -420,42 +344,42 @@ function App(){
           h("div",{className:"dm-bar"},steps.map(function(_,i){return h("div",{key:i,style:{background:i<d.step?"var(--lb)":i===d.step?"var(--navy)":"var(--bd)"}})})))}));
     var rightPane;
     if(deal){rightPane=DealDetail(deal)}
-    else{rightPane=h("div",{className:"empty-detail"},h("div",{className:"ed-icon"},"📋"),h("p",null,L("selectDeal")))}
+    else{rightPane=h("div",{className:"empty-detail"},h("div",{className:"ed-icon"},"📋"),h("p",null,"案件をクリックすると詳細が表示されます"))}
     return h("div",{className:"split-wrap"},leftPane,h("div",{className:"split-right"},rightPane))}
 
   // ═══ NEW DEAL ═══
   function NewPage(){
     // Step 1: Choose entry method
     if(newMode==="choose") return h("div",null,
-      h("div",{className:"page-title"},L("newTitle")),
-      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:20}},L("selectMethod")),
+      h("div",{className:"page-title"},"新規案件登録"),
+      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:20}},"登録方法を選択してください。"),
       h("div",{className:"entry-grid"},
         h("div",{className:"entry-card",onClick:function(){snewMode("ai_upload")}},
-          h("div",{className:"ec-icon"},"🤖"),h("h3",null,L("aiUpload")),
-          h("p",null,L("aiUploadDesc"))),
+          h("div",{className:"ec-icon"},"🤖"),h("h3",null,"書類アップロードから自動登録"),
+          h("p",null,"契約書・Invoice・注文書をアップロードすると、AIが書類を読み取り、取引パターンを自動判定して案件情報を自動入力します。")),
         h("div",{className:"entry-card",onClick:function(){snewMode("pattern")}},
-          h("div",{className:"ec-icon"},"📋"),h("h3",null,L("patSelect")),
-          h("p",null,L("patSelectDesc"))),
+          h("div",{className:"ec-icon"},"📋"),h("h3",null,"取引パターンを指定して登録"),
+          h("p",null,"7つの取引パターンから選択し、手動で案件情報を入力します。")),
         h("div",{className:"entry-card",onClick:function(){snewMode("duplicate")}},
-          h("div",{className:"ec-icon"},"📋"),h("h3",null,L("dupEntry")),
-          h("p",null,L("dupEntryDesc")))));
+          h("div",{className:"ec-icon"},"📋"),h("h3",null,"過去案件を複製して登録"),
+          h("p",null,"過去の案件情報をコピーして新規案件を作成します。取引先・品目・条件がそのまま引き継がれます。"))));
     // Step 2a: AI upload
     if(newMode==="ai_upload") return h("div",null,
-      h("div",{className:"bc"},h("a",{onClick:resetNew},L("backSelect")),h("span",null," › "),h("span",{style:{fontWeight:500}},L("docUpload"))),
-      h("div",{className:"page-title"},L("aiAutoReg")),
-      h("div",{className:"nt"},L("aiUploadNote")),
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},"書類アップロード")),
+      h("div",{className:"page-title"},"🤖 書類からAI自動登録"),
+      h("div",{className:"nt"},"契約書・Invoice・注文書・B/L・Packing Listをアップロードしてください。AIが書類種別を判定し、取引パターンの自動選択、取引先・品目・金額の自動入力を行います。"),
       h("div",{className:"ocr-zone"+(ocrDone?" active":""),onClick:function(){if(!ocrFile){var inp=document.createElement("input");inp.type="file";inp.accept=".pdf,.jpg,.png,.xlsx";inp.onchange=function(e){socrFile(e.target.files[0])};inp.click()}}},
         h("div",{style:{fontSize:36}},ocrDone?"✅":"📄"),
-        h("div",{style:{fontSize:14,fontWeight:600,marginTop:6}},ocrFile?L("fileLoaded"):L("dropOrClick")),
-        h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:4}},ocrFile?ocrFile.name:L("supportedFormats")),
-        ocrFile&&!ocrDone?h("button",{className:"btn bg",style:{marginTop:12},onClick:function(e){e.stopPropagation();runAiOCR()}},L("runAiOcr")):null,
-        !ocrFile?h("div",{style:{marginTop:10,fontSize:11,color:"var(--bl)"}},L("selectFile")):null,
+        h("div",{style:{fontSize:14,fontWeight:600,marginTop:6}},ocrFile?"ファイル読み込み済":"書類をドロップまたはクリックして選択"),
+        h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:4}},ocrFile?ocrFile.name:"対応形式: PDF / 画像(JPG,PNG) / Excel"),
+        ocrFile&&!ocrDone?h("button",{className:"btn bg",style:{marginTop:12},onClick:function(e){e.stopPropagation();runAiOCR()}},"🤖 AI解析を実行"):null,
+        !ocrFile?h("div",{style:{marginTop:10,fontSize:11,color:"var(--bl)"}},"ファイルを選択"):null,
         ocrLogs.length>0?h("div",{className:"ocr-log"},ocrLogs.map(function(l,i){return h("div",{key:i},"▸ "+l)})):null));
     // Step 2c: Duplicate from past deal
     if(newMode==="duplicate") return h("div",null,
-      h("div",{className:"bc"},h("a",{onClick:resetNew},L("backSelect")),h("span",null," › "),h("span",{style:{fontWeight:500}},L("dupEntry"))),
-      h("div",{className:"page-title"},L("dupFrom")),
-      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:16}},L("dupFromDesc")),
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},"過去案件から複製")),
+      h("div",{className:"page-title"},"複製元の案件を選択"),
+      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:16}},"案件をクリックすると、取引先・品目・条件をコピーした新規登録フォームが開きます。"),
       DEALS.map(function(d){return h("div",{key:d.id,className:"dup-card",onClick:function(){dupDeal(d)}},
         h("div",null,
           h("div",{style:{display:"flex",gap:8,alignItems:"center",marginBottom:4}},h("span",{style:{fontWeight:700,color:"var(--navy)"}},d.id),T(PN[d.pat],PB[d.pat].c),d.data.position?h("span",{className:"tag tpos "+((d.data.position||d.position)==="long"?"tpos-l":"tpos-s")},(d.data.position||d.position)==="long"?"L":"S"):null),
@@ -464,49 +388,49 @@ function App(){
         h("span",{style:{fontSize:18,color:"var(--navy)"}},"→"))}));
     // Step 2b: Pattern select
     if(newMode==="pattern") return h("div",null,
-      h("div",{className:"bc"},h("a",{onClick:resetNew},L("backSelect")),h("span",null," › "),h("span",{style:{fontWeight:500}},L("patSelectTitle"))),
-      h("div",{className:"page-title"},L("patSelectTitle")),
-      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:16}},L("patSelectNote")),
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},"パターン選択")),
+      h("div",{className:"page-title"},"取引パターンを選択"),
+      h("p",{style:{fontSize:12,color:"var(--sub)",marginBottom:16}},"パターンに応じて必要なステップが自動構成されます。"),
       h("div",{className:"pat-grid"},PAT_IDS.map(function(pid){var steps=getSteps(pid);return h("div",{key:pid,className:"pat",onClick:function(){snewPat(pid);snewMode("form")}},
         h("div",{className:"p-badge tag "+PB[pid].c},PB[pid].b),h("div",{className:"p-icon"},PI[pid]),h("h3",null,PN[pid]),h("p",null,PD[pid]),
-        h("div",{className:"p-flow"},"📍 "+PF[pid]),h("div",{className:"p-steps"},steps.length+L("steps")))})));
+        h("div",{className:"p-flow"},"📍 "+PF[pid]),h("div",{className:"p-steps"},steps.length+"ステップ"))})));
     // Step 3: Form
     if(newMode==="form"&&newPat){var steps=getSteps(newPat);
     return h("div",null,
-      h("div",{className:"bc"},h("a",{onClick:resetNew},L("backSelect")),h("span",null," › "),h("span",{style:{fontWeight:500}},PI[newPat]+" "+PN[newPat])),
+      h("div",{className:"bc"},h("a",{onClick:resetNew},"← 登録方法選択"),h("span",null," › "),h("span",{style:{fontWeight:500}},PI[newPat]+" "+PN[newPat])),
       aiDetect?h("div",{className:"ai-detect"},h("div",{className:"ai-icon"},"🤖"),h("div",null,
-        h("h4",null,L("aiDetected")),
-        h("p",null,L("result"),h("strong",null,PI[newPat]+" "+PN[newPat])," （"+L("confidence")+aiDetect.confidence+"）"),
-        h("p",null,L("reason")+aiDetect.reason),
-        h("button",{className:"btn bs sm",style:{marginTop:6},onClick:function(){saiDetect(null);snewMode("pattern")}},L("changePat")))):null,
-      h("div",{style:{marginBottom:4,fontSize:11,fontWeight:600,color:"var(--sub)"}},L("autoSteps")+"（"+steps.length+L("steps")+"）"),
+        h("h4",null,"AIが取引パターンを自動判定しました"),
+        h("p",null,"判定結果: ",h("strong",null,PI[newPat]+" "+PN[newPat])," （信頼度: "+aiDetect.confidence+"）"),
+        h("p",null,"根拠: "+aiDetect.reason),
+        h("button",{className:"btn bs sm",style:{marginTop:6},onClick:function(){saiDetect(null);snewMode("pattern")}},"パターンを変更"))):null,
+      h("div",{style:{marginBottom:4,fontSize:11,fontWeight:600,color:"var(--sub)"}},"自動構成ステップ（"+steps.length+"ステップ）"),
       Chevrons({steps:steps,cur:-1}),
       !aiDetect?h("div",{className:"ocr-zone"+(ocrDone?" active":""),onClick:function(){if(!ocrFile){var inp=document.createElement("input");inp.type="file";inp.accept=".pdf,.jpg,.png,.xlsx";inp.onchange=function(e){socrFile(e.target.files[0])};inp.click()}}},
         h("div",{style:{fontSize:28}},ocrDone?"✅":"📄"),
-        h("div",{style:{fontSize:13,fontWeight:600,marginTop:4}},L("aiAutoInput")),
-        h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:4}},ocrFile?ocrFile.name:L("uploadHint")),
-        ocrFile&&!ocrDone?h("button",{className:"btn bg sm",style:{marginTop:10},onClick:function(e){e.stopPropagation();runAiOCR()}},L("aiOcrExec")):null,
-        !ocrFile?h("div",{style:{marginTop:8,fontSize:11,color:"var(--bl)"}},L("selectFile")):null,
+        h("div",{style:{fontSize:13,fontWeight:600,marginTop:4}},"📄 書類からAI自動入力"),
+        h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:4}},ocrFile?ocrFile.name:"契約書・Invoice等をアップロードすると項目を自動入力"),
+        ocrFile&&!ocrDone?h("button",{className:"btn bg sm",style:{marginTop:10},onClick:function(e){e.stopPropagation();runAiOCR()}},"🤖 AI-OCR実行"):null,
+        !ocrFile?h("div",{style:{marginTop:8,fontSize:11,color:"var(--bl)"}},"ファイルを選択"):null,
         ocrLogs.length>0?h("div",{className:"ocr-log"},ocrLogs.map(function(l,i){return h("div",{key:i},"▸ "+l)})):null):null,
       h("div",{className:"section"},h("div",{className:"sb2"},
-        h("h3",{style:{fontSize:14,fontWeight:600,marginBottom:14}},L("dealInfo")),
+        h("h3",{style:{fontSize:14,fontWeight:600,marginBottom:14}},"案件情報"),
         h("div",{className:"fr"},
-          h("div",{className:"fg"},h("label",null,L("supplier")),h("input",{value:fName,onChange:function(e){sfName(e.target.value)},className:fName?"filled":"",placeholder:L("supplier")})),
-          h("div",{className:"fg"},h("label",null,L("country")),h("select",null,["Japan","USA","China","Germany","Thailand","Indonesia","Korea","Singapore","Belgium","Saudi Arabia","Taiwan"].map(function(o){return h("option",{key:o},o)}))),
-          h("div",{className:"fg"},h("label",null,L("currency")),h("select",null,["USD","EUR","JPY","CNY"].map(function(o){return h("option",{key:o},o)}))),
-          h("div",{className:"fg"},h("label",null,L("incoterms")),h("select",null,["FOB","CIF","CFR","EXW","DDP","DAP","FCA"].map(function(o){return h("option",{key:o},o)}))),
-          h("div",{className:"fg"},h("label",null,L("settlement")),h("select",null,["L/C at sight","L/C 60d","L/C 90d","TT送金","D/P","D/A"].map(function(o){return h("option",{key:o},o)}))),
-          h("div",{className:"fg"},h("label",null,L("position")),h("select",null,[L("posLong"),L("posShort"),L("posSimul")].map(function(o){return h("option",{key:o},o)}))),
-          newPat==="b2b"?h("div",{className:"fg"},h("label",null,L("buySupplier")),h("input",{})):null,
-          newPat==="b2b"?h("div",{className:"fg"},h("label",null,L("sellCustomer")),h("input",{})):null,
-          newPat==="offshore"?h("div",{className:"fg"},h("label",null,L("subsidiary")),h("input",{})):null,
-          newPat==="agent"?h("div",{className:"fg"},h("label",null,L("feeRate")),h("input",{placeholder:"3%"})):null,
-          h("div",{className:"fg"},h("label",null,L("itemName")),h("input",{value:fItem,onChange:function(e){sfItem(e.target.value)},className:fItem?"filled":"",placeholder:L("itemPlaceholder")})),
-          h("div",{className:"fg"},h("label",null,L("qtyPrice")),h("input",{value:fQty,onChange:function(e){sfQty(e.target.value)},className:fQty?"filled":"",placeholder:L("qtyPlaceholder")}))),
+          h("div",{className:"fg"},h("label",null,"取引先名"),h("input",{value:fName,onChange:function(e){sfName(e.target.value)},className:fName?"filled":"",placeholder:"取引先名"})),
+          h("div",{className:"fg"},h("label",null,"国"),h("select",null,["Japan","USA","China","Germany","Thailand","Indonesia","Korea","Singapore","Belgium","Saudi Arabia","Taiwan"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"通貨"),h("select",null,["USD","EUR","JPY","CNY"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"インコタームズ"),h("select",null,["FOB","CIF","CFR","EXW","DDP","DAP","FCA"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"決済条件"),h("select",null,["L/C at sight","L/C 60d","L/C 90d","TT送金","D/P","D/A"].map(function(o){return h("option",{key:o},o)}))),
+          h("div",{className:"fg"},h("label",null,"ポジション"),h("select",null,["Long（買先行）","Short（売先行）","売買同時"].map(function(o){return h("option",{key:o},o)}))),
+          newPat==="b2b"?h("div",{className:"fg"},h("label",null,"仕入先（買側）"),h("input",{})):null,
+          newPat==="b2b"?h("div",{className:"fg"},h("label",null,"販売先（売側）"),h("input",{})):null,
+          newPat==="offshore"?h("div",{className:"fg"},h("label",null,"経由子会社"),h("input",{})):null,
+          newPat==="agent"?h("div",{className:"fg"},h("label",null,"手数料率"),h("input",{placeholder:"3%"})):null,
+          h("div",{className:"fg"},h("label",null,"品目"),h("input",{value:fItem,onChange:function(e){sfItem(e.target.value)},className:fItem?"filled":"",placeholder:"品名（化学品名・CAS No.）"})),
+          h("div",{className:"fg"},h("label",null,"数量・単価"),h("input",{value:fQty,onChange:function(e){sfQty(e.target.value)},className:fQty?"filled":"",placeholder:"200 MT / $820"}))),
         h(UnitConverter,null),
         h("div",{style:{display:"flex",gap:8,justifyContent:"flex-end",marginTop:16}},
-          h("button",{className:"btn bs",onClick:function(){nav("deals")}},L("cancel")),
-          h("button",{className:"btn bg",onClick:function(){alert(L("registered")+steps.length+L("workflowCreated"));nav("deals")}},L("register")))))}
+          h("button",{className:"btn bs",onClick:function(){nav("deals")}},"キャンセル"),
+          h("button",{className:"btn bg",onClick:function(){alert("登録完了。"+steps.length+"ステップのワークフローが自動構成されました。");nav("deals")}},"案件登録")))))}
     return h("div",null,"Loading...")}
 
   // ═══ INVENTORY ═══
