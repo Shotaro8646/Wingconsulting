@@ -361,7 +361,7 @@ function App(){
   function pn(k){return(PN_I18N[lang]||PN_I18N.ja)[k]||k}
   function pd(k){return(PD_I18N[lang]||PD_I18N.ja)[k]||k}
   function pf(k){return(PF_I18N[lang]||PF_I18N.ja)[k]||k}
-  function pb(k){return(PB_I18N[lang]||PB_I18N.ja)[k]||k}
+  function pb(k){return(PB_I18N[lang]||PB_I18N.ja)[k]||PB_I18N.ja[k]||{b:k,c:""}}
   var _pg=us("deals"),pg=_pg[0],spg=_pg[1];
   var _dl=us(null),deal=_dl[0],sdeal=_dl[1];
   var _os=us(-1),osec=_os[0],sosec=_os[1];
