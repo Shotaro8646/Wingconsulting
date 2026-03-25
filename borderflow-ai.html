@@ -602,8 +602,8 @@ function App(){
 }
 var root=ReactDOM.createRoot(document.getElementById("app"));
 root.render(h(App));
-var _tTimer=null;
-new MutationObserver(function(){if(_currentLang!=="ja"){if(_tTimer)clearTimeout(_tTimer);_tTimer=setTimeout(function(){translateDOM();_tTimer=null;},50);}}).observe(document.getElementById("app"),{childList:true,subtree:true});
+var _tRaf=null;
+new MutationObserver(function(){if(_currentLang!=="ja"){if(_tRaf)cancelAnimationFrame(_tRaf);_tRaf=requestAnimationFrame(function(){_tRaf=requestAnimationFrame(function(){translateDOM();_tRaf=null;});});}}).observe(document.getElementById("app"),{childList:true,subtree:true});
 </script>
 </body>
 </html>
