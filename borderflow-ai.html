@@ -252,15 +252,15 @@ var TRANSLATIONS={"自律型貿易事務エージェント":"Autonomous Trade Op
 var _currentLang="ja";
 function translateDOM(){
   if(_currentLang==="ja")return;
-  var walker=document.createTreeWalker(document.getElementById("app"),NodeFilter.SHOW_TEXT,null,false);
-  while(walker.nextNode()){
-    var node=walker.currentNode;
+  var app=document.getElementById("app");if(!app)return;
+  var walker=document.createTreeWalker(app,NodeFilter.SHOW_TEXT,null,false);
+  var nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(function(node){
     var t=node.textContent;
     if(TRANSLATIONS[t])node.textContent=TRANSLATIONS[t];
     else if(TRANSLATIONS[t.trim()])node.textContent=TRANSLATIONS[t.trim()];
-  }
-  // translate placeholders
-  document.querySelectorAll("input[placeholder]").forEach(function(el){
+  });
+  app.querySelectorAll("input[placeholder]").forEach(function(el){
     if(TRANSLATIONS[el.placeholder])el.placeholder=TRANSLATIONS[el.placeholder];
   });
 }
@@ -601,11 +601,9 @@ function App(){
   return h("div",{style:{display:"flex",minHeight:"100vh"}},Sidebar,h("div",{className:"main"},content));
 }
 var root=ReactDOM.createRoot(document.getElementById("app"));
-function renderApp(){root.render(h(App));requestAnimationFrame(function(){translateDOM()});}
-renderApp();
-// Patch setState to trigger translateDOM after each render
-var origRender=root.render.bind(root);
-new MutationObserver(function(){if(_currentLang!=="ja")translateDOM()}).observe(document.getElementById("app"),{childList:true,subtree:true});
+root.render(h(App));
+var _translating=false;
+new MutationObserver(function(){if(_currentLang!=="ja"&&!_translating){_translating=true;translateDOM();_translating=false;}}).observe(document.getElementById("app"),{childList:true,subtree:true});
 </script>
 </body>
 </html>
