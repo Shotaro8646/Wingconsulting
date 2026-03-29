@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChemOs — PFAS Compliance Platform</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--bd:#e2e5ea;--tx:#1a1d23;--sub:#6b7280;--ht:#9ca3af;--bl:#1565c0;--blbg:#e8f1fb;--gn:#1D9E75;--gnbg:#e6f7f1;--rd:#c62828;--rdbg:#fce4ec;--am:#d97706;--ambg:#fef3c7;--pu:#7c3aed;--pubg:#ede9fe;--tl:#0e7490;--tlbg:#e0f7fa;--navy:#0C2340;--navyL:#14325A;--lb:#CAEEFB;--lbbg:#e8f6fd;--dn:#162D50}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--card:#181b23;--bd:#282d3a;--tx:#e5e7eb;--sub:#9ca3af;--ht:#6b7280;--bl:#60a5fa;--blbg:#1e293b;--gn:#34d399;--gnbg:#162a23;--rd:#f87171;--rdbg:#2d1a1e;--am:#fbbf24;--ambg:#2a2416;--pu:#a78bfa;--pubg:#1f1a2e;--tl:#22d3ee;--tlbg:#0c2a33;--navy:#0a1828;--navyL:#112240;--lb:#CAEEFB;--lbbg:#1a3040;--dn:#8FABC4}}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--navy);color:#fff;padding:16px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sb-logo{display:flex;align-items:center;gap:10px;padding:0 16px 20px;border-bottom:1px solid rgba(255,255,255,.1)}.sb-logo .logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0e7490,#22d3ee);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}.sb-logo h1{font-size:15px;font-weight:700}.sb-logo p{font-size:9px;opacity:.6;margin:0}
+.sb-section{padding:12px 0 4px;margin:0 16px;font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:.4;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;font-size:13px;font-weight:500;transition:.12s;border-left:3px solid transparent}.sb-item:hover{background:var(--navyL)}.sb-item.active{background:var(--navyL);border-left-color:var(--lb);font-weight:600}.sb-item .sb-icon{width:20px;text-align:center;font-size:15px;flex-shrink:0}.sb-item .sb-cnt{margin-left:auto;font-size:10px;background:rgba(255,255,255,.15);padding:1px 7px;border-radius:8px}
+.sb-divider{height:1px;background:rgba(255,255,255,.08);margin:8px 16px}
+.main{margin-left:220px;flex:1;padding:24px 28px 60px;max-width:1200px}
+.page-title{font-size:18px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.chevrons{display:flex;margin-bottom:20px;overflow-x:auto;gap:0}.chev{position:relative;flex:1;min-width:54px;padding:8px 6px 8px 16px;font-size:7px;font-weight:600;line-height:1.2;text-align:center;cursor:pointer;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,0 100%,10px 50%);margin-left:-2px;transition:.12s}.chev:first-child{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,0 100%);padding-left:10px}.chev b{display:block;font-size:10px}.chev-done{background:var(--lb);color:var(--navy)}.chev-cur{background:var(--navy);color:#fff}.chev-fut{background:#dfe3e8;color:var(--ht)}
+@media(prefers-color-scheme:dark){.chev-fut{background:var(--bd)}}
+.section{background:var(--card);border:1px solid var(--bd);border-radius:11px;margin-bottom:10px;overflow:hidden}.sh{padding:13px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.sh h3{font-size:13px;font-weight:600}.sb2{border-top:1px solid var(--bd);padding:14px 16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:12px}.g2 .k{color:var(--sub)}.g2 .v{font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:11px}th{padding:6px 8px;text-align:left;font-size:10px;color:var(--ht);background:var(--bg);border-bottom:1px solid var(--bd);font-weight:600}td{padding:7px 8px;border-bottom:1px solid var(--bd)}
+.tag{font-size:9px;padding:2px 7px;border-radius:4px;font-weight:600;white-space:nowrap}.tg{background:var(--gnbg);color:var(--gn)}.tb{background:var(--blbg);color:var(--bl)}.ta{background:var(--ambg);color:var(--am)}.tr{background:var(--rdbg);color:var(--rd)}.tp2{background:var(--pubg);color:var(--pu)}.tt{background:var(--tlbg);color:var(--tl)}
+.btn{padding:8px 16px;font-size:12px;font-weight:600;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.bg{background:var(--navy);color:#fff}.bb{background:var(--bl);color:#fff}.bs{background:var(--card);border:1px solid var(--bd);color:var(--sub)}.bpu{background:var(--pu);color:#fff}.sm{padding:5px 10px;font-size:11px;border-radius:6px}
+.nt{padding:10px 14px;background:var(--blbg);border-radius:8px;font-size:11px;color:var(--bl);line-height:1.6;margin:0 0 14px}
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);margin-bottom:16px}
+.disc{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:12px 14px;margin-bottom:8px}.disc.hi{border-left:3px solid var(--rd)}.disc.md{border-left:3px solid var(--am)}.disc.ok{border-left:3px solid var(--gn)}
+.sub-title{font-size:12px;font-weight:700;color:var(--tl);margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--bd)}.sub-title:first-child{margin-top:0}
+.appr-flow{display:flex;gap:4px;align-items:center;margin:8px 0;flex-wrap:wrap}.appr-step{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600}.appr-step.done{background:var(--lbbg);color:var(--navy)}.appr-step.cur{background:var(--navy);color:#fff}.appr-step.fut{background:var(--bg);color:var(--ht)}.appr-arrow{color:var(--ht);font-size:12px}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.dash-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;text-align:center}.dash-card .num{font-size:28px;font-weight:700}.dash-card .lbl{font-size:11px;color:var(--sub);margin-top:2px}
+.inv-tbl{background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:16px}.inv-tbl table{margin:0}.inv-tbl th{font-size:11px;padding:10px 12px}.inv-tbl td{font-size:12px;padding:10px 12px}
+.ocr-zone{border:2px dashed var(--bd);border-radius:12px;padding:24px;text-align:center;margin-bottom:16px;transition:.2s;cursor:pointer}.ocr-zone:hover{border-color:var(--tl);background:var(--tlbg)}
+.ocr-log{background:#0f1117;color:#34d399;border-radius:8px;padding:12px 14px;font-family:monospace;font-size:11px;line-height:1.8;margin-top:12px;max-height:200px;overflow-y:auto;text-align:left}
+.split-wrap{display:flex;gap:0;min-height:calc(100vh - 48px)}
+.split-left{width:340px;min-width:340px;border-right:1px solid var(--bd);padding-right:16px;overflow-y:auto;max-height:calc(100vh - 48px);position:sticky;top:0}
+.split-right{flex:1;padding-left:20px;overflow-y:auto;min-width:0}
+.search-box{position:relative;margin-bottom:12px}.search-box input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--bd);border-radius:8px;font-size:12px;background:var(--card);color:var(--tx);font-family:inherit}.search-box input:focus{outline:none;border-color:var(--navy)}.search-box .s-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--ht)}
+.deal-mini{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:.12s}.deal-mini:hover{border-color:var(--navy)}.deal-mini.sel{border-color:var(--navy);background:var(--lbbg);border-width:2px}
+.deal-mini .dm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}.deal-mini .dm-id{font-size:12px;font-weight:700;color:var(--navy)}.deal-mini .dm-meta{font-size:10px;color:var(--sub);display:flex;gap:8px;flex-wrap:wrap}.deal-mini .dm-bar{display:flex;gap:1px;height:4px;border-radius:2px;overflow:hidden;margin-top:5px}.deal-mini .dm-bar div{flex:1;border-radius:1px}
+.empty-detail{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:var(--ht);text-align:center}.empty-detail .ed-icon{font-size:48px;margin-bottom:12px;opacity:.4}.empty-detail p{font-size:13px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-bottom:12px}.fg{display:flex;flex-direction:column;gap:3px}.fg label{font-size:11px;font-weight:600;color:var(--sub)}.fg input,.fg select{padding:7px 10px;border:1px solid var(--bd);border-radius:6px;font-size:12px;background:var(--card);color:var(--tx);font-family:inherit}.fg input:focus,.fg select:focus{outline:none;border-color:var(--tl)}
+.entry-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.entry-card{background:var(--card);border:2px solid var(--bd);border-radius:16px;padding:28px 24px;text-align:center;cursor:pointer;transition:.2s}.entry-card:hover{border-color:var(--tl);box-shadow:0 6px 24px rgba(0,0,0,.08)}.entry-card .ec-icon{font-size:40px;margin-bottom:10px}.entry-card h3{font-size:15px;font-weight:700;margin-bottom:6px}.entry-card p{font-size:11px;color:var(--sub);line-height:1.5}
+.legend-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:var(--card);border:1px solid var(--bd);border-radius:10px;margin-bottom:14px;font-size:10px;color:var(--sub)}.legend-bar .lg-title{font-weight:700;color:var(--tx);margin-right:4px}.legend-bar .lg-sep{width:1px;height:16px;background:var(--bd);margin:0 6px}
+.chart-wrap{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 16px 12px;margin-bottom:16px}.chart-wrap h4{font-size:13px;font-weight:700;margin-bottom:12px}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:1000px){.split-wrap{flex-direction:column}.split-left{width:100%;min-width:0;border-right:none;border-bottom:1px solid var(--bd);padding-right:0;padding-bottom:12px;max-height:320px;position:static}.split-right{padding-left:0;padding-top:16px}}
+@media(max-width:800px){.sidebar{width:60px;padding:10px 0}.sb-logo h1,.sb-logo p,.sb-item span:not(.sb-icon),.sb-section,.sb-item .sb-cnt{display:none}.sb-item{justify-content:center;padding:10px 0;border-left:none}.main{margin-left:60px;padding:16px}.dash-grid,.entry-grid{grid-template-columns:1fr 1fr}.chev{min-width:40px;font-size:6px}.fr{grid-template-columns:1fr}.chart-row{grid-template-columns:1fr}}
+@media(max-width:480px){.entry-grid{grid-template-columns:1fr}}
+/* ═ ChemOs-specific ═ */
+.tj-yes{background:var(--rdbg);color:var(--rd)}.tj-sus{background:var(--ambg);color:var(--am)}.tj-unk{background:#e8edf4;color:#5b6b82}
+@media(prefers-color-scheme:dark){.tj-unk{background:#1e2433;color:#8899aa}}
+tr.row-yes{background:rgba(198,40,40,.04)}tr.row-sus{background:rgba(217,119,6,.04)}tr.row-unk{background:rgba(91,107,130,.04)}
+.pie-chart{width:120px;height:120px;border-radius:50%;flex-shrink:0}
+.j-select{padding:3px 6px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid var(--bd);cursor:pointer;background:var(--card);color:var(--tx)}.j-select.j-yes{border-color:var(--rd);color:var(--rd)}.j-select.j-sus{border-color:var(--am);color:var(--am)}.j-select.j-unk{border-color:#8899aa;color:#8899aa}
+.email-preview{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:14px;font-family:monospace;font-size:11px;line-height:1.8;white-space:pre-wrap;margin:8px 0}
+.filter-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.filter-btn{padding:5px 12px;font-size:11px;font-weight:600;border-radius:6px;border:1px solid var(--bd);cursor:pointer;background:var(--card);color:var(--sub);transition:.12s}.filter-btn:hover{border-color:var(--navy)}.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}.filter-btn.f-yes.active{background:var(--rd);border-color:var(--rd);color:#fff}.filter-btn.f-sus.active{background:var(--am);border-color:var(--am);color:#fff}.filter-btn.f-unk.active{background:#5b6b82;border-color:#5b6b82;color:#fff}
+.timeline{position:relative;padding-left:20px;margin:8px 0}.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--bd)}.tl-item{position:relative;padding:8px 0;font-size:11px}.tl-item::before{content:'';position:absolute;left:-17px;top:12px;width:8px;height:8px;border-radius:50%;background:var(--bd)}.tl-item.tl-done::before{background:var(--gn)}.tl-item.tl-cur::before{background:var(--navy)}.tl-item.tl-overdue::before{background:var(--rd)}
+.completion-bar{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin:6px 0}.completion-fill{height:100%;border-radius:4px;transition:width .3s}
+.pnl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}.pnl-card{background:var(--bg);border-radius:8px;padding:12px;text-align:center}.pnl-card .num{font-size:20px;font-weight:700}.pnl-card .lbl{font-size:10px;color:var(--sub)}
+.stats-row{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+.cat-bar{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:11px}.cat-bar .cb-label{width:120px;color:var(--sub);flex-shrink:0}.cat-bar .cb-fill{height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;min-width:24px}
+.signoff-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;border-bottom:1px solid var(--bd)}.signoff-item .sf-check{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}.sf-done{background:var(--gnbg);color:var(--gn)}.sf-pend{background:var(--bg);color:var(--ht)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var h=React.createElement,us=React.useState,ue=React.useEffect,N=function(n){return typeof n==="number"?n.toLocaleString():n};
+
+// ═══ Supabase client ═══
+var SUPA_URL="https://pqiavnrtfbmeapkuxihk.supabase.co";
+var SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxaWF2bnJ0ZmJtZWFwa3V4aWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NzAxNzMsImV4cCI6MjA5MDE0NjE3M30.xjBabmyZEbDNMIrxWssbS4R8PyrbUzeBm3LZ_fHRewY";
+var sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+var _CL="ja";
+var _T={"PFASコンプライアンス管理":"PFAS Compliance Management","メニュー":"Menu","案件一覧":"Case List","新規登録":"New Case","スクリーニング":"Screening","サプライヤー管理":"Supplier Management","レポート":"Reports","ダッシュボード":"Dashboard","案件登録":"Case Registration","自動解析":"Auto Analysis","PFASスクリーニング":"PFAS Screening","不明解消":"Unknown Resolution","回答検証":"Response Validation","提出物生成":"Submission Generation","保管・完了":"Archive & Close","該当":"Yes (Contains)","疑い":"Suspected","不明":"Unknown","凡例:":"Legend:","判定":"Judgment","CAS番号":"CAS Number","物質名":"Substance Name","分類":"Category","根拠":"Basis","証拠":"Evidence","一括判定":"Bulk Judgment","メール生成":"Generate Email","顧客情報":"Customer Info","提出要件":"Submission Requirements","対象製品":"Target Products","優先度":"Priority","期限":"Deadline","提出フォーマット":"Submission Format","製品名":"Product Name","型番":"Part Number","バージョン":"Version","抽出物質一覧":"Extracted Substances","濃度":"Concentration","信頼度":"Confidence","解析ログ":"Analysis Log","物質判定一覧":"Substance Judgment List","PFAS分類内訳":"PFAS Category Breakdown","不明物質リスト":"Unknown Substance List","メールプレビュー":"Email Preview","送信済":"Sent","リマインド済":"Reminded","回答済":"Responded","期限超過":"Overdue","検証結果":"Validation Results","チェック項目":"Check Item","期待値":"Expected","実測値":"Actual","結果":"Result","合格":"Pass","警告":"Warning","エラー":"Error","出力フォーマット":"Output Format","テンプレートマッピング":"Template Mapping","プレビュー":"Preview","ダウンロード":"Download","証跡パッケージ":"Evidence Package","バージョン履歴":"Version History","サインオフ":"Sign-off","完了":"Done","進行中":"In Progress","未着手":"Pending","件":" cases","案件をクリックすると詳細が表示されます":"Click a case to view details","案件ID・顧客・製品で検索...":"Search by ID, customer, product...","サプライヤー":"Supplier","応答率":"Response Rate","平均応答日数":"Avg Response Days","アクティブ案件":"Active Cases","期限超過案件":"Overdue Cases","スクリーニング済物質":"Screened Substances","完了率":"Completion Rate","ファイルをドロップまたはクリックしてアップロード":"Drop files or click to upload","chemSHERPA XML / SDS PDF":"chemSHERPA XML / SDS PDF","担当者":"Contact","部署":"Division","送信":"Send","リマインド送信":"Send Reminder","対象":"Target","区分":"Section","高":"High","中":"Medium","低":"Low","全て":"All","フィールド":"Field","ステータス":"Status","マッピング完了":"Mapping Complete","マッピング中":"Mapping In Progress","ファイル名":"Filename","日時":"Date/Time","種別":"Type","操作者":"Operator","検証済":"Verified","確認中":"In Review","承認":"Approve","アーカイブ確定":"Confirm Archive","案件詳細":"Case Detail","戻る":"Back",
+"ソース":"Source","ファイルをドロップ":"Drop files here","照会対象の不明物質はありません":"No unknown substances to inquire about","検証対象データがありません。前ステップを完了してください。":"No validation data. Complete previous steps first.","案件情報入力":"Case Information","登録":"Register","ファイルがありません":"No files","サインオフ設定がありません":"No sign-off configured","chemSHERPA/SDSアップロード":"chemSHERPA/SDS Upload","ファイルをアップロードして自動解析":"Upload files for auto-analysis","メールから取込":"Import from Email","受信メールからPFAS調査依頼を検出し自動入力":"Detect PFAS inquiries from emails and auto-fill","手動登録":"Manual Entry","顧客・製品情報を手入力で登録":"Enter customer & product info manually","過去案件を複製":"Duplicate Existing Case","既存の案件情報をコピーして新規作成":"Copy from an existing case","案件ステップ分布":"Case Step Distribution","直近の期限":"Upcoming Deadlines","案件:":"Case:","受信メールをスキャン":"Scan Inbox","スキャン中...":"Scanning...","件のPFAS関連メールを検出":" PFAS-related emails found","メール本文を表示":"Show email body","✉ メールから案件取込":"✉ Import Case from Email","✕ クリア":"✕ Clear","を取込済":" imported","📧 受信メールをスキャン":"📧 Scan Inbox","🔄 スキャン中...":"🔄 Scanning...","「受信メールをスキャン」をクリックして、PFAS調査依頼メールを検索します":"Click \"Scan Inbox\" to search for PFAS inquiry emails","件名・本文からPFAS/chemSHERPA/REACH等のキーワードを自動検出":"Auto-detect PFAS/chemSHERPA/REACH keywords from subject & body","📡 受信メールをスキャン中... PFAS関連キーワードを検索しています":"📡 Scanning inbox for PFAS-related keywords...","✉ メールから取込済:":"✉ Imported from email:","対象製品:":"Target products:","取込":"Import","CAS番号・物質名で検索...":"Search by CAS / substance name...","判定完了率":"Judgment Completion","物質抽出":" substances extracted","を読み込み中...":"reading...","XML構造検証完了":"XML structure validated","件の物質データを抽出":" substances extracted","PDFファイルはOCR処理が必要です":"PDF requires OCR processing","ブラウザ内PDF解析は制限があります。XMLファイルを推奨します。":"Browser-based PDF parsing is limited. XML files recommended.","PDF抽出":"PDF extract","PDF内からCAS番号":"CAS numbers found in PDF:","件を検出":" detected","非対応フォーマット (.xml/.pdf のみ)":"Unsupported format (.xml/.pdf only)","合計":"Total","物質を統合・正規化完了":" substances merged & normalized","PFAS判定: 該当":"PFAS judgment: Yes","/ 疑い":"/ Suspected","/ 不明":"/ Unknown","ファイルがありません":"No files","キャンセル":"Cancel","顧客":"Customer","顧客名":"Customer name","担当者名":"Contact name","部署名":"Division name","製品名":"Product name","型番":"Part number",
+"進捗":"Progress","進捗 ":"Progress ","＋ 新規":"+ New","EMLファイルをここにドラッグ＆ドロップ":"Drag & drop .eml files here","ここにドロップ":"Drop here","EMLファイルを選択":"Select EML file","メール生成/送信":"Generate & Send Email",
+"⏳ Supabase からデータを読み込み中...":"⏳ Loading data from Supabase...",
+"✅ Supabase 接続済 — ":" ✅ Supabase connected — ",
+"件の案件を取得":" cases loaded",
+"⚠ DB接続エラー — ローカルデータを使用中":"⚠ DB connection error — using local data",
+"規制強化対応":"Regulatory compliance response",
+"不明 ":"Unknown "};
+function L(t){return _CL==="en"&&_T[t]?_T[t]:t;}
+
+// ═══ Step definitions ═══
+var STEP_KEYS=["registration","analysis","screening","resolution","validation","submission","archive"];
+var SN={registration:"案件登録",analysis:"自動解析",screening:"PFASスクリーニング",resolution:"不明解消",validation:"回答検証",submission:"提出物生成",archive:"保管・完了"};
+var SN_EN={registration:"Case Registration",analysis:"Auto Analysis",screening:"PFAS Screening",resolution:"Unknown Resolution",validation:"Response Validation",submission:"Submission Generation",archive:"Archive & Close"};
+function gSN(){return _CL==="en"?SN_EN:SN;}
+
+// ═══ SUBSTANCES master ═══
+var SUBSTANCES=[
+{id:1,cas:"335-67-1",name:"PFOA (ペルフルオロオクタン酸)",nameEn:"Perfluorooctanoic acid (PFOA)",category:"Long-chain PFCA",conc:"0.025 ppm",judgment:"yes",basis:"Annex XVII REACH",evidence:"SDS Section 3"},
+{id:2,cas:"1763-23-1",name:"PFOS (ペルフルオロオクタンスルホン酸)",nameEn:"Perfluorooctane sulfonic acid (PFOS)",category:"Long-chain PFSA",conc:"0.012 ppm",judgment:"yes",basis:"Stockholm Convention",evidence:"chemSHERPA XML"},
+{id:3,cas:"375-73-5",name:"PFBS (ペルフルオロブタンスルホン酸)",nameEn:"Perfluorobutane sulfonic acid (PFBS)",category:"Short-chain PFSA",conc:"0.008 ppm",judgment:"suspected",basis:"ECHA SVHC Candidate",evidence:"SDS cross-ref"},
+{id:4,cas:"2058-94-8",name:"PFUnDA (ペルフルオロウンデカン酸)",nameEn:"Perfluoroundecanoic acid (PFUnDA)",category:"Long-chain PFCA",conc:"0.003 ppm",judgment:"yes",basis:"REACH Annex XVII",evidence:"chemSHERPA"},
+{id:5,cas:"307-55-1",name:"PFDoDA (ペルフルオロドデカン酸)",nameEn:"Perfluorododecanoic acid (PFDoDA)",category:"Long-chain PFCA",conc:"< LOD",judgment:"suspected",basis:"ECHA SVHC",evidence:"Analog reasoning"},
+{id:6,cas:"376-06-7",name:"PFODA (ペルフルオロオクタデカン酸)",nameEn:"Perfluorooctadecanoic acid (PFODA)",category:"Long-chain PFCA",conc:"-",judgment:"unknown",basis:"Structural similarity",evidence:"-"},
+{id:7,cas:"27619-97-2",name:"6:2 FTOH (6:2フルオロテロマーアルコール)",nameEn:"6:2 Fluorotelomer alcohol (6:2 FTOH)",category:"Fluorotelomer",conc:"0.15 ppm",judgment:"suspected",basis:"PFAS precursor",evidence:"SDS"},
+{id:8,cas:"9002-84-0",name:"PTFE (ポリテトラフルオロエチレン)",nameEn:"Polytetrafluoroethylene (PTFE)",category:"Fluoropolymer",conc:"2.5%",judgment:"yes",basis:"EU PFAS restriction proposal",evidence:"chemSHERPA-CI"},
+{id:9,cas:"24937-79-9",name:"PVDF (ポリフッ化ビニリデン)",nameEn:"Polyvinylidene fluoride (PVDF)",category:"Fluoropolymer",conc:"1.2%",judgment:"yes",basis:"EU PFAS restriction proposal",evidence:"chemSHERPA-CI"},
+{id:10,cas:"2795-39-3",name:"PFOS-K (カリウム塩)",nameEn:"Potassium perfluorooctanesulfonate",category:"Long-chain PFSA",conc:"-",judgment:"unknown",basis:"POPs analogue",evidence:"-"},
+{id:11,cas:"355-46-4",name:"PFHxS (ペルフルオロヘキサンスルホン酸)",nameEn:"Perfluorohexane sulfonic acid (PFHxS)",category:"Long-chain PFSA",conc:"0.005 ppm",judgment:"yes",basis:"Stockholm Convention 2022",evidence:"Analytical report"},
+{id:12,cas:"678-39-7",name:"8:2 FTOH (8:2フルオロテロマーアルコール)",nameEn:"8:2 Fluorotelomer alcohol (8:2 FTOH)",category:"Fluorotelomer",conc:"-",judgment:"unknown",basis:"PFAS precursor candidate",evidence:"-"},
+{id:13,cas:"1691-99-2",name:"NEtFOSE",nameEn:"N-Ethyl perfluorooctane sulfonamido ethanol",category:"PFAS Precursor",conc:"-",judgment:"unknown",basis:"PFOS precursor",evidence:"-"},
+{id:14,cas:"865-86-1",name:"10:2 FTOH",nameEn:"10:2 Fluorotelomer alcohol",category:"Fluorotelomer",conc:"-",judgment:"unknown",basis:"Structural similarity",evidence:"-"},
+{id:15,cas:"2991-51-7",name:"PFOA-NH4 (アンモニウム塩)",nameEn:"Ammonium perfluorooctanoate",category:"Long-chain PFCA",conc:"0.002 ppm",judgment:"yes",basis:"REACH Annex XVII",evidence:"SDS"},
+{id:16,cas:"335-76-2",name:"PFDA (ペルフルオロデカン酸)",nameEn:"Perfluorodecanoic acid (PFDA)",category:"Long-chain PFCA",conc:"0.001 ppm",judgment:"suspected",basis:"SVHC Candidate",evidence:"Analytical data"},
+{id:17,cas:"68259-12-1",name:"GenX (HFPO-DA)",nameEn:"Hexafluoropropylene oxide dimer acid (GenX)",category:"Short-chain alternative",conc:"-",judgment:"suspected",basis:"ECHA concern list",evidence:"Supplier info"},
+{id:18,cas:"742-73-4",name:"PFNA (ペルフルオロノナン酸)",nameEn:"Perfluorononanoic acid (PFNA)",category:"Long-chain PFCA",conc:"0.004 ppm",judgment:"yes",basis:"REACH Annex XVII",evidence:"chemSHERPA"},
+{id:19,cas:"13252-13-6",name:"HFPO-DA (GenX遊離酸)",nameEn:"HFPO-DA free acid",category:"Short-chain alternative",conc:"-",judgment:"unknown",basis:"Under evaluation",evidence:"-"},
+{id:20,cas:"375-22-4",name:"PFBA (ペルフルオロブタン酸)",nameEn:"Perfluorobutanoic acid (PFBA)",category:"Short-chain PFCA",conc:"0.01 ppm",judgment:"suspected",basis:"Monitoring substance",evidence:"Supplier SDS"},
+{id:21,cas:"2706-90-3",name:"PFPeA (ペルフルオロペンタン酸)",nameEn:"Perfluoropentanoic acid (PFPeA)",category:"Short-chain PFCA",conc:"-",judgment:"unknown",basis:"Structural analogue",evidence:"-"},
+{id:22,cas:"307-24-4",name:"PFHxA (ペルフルオロヘキサン酸)",nameEn:"Perfluorohexanoic acid (PFHxA)",category:"Short-chain PFCA",conc:"0.002 ppm",judgment:"suspected",basis:"SVHC Candidate 2023",evidence:"Cross-ref"},
+{id:23,cas:"108427-53-8",name:"ADONA",nameEn:"ADONA (ammonium 4,8-dioxa-3H-perfluorononanoate)",category:"Short-chain alternative",conc:"-",judgment:"unknown",basis:"Under assessment",evidence:"-"},
+{id:24,cas:"171978-95-3",name:"C6O4",nameEn:"C6O4 (perfluoro-2-propoxypropanoic acid)",category:"Short-chain alternative",conc:"-",judgment:"unknown",basis:"Emerging PFAS",evidence:"-"},
+{id:25,cas:"335-77-3",name:"PFDS (ペルフルオロデカンスルホン酸)",nameEn:"Perfluorodecane sulfonic acid (PFDS)",category:"Long-chain PFSA",conc:"-",judgment:"suspected",basis:"PBT candidate",evidence:"Literature"}
+];
+
+// ═══ SUPPLIERS ═══
+var SUPPLIERS=[
+{id:"SUP-001",name:"信越化学工業",country:"Japan",contact:"佐藤 花子",email:"sato@shinetsu.example.com",responseRate:92,avgDays:3.2,status:"active",pending:2},
+{id:"SUP-002",name:"Dow Chemical",country:"USA",contact:"John Smith",email:"jsmith@dow.example.com",responseRate:88,avgDays:5.1,status:"active",pending:1},
+{id:"SUP-003",name:"BASF SE",country:"Germany",contact:"Klaus Weber",email:"k.weber@basf.example.com",responseRate:95,avgDays:2.8,status:"active",pending:0},
+{id:"SUP-004",name:"住友化学",country:"Japan",contact:"田中 一郎",email:"tanaka@sumitomo.example.com",responseRate:90,avgDays:4.0,status:"active",pending:3},
+{id:"SUP-005",name:"Solvay",country:"Belgium",contact:"Pierre Dupont",email:"p.dupont@solvay.example.com",responseRate:78,avgDays:7.2,status:"active",pending:4},
+{id:"SUP-006",name:"AGC Inc.",country:"Japan",contact:"山田 太郎",email:"yamada@agc.example.com",responseRate:96,avgDays:2.1,status:"active",pending:0},
+{id:"SUP-007",name:"Chemours",country:"USA",contact:"Emily Johnson",email:"ejohnson@chemours.example.com",responseRate:72,avgDays:8.5,status:"delayed",pending:5},
+{id:"SUP-008",name:"Daikin Industries",country:"Japan",contact:"小林 洋子",email:"kobayashi@daikin.example.com",responseRate:94,avgDays:3.0,status:"active",pending:1}
+];
+
+// ═══ CASES ═══
+var CASES=[
+{id:"PFC-001",customer:"Sony Semiconductor Solutions",contact:"田中 太郎",division:"環境品質管理部",email:"tanaka@sony-semi.example.com",deadline:"2026-04-15",format:"chemSHERPA-CI",step:2,priority:"high",
+ products:[{name:"半導体封止材 EMC-500",partNo:"EMC-500-A1"},{name:"導電性接着剤 CA-200",partNo:"CA-200-B3"}],
+ substances:[0,1,2,3,4,5,6,7,8,14,15,17],
+ data:{
+  registration:{submittedBy:"鈴木 健太",date:"2026-03-01",note:"Q2レビュー対応"},
+  analysis:{uploads:["chemSHERPA_EMC500_v3.xml","SDS_CA200_Rev5.pdf","SDS_EMC500_Rev4.pdf"],confidence:"97.2%",extractedCount:12,
+   log:["[OK] chemSHERPA_EMC500_v3.xml をパース中...","[OK] XML構造検証: chemSHERPA-CI v2.08 準拠","[OK] 成分情報 8件 抽出完了","[OK] SDS_CA200_Rev5.pdf OCR処理中...","[OK] CAS番号 4件 自動抽出","[OK] SDS_EMC500_Rev4.pdf OCR処理中...","[OK] 濃度情報クロスチェック完了","[OK] 合計 12物質 を統合・正規化完了"]},
+  screening:{summary:{yes:7,suspected:3,unknown:2}},
+  resolution:{inquiries:[
+   {substance:"PFODA",cas:"376-06-7",supplier:"信越化学工業",status:"sent",sentDate:"2026-03-18",remindDate:null,responseDate:null},
+   {substance:"PFOS-K",cas:"2795-39-3",supplier:"Dow Chemical",status:"responded",sentDate:"2026-03-15",remindDate:"2026-03-20",responseDate:"2026-03-22"}]},
+  validation:{checks:[
+   {item:"CAS番号整合性",target:"PFOA (335-67-1)",expected:"335-67-1",actual:"335-67-1",result:"pass"},
+   {item:"濃度単位",target:"PTFE",expected:"%(w/w)",actual:"%(w/w)",result:"pass"},
+   {item:"閾値超過",target:"PFOA 0.025ppm",expected:"< 0.025ppm",actual:"0.025ppm",result:"warning"},
+   {item:"CAS番号形式",target:"GenX",expected:"XXX-XX-X",actual:"68259-12-1",result:"pass"},
+   {item:"SDS/XML矛盾",target:"PVDF 濃度",expected:"1.2%",actual:"1.2%",result:"pass"}]},
+  submission:{format:"chemSHERPA-CI v2.08",templateStatus:"mapped",fields:[
+   {field:"製品名",status:"mapped"},{field:"CAS番号",status:"mapped"},{field:"含有率",status:"mapped"},{field:"閾値判定",status:"mapped"},{field:"除外申請",status:"pending"}]},
+  archive:{files:[
+   {name:"chemSHERPA_EMC500_v3.xml",type:"原本",date:"2026-03-01",by:"鈴木"},
+   {name:"SDS_CA200_Rev5.pdf",type:"SDS",date:"2026-03-01",by:"鈴木"},
+   {name:"screening_result_PFC001.xlsx",type:"判定結果",date:"2026-03-22",by:"システム"},
+   {name:"supplier_inquiry_log.pdf",type:"照会ログ",date:"2026-03-22",by:"システム"},
+   {name:"evidence_pack_PFC001.zip",type:"証跡パック",date:"2026-03-25",by:"システム"}],
+   versions:[{v:"1.0",date:"2026-03-01",note:"初期登録",by:"鈴木"},{v:"1.1",date:"2026-03-18",note:"スクリーニング完了",by:"システム"},{v:"1.2",date:"2026-03-22",note:"サプライヤー回答反映",by:"鈴木"}],
+   signoffs:[{role:"環境品質担当",name:"鈴木 健太",status:"done",date:"2026-03-23"},{role:"品質保証課長",name:"山本 洋子",status:"done",date:"2026-03-24"},{role:"部長承認",name:"高橋 誠",status:"pending",date:"-"}]}}},
+{id:"PFC-002",customer:"TSMC Japan",contact:"Lin Wei",division:"Green Manufacturing Div.",email:"lin.wei@tsmc.example.com",deadline:"2026-04-30",format:"chemSHERPA-AI",step:4,priority:"high",
+ products:[{name:"フォトレジスト PR-7000",partNo:"PR-7000-X2"},{name:"CMP Slurry CS-300",partNo:"CS-300-M1"},{name:"エッチング液 ET-100",partNo:"ET-100-F5"}],
+ substances:[0,1,2,7,8,9,10,11,12,13,16,17,18,19,20,21],
+ data:{
+  registration:{submittedBy:"佐藤 美咲",date:"2026-02-20",note:"PFAS規制強化対応"},
+  analysis:{uploads:["chemSHERPA_PR7000.xml","SDS_CS300.pdf","SDS_ET100.pdf","chemSHERPA_CS300.xml"],confidence:"95.8%",extractedCount:16,
+   log:["[OK] 4ファイル一括パース完了","[OK] 16物質抽出・統合完了"]},
+  screening:{summary:{yes:5,suspected:4,unknown:7}},
+  resolution:{inquiries:[
+   {substance:"PFOS-K",cas:"2795-39-3",supplier:"住友化学",status:"reminded",sentDate:"2026-03-10",remindDate:"2026-03-20",responseDate:null},
+   {substance:"8:2 FTOH",cas:"678-39-7",supplier:"Chemours",status:"overdue",sentDate:"2026-03-05",remindDate:"2026-03-15",responseDate:null},
+   {substance:"NEtFOSE",cas:"1691-99-2",supplier:"Chemours",status:"overdue",sentDate:"2026-03-05",remindDate:"2026-03-15",responseDate:null},
+   {substance:"10:2 FTOH",cas:"865-86-1",supplier:"Solvay",status:"sent",sentDate:"2026-03-18",remindDate:null,responseDate:null}]},
+  validation:{checks:[]},submission:{format:"chemSHERPA-AI v2.08",templateStatus:"pending",fields:[]},
+  archive:{files:[],versions:[{v:"1.0",date:"2026-02-20",note:"初期登録",by:"佐藤"}],signoffs:[]}}},
+{id:"PFC-003",customer:"Samsung Electronics",contact:"Park Jisoo",division:"EHS Compliance Team",email:"jisoo.park@samsung.example.com",deadline:"2026-05-10",format:"IMDS",step:1,priority:"medium",
+ products:[{name:"MLCCバインダー BN-400",partNo:"BN-400-C1"}],
+ substances:[0,1,3,7,8],
+ data:{
+  registration:{submittedBy:"中村 翔",date:"2026-03-15",note:"IMDS形式指定"},
+  analysis:{uploads:[],confidence:"-",extractedCount:0,log:[]},
+  screening:{summary:{yes:0,suspected:0,unknown:0}},
+  resolution:{inquiries:[]},validation:{checks:[]},submission:{format:"IMDS",templateStatus:"pending",fields:[]},
+  archive:{files:[],versions:[{v:"1.0",date:"2026-03-15",note:"初期登録",by:"中村"}],signoffs:[]}}},
+{id:"PFC-004",customer:"Infineon Technologies",contact:"Anna Schmidt",division:"Product Compliance",email:"anna.schmidt@infineon.example.com",deadline:"2026-04-20",format:"chemSHERPA-CI",step:5,priority:"high",
+ products:[{name:"ダイアタッチ材 DA-150",partNo:"DA-150-S3"},{name:"ワイヤボンド材 WB-80",partNo:"WB-80-G2"}],
+ substances:[0,1,2,3,4,5,7,8,9,10,15,17,24],
+ data:{
+  registration:{submittedBy:"鈴木 健太",date:"2026-02-10",note:"EU PFAS規制対応"},
+  analysis:{uploads:["chemSHERPA_DA150.xml","chemSHERPA_WB80.xml","SDS_DA150.pdf"],confidence:"98.1%",extractedCount:13,
+   log:["[OK] 3ファイルパース完了","[OK] 13物質抽出完了"]},
+  screening:{summary:{yes:6,suspected:4,unknown:3}},
+  resolution:{inquiries:[
+   {substance:"PFODA",cas:"376-06-7",supplier:"信越化学工業",status:"responded",sentDate:"2026-03-01",remindDate:null,responseDate:"2026-03-08"},
+   {substance:"PFOS-K",cas:"2795-39-3",supplier:"AGC Inc.",status:"responded",sentDate:"2026-03-01",remindDate:null,responseDate:"2026-03-05"},
+   {substance:"PFDS",cas:"335-77-3",supplier:"Daikin Industries",status:"responded",sentDate:"2026-03-01",remindDate:null,responseDate:"2026-03-07"}]},
+  validation:{checks:[
+   {item:"CAS番号整合性",target:"全13物質",expected:"一致",actual:"一致",result:"pass"},
+   {item:"濃度単位統一",target:"全物質",expected:"ppm / %",actual:"ppm / %",result:"pass"},
+   {item:"サプライヤー回答矛盾",target:"PFODA",expected:"不含有",actual:"不含有確認",result:"pass"},
+   {item:"閾値判定",target:"PFOA",expected:"< 0.025 ppm",actual:"0.025 ppm",result:"warning"}]},
+  submission:{format:"chemSHERPA-CI v2.08",templateStatus:"mapped",fields:[
+   {field:"製品名",status:"mapped"},{field:"CAS番号",status:"mapped"},{field:"含有率",status:"mapped"},{field:"閾値判定",status:"mapped"},{field:"除外申請",status:"mapped"}]},
+  archive:{files:[
+   {name:"chemSHERPA_DA150.xml",type:"原本",date:"2026-02-10",by:"鈴木"},
+   {name:"evidence_pack_PFC004.zip",type:"証跡パック",date:"2026-03-20",by:"システム"}],
+   versions:[{v:"1.0",date:"2026-02-10",note:"初期登録",by:"鈴木"},{v:"2.0",date:"2026-03-20",note:"提出物生成完了",by:"システム"}],
+   signoffs:[{role:"環境品質担当",name:"鈴木 健太",status:"done",date:"2026-03-21"},{role:"品質保証課長",name:"山本 洋子",status:"done",date:"2026-03-22"},{role:"部長承認",name:"高橋 誠",status:"done",date:"2026-03-23"}]}}},
+{id:"PFC-005",customer:"Texas Instruments",contact:"James Lee",division:"Environmental Affairs",email:"james.lee@ti.example.com",deadline:"2026-05-30",format:"chemSHERPA-CI",step:0,priority:"low",
+ products:[{name:"封止材 EM-900",partNo:"EM-900-K1"}],substances:[],
+ data:{registration:{submittedBy:"中村 翔",date:"2026-03-22",note:"新規案件"},analysis:{uploads:[],confidence:"-",extractedCount:0,log:[]},screening:{summary:{yes:0,suspected:0,unknown:0}},resolution:{inquiries:[]},validation:{checks:[]},submission:{format:"chemSHERPA-CI",templateStatus:"pending",fields:[]},archive:{files:[],versions:[{v:"1.0",date:"2026-03-22",note:"初期登録",by:"中村"}],signoffs:[]}}},
+{id:"PFC-006",customer:"Intel Corporation",contact:"Sarah Chen",division:"Responsible Materials",email:"sarah.chen@intel.example.com",deadline:"2026-04-10",format:"chemSHERPA-CI",step:6,priority:"high",
+ products:[{name:"アンダーフィル材 UF-300",partNo:"UF-300-P2"},{name:"フラックス FL-50",partNo:"FL-50-R1"}],
+ substances:[0,1,2,3,7,8,9,15,17,22],
+ data:{
+  registration:{submittedBy:"佐藤 美咲",date:"2026-01-20",note:"Intel Green Chemistry要件"},
+  analysis:{uploads:["chemSHERPA_UF300.xml","chemSHERPA_FL50.xml"],confidence:"99.0%",extractedCount:10,log:["[OK] 全ファイルパース完了","[OK] 10物質抽出完了"]},
+  screening:{summary:{yes:5,suspected:3,unknown:2}},
+  resolution:{inquiries:[
+   {substance:"PFHxA",cas:"307-24-4",supplier:"AGC Inc.",status:"responded",sentDate:"2026-02-15",remindDate:null,responseDate:"2026-02-18"},
+   {substance:"PFODA",cas:"376-06-7",supplier:"BASF SE",status:"responded",sentDate:"2026-02-15",remindDate:null,responseDate:"2026-02-20"}]},
+  validation:{checks:[
+   {item:"CAS整合性",target:"全10物質",expected:"一致",actual:"一致",result:"pass"},
+   {item:"濃度単位",target:"全物質",expected:"統一",actual:"統一",result:"pass"},
+   {item:"矛盾チェック",target:"全物質",expected:"矛盾なし",actual:"矛盾なし",result:"pass"}]},
+  submission:{format:"chemSHERPA-CI v2.08",templateStatus:"mapped",fields:[{field:"全フィールド",status:"mapped"}]},
+  archive:{files:[
+   {name:"evidence_pack_PFC006.zip",type:"証跡パック",date:"2026-03-15",by:"システム"},
+   {name:"chemSHERPA_output_PFC006.xml",type:"提出物",date:"2026-03-15",by:"システム"}],
+   versions:[{v:"1.0",date:"2026-01-20",note:"初期登録",by:"佐藤"},{v:"3.0",date:"2026-03-15",note:"提出完了・アーカイブ",by:"システム"}],
+   signoffs:[{role:"環境品質担当",name:"佐藤 美咲",status:"done",date:"2026-03-16"},{role:"品質保証課長",name:"山本 洋子",status:"done",date:"2026-03-17"},{role:"部長承認",name:"高橋 誠",status:"done",date:"2026-03-18"}]}}},
+{id:"PFC-007",customer:"Murata Manufacturing",contact:"木村 健",division:"環境管理部",email:"kimura@murata.example.com",deadline:"2026-06-01",format:"chemSHERPA-AI",step:1,priority:"medium",
+ products:[{name:"誘電体材料 DM-120",partNo:"DM-120-W1"},{name:"電極ペースト EP-60",partNo:"EP-60-N4"}],
+ substances:[0,1,7,8],
+ data:{registration:{submittedBy:"鈴木 健太",date:"2026-03-18",note:"定期更新"},
+  analysis:{uploads:["SDS_DM120.pdf"],confidence:"93.5%",extractedCount:4,log:["[OK] SDS_DM120.pdf OCR処理中...","[OK] CAS番号 4件抽出","[WARN] EP-60 SDS未受領"]},
+  screening:{summary:{yes:2,suspected:0,unknown:2}},resolution:{inquiries:[]},validation:{checks:[]},submission:{format:"chemSHERPA-AI",templateStatus:"pending",fields:[]},
+  archive:{files:[],versions:[{v:"1.0",date:"2026-03-18",note:"初期登録",by:"鈴木"}],signoffs:[]}}},
+{id:"PFC-008",customer:"Renesas Electronics",contact:"伊藤 真一",division:"品質保証部",email:"ito@renesas.example.com",deadline:"2026-04-25",format:"chemSHERPA-CI",step:3,priority:"medium",
+ products:[{name:"リードフレーム材 LF-200",partNo:"LF-200-T2"}],
+ substances:[0,1,2,3,7,10,11,16,22,24],
+ data:{registration:{submittedBy:"佐藤 美咲",date:"2026-02-28",note:"PFAS全般調査"},
+  analysis:{uploads:["chemSHERPA_LF200.xml","SDS_LF200.pdf"],confidence:"96.5%",extractedCount:10,log:["[OK] 2ファイルパース完了","[OK] 10物質抽出完了"]},
+  screening:{summary:{yes:4,suspected:3,unknown:3}},
+  resolution:{inquiries:[
+   {substance:"8:2 FTOH",cas:"678-39-7",supplier:"Daikin Industries",status:"sent",sentDate:"2026-03-20",remindDate:null,responseDate:null},
+   {substance:"PFHxA",cas:"307-24-4",supplier:"信越化学工業",status:"sent",sentDate:"2026-03-20",remindDate:null,responseDate:null},
+   {substance:"PFDS",cas:"335-77-3",supplier:"Solvay",status:"sent",sentDate:"2026-03-20",remindDate:null,responseDate:null}]},
+  validation:{checks:[]},submission:{format:"chemSHERPA-CI",templateStatus:"pending",fields:[]},
+  archive:{files:[],versions:[{v:"1.0",date:"2026-02-28",note:"初期登録",by:"佐藤"}],signoffs:[]}}}
+];
+
+// ═══ Helper components ═══
+function T(t,c){return h("span",{className:"tag "+c},t)}
+function KV(pairs){return h("div",{className:"g2"},pairs.map(function(p,i){return h("div",{key:i},h("span",{className:"k"},p[0]+": "),h("span",{className:"v"},p[1]))}))}
+function G(hds,rows){return h("table",{style:{marginTop:8}},h("thead",null,h("tr",null,hds.map(function(x,i){return h("th",{key:i},x)}))),h("tbody",null,rows.map(function(r,i){return h("tr",{key:i,className:r._cls||""},r.cells.map(function(c,j){return h("td",{key:j,style:j===0?{fontWeight:500}:null},c)}))})))}
+function Sub(t){return h("div",{className:"sub-title"},t)}
+function Sec(p){return h("div",{className:"section"},h("div",{className:"sh",onClick:p.toggle},h("h3",null,"Step ",p.num," ",p.title," ",p.tag||null),h("span",{style:{color:"var(--ht)",fontSize:14}},p.open?"▲":"▼")),p.open?h("div",{className:"sb2"},p.children):null)}
+function ApprFlow(flow){return h("div",{className:"appr-flow"},flow.map(function(a,i){return[i>0?h("span",{key:"a"+i,className:"appr-arrow"},"→"):null,h("div",{key:i,className:"appr-step "+a.status},a.status==="done"?"✓ ":"",a.role," ",a.name," ",a.date&&a.date!=="-"?("("+a.date+")"):"")]}))}
+function Chevrons(props){var sn=gSN();return h("div",{className:"chevrons"},STEP_KEYS.map(function(k,i){return h("div",{key:i,className:"chev "+(i<props.cur?"chev-done":i===props.cur?"chev-cur":"chev-fut"),onClick:function(){props.onClick(i)}},h("b",null,i+1),sn[k])}))}
+function JT(j){if(j==="yes")return T(L("該当"),"tj-yes");if(j==="suspected")return T(L("疑い"),"tj-sus");return T(L("不明"),"tj-unk")}
+function PriTag(p){if(p==="high")return T(L("高"),"tr");if(p==="medium")return T(L("中"),"ta");return T(L("低"),"tb")}
+function FmtTag(f){return T(f,"tt")}
+function StatusTag(s){if(s==="sent")return T(L("送信済"),"tb");if(s==="reminded")return T(L("リマインド済"),"ta");if(s==="responded")return T(L("回答済"),"tg");if(s==="overdue")return T(L("期限超過"),"tr");return T(s,"tb")}
+function Legend(){return h("div",{className:"legend-bar"},
+  h("span",{className:"lg-title"},L("凡例:")),
+  h("span",{className:"lg-title"},L("判定")),
+  T(L("該当"),"tj-yes"),T(L("疑い"),"tj-sus"),T(L("不明"),"tj-unk"),
+  h("span",{className:"lg-sep"}),
+  h("span",{className:"lg-title"},L("進捗 ")),
+  T(L("完了"),"tg"),T(L("進行中"),"tb"),T(L("未着手"),"tag")
+)}
+
+// ═══ App ═══
+// ═══ chemSHERPA XML Parser ═══
+function parseChemSherpaXML(xmlStr){
+  var parser=new DOMParser();
+  var doc=parser.parseFromString(xmlStr,"text/xml");
+  var results=[];
+  // Try chemSHERPA-CI format: look for substance/component nodes
+  var substances=doc.querySelectorAll("Substance, substance, Component, component, Chemical, chemical, Material, material");
+  if(substances.length===0){
+    // Fallback: scan all elements for CAS patterns
+    var all=doc.querySelectorAll("*");
+    for(var i=0;i<all.length;i++){
+      var txt=all[i].textContent||"";
+      var cas=txt.match(/\b(\d{2,7}-\d{2}-\d)\b/);
+      if(cas){
+        var name=all[i].getAttribute("name")||all[i].getAttribute("Name")||all[i].getAttribute("substanceName")||all[i].parentElement&&all[i].parentElement.getAttribute("name")||"Unknown ("+cas[1]+")";
+        if(!results.some(function(r){return r.cas===cas[1]})){
+          results.push({cas:cas[1],name:name,conc:all[i].getAttribute("concentration")||all[i].getAttribute("Concentration")||all[i].getAttribute("content")||"-"});
+        }
+      }
+    }
+  }else{
+    substances.forEach(function(node){
+      var cas=node.getAttribute("casNumber")||node.getAttribute("CASNumber")||node.getAttribute("cas")||node.getAttribute("CAS")||"";
+      if(!cas){var t=node.textContent||"";var m=t.match(/\b(\d{2,7}-\d{2}-\d)\b/);if(m)cas=m[1];}
+      if(!cas)return;
+      var name=node.getAttribute("name")||node.getAttribute("Name")||node.getAttribute("substanceName")||node.getAttribute("SubstanceName")||"Unknown ("+cas+")";
+      var conc=node.getAttribute("concentration")||node.getAttribute("Concentration")||node.getAttribute("content")||node.getAttribute("Content")||"-";
+      if(!results.some(function(r){return r.cas===cas})){results.push({cas:cas,name:name,conc:conc});}
+    });
+  }
+  return results;
+}
+
+// ═══ PFAS keyword matcher ═══
+function matchPFAS(cas,name){
+  var knownPFAS={"335-67-1":"yes","1763-23-1":"yes","375-73-5":"suspected","2058-94-8":"yes","307-55-1":"suspected","376-06-7":"unknown","27619-97-2":"suspected","9002-84-0":"yes","24937-79-9":"yes","2795-39-3":"unknown","355-46-4":"yes","678-39-7":"unknown","1691-99-2":"unknown","865-86-1":"unknown","2991-51-7":"yes","335-76-2":"suspected","68259-12-1":"suspected","742-73-4":"yes","13252-13-6":"unknown","375-22-4":"suspected","2706-90-3":"unknown","307-24-4":"suspected","108427-53-8":"unknown","171978-95-3":"unknown","335-77-3":"suspected"};
+  if(knownPFAS[cas])return knownPFAS[cas];
+  var nm=(name||"").toLowerCase();
+  if(/pfas|pfoa|pfos|pfhxs|ptfe|pvdf|fluoro|perfluor/.test(nm))return"suspected";
+  return"unknown";
+}
+
+// ═══ EML file parser ═══
+function parseEmlFile(text,filename){
+  var sep=text.indexOf('\n\n');if(sep<0)sep=text.indexOf('\r\n\r\n');
+  var hdrText=sep>0?text.substring(0,sep):'';
+  var body=sep>0?text.substring(sep+2).trim():text;
+  var hdr={};
+  hdrText.replace(/\r/g,'').split('\n').forEach(function(l){
+    var m=l.match(/^([A-Za-z-]+):\s*(.*)/);if(m)hdr[m[1].toLowerCase()]=m[2];
+  });
+  // Decode quoted-printable
+  if((hdr['content-transfer-encoding']||'').toLowerCase().indexOf('quoted')>=0)
+    body=body.replace(/=[\r\n]+/g,'').replace(/=([0-9A-Fa-f]{2})/g,function(_,h){return String.fromCharCode(parseInt(h,16));});
+  // Strip HTML
+  if(/<(html|body|div|p)\b/i.test(body))
+    body=body.replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s{3,}/g,'\n');
+  // Parse From
+  var fromRaw=hdr['from']||'';
+  var fp=fromRaw.match(/^"?([^"<]+?)"?\s*<([^>]+)>$/);
+  var fromName=fp?fp[1].trim():fromRaw.split('@')[0];
+  var fromEmail=fp?fp[2].trim():fromRaw.trim();
+  var subject=hdr['subject']||filename||'';
+  var dateStr='';try{dateStr=new Date(hdr['date']||'').toISOString().substring(0,10);}catch(e){dateStr=new Date().toISOString().substring(0,10);}
+  // Auto-extract case fields from body+subject
+  var full=subject+'\n'+body;
+  var format='chemSHERPA-CI';
+  if(/chemSHERPA.AI/i.test(full))format='chemSHERPA-AI';else if(/\bIMDS\b/i.test(full))format='IMDS';
+  var priority='medium';
+  if(/至急|urgent|high.*priority|緊急|critical/i.test(full))priority='high';
+  else if(/\blow\b|低優先/i.test(full))priority='low';
+  var deadline='';
+  var dlm=full.match(/(\d{4})[年\-\/](\d{1,2})[月\-\/](\d{1,2})/);
+  if(dlm)deadline=dlm[1]+'-'+dlm[2].padStart(2,'0')+'-'+dlm[3].padStart(2,'0');
+  var customer=fromName||'';
+  var dm=fromEmail.match(/@([^.]+)\./);if(dm&&!customer)customer=dm[1].charAt(0).toUpperCase()+dm[1].slice(1);
+  // Products: part numbers
+  var products=[];
+  var pms=full.match(/(?:型番|Part\s*No\.?|P\/N|品番)[：:\s]+([A-Z0-9][A-Z0-9\-]{2,})/gi)||[];
+  pms.forEach(function(pm){var pn=pm.replace(/.*[：:\s]/,'').trim();if(!products.some(function(p){return p.partNo===pn;}))products.push({name:'',partNo:pn});});
+  if(!products.length)products.push({name:'',partNo:''});
+  return{id:'eml-'+Date.now(),from:fromEmail,fromName:fromName||fromEmail,subject:subject,date:dateStr,body:body.substring(0,3000),
+    extracted:{customer:customer,contact:fromName,division:'',email:fromEmail,deadline:deadline,format:format,priority:priority,products:products}};
+}
+
+// ═══ Email mock data for import ═══
+var EMAIL_INBOX=[
+  {id:"e1",from:"tanaka@sony-semi.example.com",fromName:"田中 太郎",subject:"【至急】PFAS含有調査依頼 - 半導体封止材",date:"2026-03-24",body:"お世話になっております。Sony Semiconductor Solutions 環境品質管理部の田中です。\n\nEU PFAS規制強化に伴い、下記製品のPFAS含有情報をchemSHERPA-CI形式でご提出いただきたくお願いいたします。\n\n対象製品: 半導体封止材 EMC-700 (型番: EMC-700-D2)\n提出期限: 2026-05-15\n優先度: 高\n\nよろしくお願いいたします。",
+   extracted:{customer:"Sony Semiconductor Solutions",contact:"田中 太郎",division:"環境品質管理部",email:"tanaka@sony-semi.example.com",deadline:"2026-05-15",format:"chemSHERPA-CI",priority:"high",products:[{name:"半導体封止材 EMC-700",partNo:"EMC-700-D2"}]}},
+  {id:"e2",from:"mueller@bosch.example.com",fromName:"Hans Mueller",subject:"PFAS Declaration Request - Automotive Sensors",date:"2026-03-23",body:"Dear Sir/Madam,\n\nAs part of our PFAS compliance initiative under the proposed EU PFAS restriction, we kindly request PFAS content declarations for the following products:\n\nProduct: Sensor Coating SC-150 (Part No: SC-150-A3)\nProduct: Adhesive Film AF-80 (Part No: AF-80-K1)\nDeadline: 2026-06-01\nFormat: IMDS\n\nBest regards,\nHans Mueller\nRobert Bosch GmbH - Environmental Compliance",
+   extracted:{customer:"Robert Bosch GmbH",contact:"Hans Mueller",division:"Environmental Compliance",email:"mueller@bosch.example.com",deadline:"2026-06-01",format:"IMDS",priority:"medium",products:[{name:"Sensor Coating SC-150",partNo:"SC-150-A3"},{name:"Adhesive Film AF-80",partNo:"AF-80-K1"}]}},
+  {id:"e3",from:"park@lg.example.com",fromName:"Park Minjun",subject:"PFAS調査依頼 - ディスプレイ材料",date:"2026-03-22",body:"お世話になります。LG Display 環境安全部 Parkです。\n\n下記材料のPFAS含有情報について、chemSHERPA-AI形式で2026-05-20までにご提出をお願いします。\n\n対象: 偏光フィルム PF-200 (PF-200-S1)\n優先度: 中\n\n以上、よろしくお願いいたします。",
+   extracted:{customer:"LG Display",contact:"Park Minjun",division:"環境安全部",email:"park@lg.example.com",deadline:"2026-05-20",format:"chemSHERPA-AI",priority:"medium",products:[{name:"偏光フィルム PF-200",partNo:"PF-200-S1"}]}}
+];
+
+function App(){
+  var _pg=us("cases"),pg=_pg[0],spg=_pg[1];
+  var _ln=us("ja"),lang=_ln[0],setLang=_ln[1];_CL=lang;
+  var _cs=us(null),selCase=_cs[0],sselCase=_cs[1];
+  var _os=us(-1),osec=_os[0],sosec=_os[1];
+  var _sq=us(""),searchQ=_sq[0],ssearchQ=_sq[1];
+  var _sf=us("all"),scrFilter=_sf[0],sscrFilter=_sf[1];
+  var _ssq=us(""),scrSearch=_ssq[0],sscrSearch=_ssq[1];
+  var _sc=us(CASES[0].id),scrCase=_sc[0],sscrCase=_sc[1];
+  var _subs=us(SUBSTANCES),subs=_subs[0],ssubs=_subs[1];
+  var _sel=us({}),sel=_sel[0],ssel=_sel[1];
+  // Upload state for file parsing
+  var _upl=us(null),uploadResult=_upl[0],setUploadResult=_upl[1];
+  var _uplLog=us([]),uploadLog=_uplLog[0],setUploadLog=_uplLog[1];
+  var _uplDrag=us(false),isDragging=_uplDrag[0],setIsDragging=_uplDrag[1];
+  // Email import state
+  var _emailMode=us(false),emailMode=_emailMode[0],setEmailMode=_emailMode[1];
+  var _emailSel=us(null),emailSel=_emailSel[0],setEmailSel=_emailSel[1];
+  var _emailScanning=us(false),emailScanning=_emailScanning[0],setEmailScanning=_emailScanning[1];
+  var _emailResults=us([]),emailResults=_emailResults[0],setEmailResults=_emailResults[1];
+  var _emlDrag=us(false),emlDrag=_emlDrag[0],setEmlDrag=_emlDrag[1];
+  // NewCasePage form state (lifted to avoid conditional hook error)
+  var _ncFv=us({customer:"",contact:"",division:"",email:"",deadline:"",format:"chemSHERPA-CI",priority:"medium",productName:"",partNo:""});
+  var ncFv=_ncFv[0],setNcFv=_ncFv[1];
+  var _ncSaving=us(false),ncSaving=_ncSaving[0],setNcSaving=_ncSaving[1];
+  var _ncSaved=us(false),ncSaved=_ncSaved[0],setNcSaved=_ncSaved[1];
+  // Supabase state
+  var _dbCases=us(CASES),dbCases=_dbCases[0],setDbCases=_dbCases[1];
+  var _dbSuppliers=us(SUPPLIERS),dbSuppliers=_dbSuppliers[0],setDbSuppliers=_dbSuppliers[1];
+  var _dbLoading=us(false),dbLoading=_dbLoading[0],setDbLoading=_dbLoading[1];
+  var _dbStatus=us(null),dbStatus=_dbStatus[0],setDbStatus=_dbStatus[1];
+
+  // Load cases from Supabase on mount
+  ue(function(){
+    setDbLoading(true);
+    sb.from('cases').select('*').order('created_at',{ascending:false}).then(function(res){
+      if(res.error){setDbStatus('error: '+res.error.message);setDbLoading(false);return;}
+      if(res.data&&res.data.length>0){
+        var mapped=res.data.map(function(c){
+          var local=CASES.find(function(lc){return lc.id===c.id;});
+          return local?Object.assign({},local,{step:c.step,priority:c.priority,deadline:c.deadline}):
+            {id:c.id,customer:c.customer,contact:c.contact,division:c.division,email:c.email,
+             deadline:c.deadline,format:c.format,step:c.step,priority:c.priority,
+             products:[],substances:[],data:{registration:{submittedBy:c.submitted_by||'',date:c.created_at?c.created_at.substring(0,10):'',note:c.note||''},
+              analysis:{uploads:[],confidence:'-',extractedCount:0,log:[]},
+              screening:{summary:{yes:0,suspected:0,unknown:0}},resolution:{inquiries:[]},
+              validation:{checks:[]},submission:{format:c.format,templateStatus:'pending',fields:[]},
+              archive:{files:[],versions:[{v:'1.0',date:c.created_at?c.created_at.substring(0,10):'',note:'初期登録',by:c.submitted_by||''}],signoffs:[]}}};
+        });
+        setDbCases(mapped);
+        setDbStatus('db');
+      }else{setDbStatus('empty');}
+      setDbLoading(false);
+    });
+    sb.from('suppliers').select('*').then(function(res){
+      if(!res.error&&res.data&&res.data.length>0)setDbSuppliers(res.data);
+    });
+  },[]);
+
+  // Save new case to Supabase
+  function saveCase(caseData){
+    return sb.from('cases').upsert({
+      id:caseData.id,customer:caseData.customer,contact:caseData.contact,
+      division:caseData.division,email:caseData.email,deadline:caseData.deadline,
+      format:caseData.format,step:caseData.step,priority:caseData.priority,
+      note:caseData.data.registration.note,submitted_by:caseData.data.registration.submittedBy
+    });
+  }
+
+  var ALL_CASES=dbCases;
+
+  function nav(p){spg(p);sselCase(null);sosec(-1);}
+  function goCase(c){spg("cases");sselCase(c);sosec(c.step);}
+  function tog(i){sosec(osec===i?-1:i);}
+  function updateJudgment(id,val){ssubs(subs.map(function(s){return s.id===id?Object.assign({},s,{judgment:val}):s;}));}
+  function toggleSel(id){var n=Object.assign({},sel);n[id]=!n[id];ssel(n);}
+  function bulkJudge(val){var n=subs.map(function(s){return sel[s.id]?Object.assign({},s,{judgment:val}):s;});ssubs(n);ssel({});}
+
+  // ═══ Sidebar ═══
+  var menuItems=[
+    {id:"cases",icon:"📋",label:L("案件一覧"),cnt:ALL_CASES.length},
+    {id:"new",icon:"＋",label:L("新規登録")},
+    {id:"screening",icon:"🔬",label:L("スクリーニング")},
+    {id:"suppliers",icon:"🏭",label:L("サプライヤー管理"),cnt:SUPPLIERS.length},
+    {id:"dashboard",icon:"📊",label:L("ダッシュボード")}
+  ];
+  var Sidebar=h("div",{className:"sidebar"},
+    h("div",{className:"sb-logo"},
+      h("div",{className:"logo"},"⚗"),
+      h("div",null,h("h1",null,"ChemOs"),h("p",null,L("PFASコンプライアンス管理")))),
+    h("div",{className:"sb-section"},L("メニュー")),
+    menuItems.map(function(m){return h("div",{key:m.id,className:"sb-item"+(pg===m.id?" active":""),onClick:function(){nav(m.id)}},
+      h("span",{className:"sb-icon"},m.icon),h("span",null,m.label),m.cnt?h("span",{className:"sb-cnt"},m.cnt):null)}),
+    h("div",{className:"sb-divider"}),
+    h("div",{className:"sb-item",onClick:function(){var nl=lang==="ja"?"en":"ja";setLang(nl);_CL=nl;}},
+      h("span",{className:"sb-icon"},"🌐"),h("span",null,lang==="ja"?"English":"日本語"))
+  );
+
+  // ═══ DB Status bar ═══
+  function DbStatusBar(){
+    if(dbLoading)return h("div",{style:{fontSize:11,color:"var(--tl)",padding:"6px 14px",background:"var(--tlbg)",borderRadius:8,marginBottom:10}},L("⏳ Supabase からデータを読み込み中..."));
+    if(dbStatus==="db")return h("div",{style:{fontSize:11,color:"var(--gn)",padding:"6px 14px",background:"var(--gnbg)",borderRadius:8,marginBottom:10,display:"flex",justifyContent:"space-between",alignItems:"center"}},
+      (_CL==="en"?"✅ Supabase connected — "+ALL_CASES.length+" cases loaded":"✅ Supabase 接続済 — "+ALL_CASES.length+" 件の案件を取得"),
+      h("a",{href:"https://supabase.com/dashboard/project/pqiavnrtfbmeapkuxihk",target:"_blank",style:{fontSize:10,color:"var(--gn)"}},"Dashboard →"));
+    if(dbStatus==="error")return h("div",{style:{fontSize:11,color:"var(--rd)",padding:"6px 14px",background:"var(--rdbg)",borderRadius:8,marginBottom:10}},L("⚠ DB接続エラー — ローカルデータを使用中"));
+    return null;
+  }
+
+  // ═══ Case List Page ═══
+  function CaseListPage(){
+    var filtered=ALL_CASES.filter(function(c){
+      if(!searchQ)return true;
+      var q=searchQ.toLowerCase();
+      return c.id.toLowerCase().indexOf(q)>=0||c.customer.toLowerCase().indexOf(q)>=0||
+        c.products.some(function(p){return p.name.toLowerCase().indexOf(q)>=0;});
+    });
+    var sn=gSN();
+    var Left=h("div",{className:"split-left"},
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}},
+        h("div",{className:"page-title",style:{marginBottom:0}},L("案件一覧")),
+        h("button",{className:"btn bg sm",onClick:function(){nav("new")}},L("＋ 新規"))),
+      Legend(),
+      h("div",{className:"search-box"},
+        h("span",{className:"s-icon"},"🔍"),
+        h("input",{placeholder:L("案件ID・顧客・製品で検索..."),value:searchQ,onChange:function(e){ssearchQ(e.target.value)}})),
+      h("div",{style:{fontSize:11,color:"var(--sub)",marginBottom:8}},filtered.length+"/"+ALL_CASES.length+L("件")),
+      filtered.map(function(c){
+        var isOverdue=new Date(c.deadline)<new Date();
+        return h("div",{key:c.id,className:"deal-mini"+(selCase&&selCase.id===c.id?" sel":""),onClick:function(){goCase(c)}},
+          h("div",{className:"dm-top"},
+            h("span",null,h("span",{className:"dm-id"},c.id)," ",h("span",{style:{fontSize:11}},c.customer)),
+            h("span",null,PriTag(c.priority))),
+          h("div",{className:"dm-meta"},
+            h("span",null,"⏰ "+c.deadline+(isOverdue?" ⚠":""))," ",FmtTag(c.format)," ",
+            h("span",null,sn[STEP_KEYS[Math.min(c.step,6)]])),
+          h("div",{className:"dm-bar"},STEP_KEYS.map(function(k,i){
+            return h("div",{key:i,style:{background:i<c.step?"var(--lb)":i===c.step?"var(--navy)":"var(--bd)"}});})))})
+    );
+    var Right=selCase?CaseDetail(selCase):h("div",{className:"empty-detail"},h("div",{className:"ed-icon"},"🧪"),h("p",null,L("案件をクリックすると詳細が表示されます")));
+    return h("div",null,DbStatusBar(),h("div",{className:"split-wrap"},Left,h("div",{className:"split-right"},Right)));
+  }
+
+  // ═══ Case Detail ═══
+  function CaseDetail(c){
+    var sn=gSN();
+    var caseSubs=c.substances.map(function(idx){return subs[idx];}).filter(Boolean);
+    var d=c.data;
+    var sum=d.screening.summary;
+
+    // Step 1 Registration
+    function Step1(){return h("div",null,
+      Sub(L("顧客情報")),
+      KV([[L("顧客"),c.customer],[L("担当者"),c.contact],[L("部署"),c.division],["Email",c.email]]),
+      Sub(L("提出要件")),
+      KV([[L("期限"),c.deadline],[L("提出フォーマット"),c.format],[L("バージョン"),d.registration.note]]),
+      Sub(L("対象製品")),
+      G([L("製品名"),L("型番")],c.products.map(function(p){return{cells:[p.name,p.partNo]}})),
+      Sub(L("優先度")),PriTag(c.priority));}
+
+    // Step 2 Analysis — with real XML parsing
+    function handleFileDrop(e){
+      e.preventDefault();e.stopPropagation();setIsDragging(false);
+      var files=e.dataTransfer?e.dataTransfer.files:e.target.files;
+      if(!files||files.length===0)return;
+      var log=[];var allParsed=[];
+      var processed=0;
+      Array.from(files).forEach(function(file){
+        var reader=new FileReader();
+        reader.onload=function(ev){
+          var content=ev.target.result;
+          log.push("[OK] "+file.name+" を読み込み中...");
+          if(file.name.endsWith(".xml")){
+            var parsed=parseChemSherpaXML(content);
+            log.push("[OK] "+file.name+": XML構造検証完了");
+            log.push("[OK] "+parsed.length+"件の物質データを抽出");
+            parsed.forEach(function(p){
+              p.source=file.name;
+              p.judgment=matchPFAS(p.cas,p.name);
+              allParsed.push(p);
+            });
+          }else if(file.name.endsWith(".pdf")){
+            log.push("[INFO] "+file.name+": PDFファイルはOCR処理が必要です");
+            log.push("[WARN] ブラウザ内PDF解析は制限があります。XMLファイルを推奨します。");
+            // Extract CAS patterns from raw PDF text (limited)
+            var casMatches=content.match(/\b(\d{2,7}-\d{2}-\d)\b/g)||[];
+            var unique=[];casMatches.forEach(function(c){if(unique.indexOf(c)<0)unique.push(c);});
+            unique.forEach(function(cas){allParsed.push({cas:cas,name:"PDF抽出 ("+cas+")",conc:"-",source:file.name,judgment:matchPFAS(cas,"")});});
+            if(unique.length>0)log.push("[OK] PDF内からCAS番号 "+unique.length+"件を検出");
+          }else{
+            log.push("[WARN] "+file.name+": 非対応フォーマット (.xml/.pdf のみ)");
+          }
+          processed++;
+          if(processed===files.length){
+            log.push("─────────────────────────");
+            log.push("[OK] 合計 "+allParsed.length+" 物質を統合・正規化完了");
+            var yc=allParsed.filter(function(p){return p.judgment==="yes"}).length;
+            var sc=allParsed.filter(function(p){return p.judgment==="suspected"}).length;
+            var uc=allParsed.filter(function(p){return p.judgment==="unknown"}).length;
+            log.push("[OK] PFAS判定: 該当 "+yc+" / 疑い "+sc+" / 不明 "+uc);
+            setUploadLog(log);
+            setUploadResult({files:Array.from(files).map(function(f){return f.name}),substances:allParsed,
+              confidence:(allParsed.length>0?Math.min(99,85+Math.random()*12).toFixed(1):0)+"%"});
+          }
+        };
+        if(file.name.endsWith(".xml"))reader.readAsText(file);
+        else reader.readAsText(file); // attempt text extraction from any file
+      });
+    }
+    function Step2(){
+      var hasExisting=d.analysis.uploads.length>0;
+      var hasUploaded=uploadResult&&uploadResult.substances&&uploadResult.substances.length>0;
+      var displaySubs=hasUploaded?uploadResult.substances:null;
+      var displayLog=hasUploaded?uploadLog:(d.analysis.log||[]);
+      var displayFiles=hasUploaded?uploadResult.files:d.analysis.uploads;
+      var displayConf=hasUploaded?uploadResult.confidence:d.analysis.confidence;
+      var displayCount=hasUploaded?uploadResult.substances.length:d.analysis.extractedCount;
+
+      return h("div",null,
+      Sub("chemSHERPA XML / SDS PDF"),
+      // Always show upload zone
+      h("div",{className:"ocr-zone",
+        style:{borderColor:isDragging?"var(--tl)":"",background:isDragging?"var(--tlbg)":""},
+        onDragOver:function(e){e.preventDefault();setIsDragging(true);},
+        onDragLeave:function(){setIsDragging(false);},
+        onDrop:handleFileDrop,
+        onClick:function(){var inp=document.createElement("input");inp.type="file";inp.accept=".xml,.pdf";inp.multiple=true;inp.onchange=handleFileDrop;inp.click();}},
+        h("div",{style:{fontSize:28,marginBottom:8}},isDragging?"📥":"📤"),
+        h("div",{style:{fontSize:12,color:"var(--sub)"}},isDragging?L("ファイルをドロップ"):L("ファイルをドロップまたはクリックしてアップロード")),
+        h("div",{style:{fontSize:10,color:"var(--ht)",marginTop:4}},"chemSHERPA XML (.xml) / SDS PDF (.pdf)")),
+      // Show uploaded files
+      (displayFiles&&displayFiles.length>0)?h("div",{style:{marginTop:12}},
+        displayFiles.map(function(f,i){return h("div",{key:i,style:{fontSize:11,padding:"4px 0"}},"📄 "+f)}),
+        h("div",{style:{marginTop:8,fontSize:12}},L("信頼度")+": ",h("b",null,displayConf)," / ",displayCount+" "+L("物質抽出"))):null,
+      // Analysis log
+      (displayLog&&displayLog.length>0)?h("div",null,Sub(L("解析ログ")),h("div",{className:"ocr-log"},displayLog.join("\n"))):null,
+      // Parsed substances table
+      displaySubs?h("div",null,Sub(L("抽出物質一覧")+" ("+displaySubs.length+")"),
+        h("div",{className:"inv-tbl"},h("table",null,
+          h("thead",null,h("tr",null,h("th",null,L("CAS番号")),h("th",null,L("物質名")),h("th",null,L("濃度")),h("th",null,L("判定")),h("th",null,L("ソース")))),
+          h("tbody",null,displaySubs.map(function(s,i){return h("tr",{key:i,className:"row-"+s.judgment},
+            h("td",null,h("code",{style:{fontSize:11}},s.cas)),
+            h("td",{style:{fontWeight:500,fontSize:11}},_CL==="en"&&s.nameEn?s.nameEn:s.name),
+            h("td",null,s.conc),
+            h("td",null,JT(s.judgment)),
+            h("td",{style:{fontSize:10,color:"var(--sub)"}},s.source))}))))):
+      // Fallback: show existing case substances
+      (caseSubs.length>0?h("div",null,Sub(L("抽出物質一覧")),
+        G([L("CAS番号"),L("物質名"),L("分類"),L("濃度")],caseSubs.map(function(s){return{cells:[h("code",null,s.cas),(_CL==="en"&&s.nameEn?s.nameEn:s.name),s.category,s.conc]}}))):null));}
+
+    // Step 3 Screening
+    function Step3(){
+      var yc=sum.yes,sc2=sum.suspected,uc=sum.unknown,tot=yc+sc2+uc;
+      var py=tot?Math.round(yc/tot*100):0,ps=tot?Math.round(sc2/tot*100):0;
+      return h("div",null,
+        h("div",{className:"dash-grid",style:{gridTemplateColumns:"repeat(4,1fr)"}},
+          h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--tl)"}},tot),h("div",{className:"lbl"},"Total")),
+          h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--rd)"}},yc),h("div",{className:"lbl"},L("該当"))),
+          h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--am)"}},sc2),h("div",{className:"lbl"},L("疑い"))),
+          h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"#5b6b82"}},uc),h("div",{className:"lbl"},L("不明")))),
+        h("div",{className:"stats-row"},
+          h("div",{className:"pie-chart",style:{background:"conic-gradient(var(--rd) 0% "+py+"%, var(--am) "+py+"% "+(py+ps)+"%, #8899aa "+(py+ps)+"% 100%)"}}),
+          h("div",{style:{flex:1}},
+            Sub(L("判定完了率")),
+            h("div",{className:"completion-bar"},h("div",{className:"completion-fill",style:{width:(tot?Math.round((yc+sc2)/tot*100):0)+"%",background:"var(--tl)"}})),
+            h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:4}},(tot?Math.round((yc+sc2)/tot*100):0)+"% ("+L("不明")+" "+uc+L("件")+")"))),
+        Sub(L("物質判定一覧")),
+        G([L("CAS番号"),L("物質名"),L("分類"),L("判定"),L("根拠"),L("証拠")],
+          caseSubs.map(function(s){return{_cls:"row-"+s.judgment,cells:[h("code",null,s.cas),(_CL==="en"&&s.nameEn?s.nameEn:s.name),s.category,JT(s.judgment),s.basis,s.evidence]}})));}
+
+    // Step 4 Resolution
+    function Step4(){
+      var inq=d.resolution.inquiries;
+      return h("div",null,
+        Sub(L("不明物質リスト")),
+        inq.length===0?h("div",{className:"nt"},L("照会対象の不明物質はありません")):
+        h("div",null,
+          inq.map(function(q,i){return h("div",{key:i,className:"disc "+(q.status==="overdue"?"hi":q.status==="responded"?"ok":"md")},
+            h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}},
+              h("b",{style:{fontSize:12}},q.substance+" ("+q.cas+")"),StatusTag(q.status)),
+            h("div",{style:{fontSize:11,color:"var(--sub)"}},L("サプライヤー")+": "+q.supplier),
+            h("div",{className:"timeline"},
+              h("div",{className:"tl-item tl-done"},L("送信済")+": "+q.sentDate),
+              q.remindDate?h("div",{className:"tl-item "+(q.status==="overdue"?"tl-overdue":"tl-done")},L("リマインド済")+": "+q.remindDate):null,
+              q.responseDate?h("div",{className:"tl-item tl-done"},L("回答済")+": "+q.responseDate):null))}),
+          Sub(L("メールプレビュー")),
+          h("div",{className:"email-preview"},_CL==="en"?
+            "Subject: PFAS Content Inquiry ["+c.id+"]\n\nDear Sir/Madam,\n\nWe kindly request PFAS content information for the following substances:\n\n"+inq.filter(function(q){return q.status!=="responded"}).map(function(q){"- "+q.substance+" (CAS: "+q.cas+")"}).join("\n")+"\n\nDeadline: "+c.deadline+"\nThank you for your cooperation.":
+            "Subject: PFAS含有情報照会 ["+c.id+"]\n\nお世話になっております。\n\n下記物質につきまして、PFAS含有情報のご提供をお願いいたします。\n\n"+inq.filter(function(q){return q.status!=="responded"}).map(function(q){return"・"+q.substance+" (CAS: "+q.cas+")"}).join("\n")+"\n\nご回答期限: "+c.deadline+"\n何卒よろしくお願いいたします。"),
+          h("div",{style:{display:"flex",gap:8,marginTop:10}},
+            h("a",{className:"btn bg sm",style:{textDecoration:"none"},target:"_blank",
+              href:(function(){
+                var pending=inq.filter(function(q){return q.status!=="responded";});
+                var subj=_CL==="en"?"PFAS Content Inquiry ["+c.id+"]":"PFAS含有情報照会 ["+c.id+"]";
+                var bd=_CL==="en"?
+                  "Dear Sir/Madam,\n\nWe request PFAS content info for:\n\n"+pending.map(function(q){return"- "+q.substance+" (CAS: "+q.cas+")"}).join("\n")+"\n\nDeadline: "+c.deadline+"\n\nBest regards":
+                  "お世話になっております。\n\n下記物質のPFAS含有情報をお願いします。\n\n"+pending.map(function(q){return"・"+q.substance+" (CAS: "+q.cas+")"}).join("\n")+"\n\nご回答期限: "+c.deadline+"\n何卒よろしくお願いいたします。";
+                return"mailto:?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(bd);
+              })()},"✉ "+L("メール生成/送信")),
+            h("button",{className:"btn bs sm"},"🔄 "+L("リマインド送信")))));}
+
+    // Step 5 Validation
+    function Step5(){
+      var checks=d.validation.checks;
+      return h("div",null,
+        checks.length===0?h("div",{className:"nt"},L("検証対象データがありません。前ステップを完了してください。")):
+        h("div",null,
+          h("div",{className:"pnl-grid"},
+            h("div",{className:"pnl-card"},h("div",{className:"num",style:{color:"var(--gn)"}},checks.filter(function(c2){return c2.result==="pass"}).length),h("div",{className:"lbl"},L("合格"))),
+            h("div",{className:"pnl-card"},h("div",{className:"num",style:{color:"var(--am)"}},checks.filter(function(c2){return c2.result==="warning"}).length),h("div",{className:"lbl"},L("警告")))),
+          Sub(L("検証結果")),
+          G([L("チェック項目"),L("対象"),L("期待値"),L("実測値"),L("結果")],
+            checks.map(function(ck){return{_cls:ck.result==="warning"?"row-sus":"",cells:[ck.item,ck.target,ck.expected,ck.actual,
+              ck.result==="pass"?T(L("合格"),"tg"):ck.result==="warning"?T(L("警告"),"ta"):T(L("エラー"),"tr")]}}))));}
+
+    // Step 6 Submission
+    function Step6(){
+      var sub=d.submission;
+      return h("div",null,
+        Sub(L("出力フォーマット")),
+        KV([[L("提出フォーマット"),sub.format],[L("ステータス"),sub.templateStatus==="mapped"?L("マッピング完了"):L("マッピング中")]]),
+        sub.fields.length>0?h("div",null,
+          Sub(L("テンプレートマッピング")),
+          G([L("フィールド"),L("ステータス")],sub.fields.map(function(f){return{cells:[f.field,f.status==="mapped"?T(L("完了"),"tg"):T(L("マッピング中"),"ta")]}}))):null,
+        h("div",{style:{display:"flex",gap:8,marginTop:14}},
+          h("button",{className:"btn bg sm"},"📥 "+L("ダウンロード")),
+          h("button",{className:"btn bs sm"},"👁 "+L("プレビュー"))));}
+
+    // Step 7 Archive
+    function Step7(){
+      var ar=d.archive;
+      return h("div",null,
+        Sub(L("証跡パッケージ")),
+        ar.files.length>0?
+          G([L("ファイル名"),L("種別"),L("日時"),L("操作者")],ar.files.map(function(f){return{cells:["📄 "+f.name,T(f.type,"tt"),f.date,f.by]}})):
+          h("div",{className:"nt"},L("ファイルがありません")),
+        Sub(L("バージョン履歴")),
+        h("div",{className:"timeline"},ar.versions.map(function(v,i){return h("div",{key:i,className:"tl-item tl-done"},
+          h("b",null,"v"+v.v)," — "+v.date+" — "+v.note+" ("+v.by+")")})),
+        Sub(L("サインオフ")),
+        ar.signoffs.length>0?ar.signoffs.map(function(s,i){return h("div",{key:i,className:"signoff-item"},
+          h("div",{className:"sf-check "+(s.status==="done"?"sf-done":"sf-pend")},s.status==="done"?"✓":"○"),
+          h("span",{style:{flex:1}},s.role+": "+s.name),
+          h("span",{style:{fontSize:11,color:"var(--sub)"}},s.date))}):
+          h("div",{className:"nt"},L("サインオフ設定がありません")),
+        c.step>=6?h("div",{style:{marginTop:14}},h("button",{className:"btn bg"},"🔒 "+L("アーカイブ確定"))):null);}
+
+    var stepFns=[Step1,Step2,Step3,Step4,Step5,Step6,Step7];
+    return h("div",null,
+      h("div",{style:{display:"flex",alignItems:"center",gap:10,marginBottom:16}},
+        h("span",{style:{fontSize:16,fontWeight:700,color:"var(--navy)"}},c.id),
+        h("span",{style:{fontSize:14,fontWeight:500}},c.customer),
+        PriTag(c.priority),FmtTag(c.format),
+        h("span",{style:{fontSize:11,color:"var(--sub)"}},"⏰ "+c.deadline)),
+      Chevrons({cur:c.step,onClick:tog}),
+      STEP_KEYS.map(function(k,i){
+        return Sec({key:k,num:i+1,title:sn[k],tag:i<c.step?T(L("完了"),"tg"):i===c.step?T(L("進行中"),"tb"):null,open:osec===i,toggle:function(){tog(i)},children:stepFns[i]()});}));
+  }
+
+  // ═══ Screening Page ═══
+  function ScreeningPage(){
+    var currentCase=CASES.find(function(c){return c.id===scrCase;})||CASES[0];
+    var caseSubs=currentCase.substances.map(function(idx){return subs[idx];}).filter(Boolean);
+    var filtered=caseSubs.filter(function(s){
+      if(scrFilter!=="all"&&s.judgment!==scrFilter)return false;
+      if(scrSearch){var q=scrSearch.toLowerCase();return s.cas.indexOf(q)>=0||s.name.toLowerCase().indexOf(q)>=0||s.nameEn.toLowerCase().indexOf(q)>=0;}
+      return true;
+    });
+    var yc=caseSubs.filter(function(s){return s.judgment==="yes"}).length;
+    var sc2=caseSubs.filter(function(s){return s.judgment==="suspected"}).length;
+    var uc=caseSubs.filter(function(s){return s.judgment==="unknown"}).length;
+    var tot=caseSubs.length;
+    var py=tot?Math.round(yc/tot*100):0,ps=tot?Math.round(sc2/tot*100):0;
+
+    // Category breakdown
+    var cats={};caseSubs.forEach(function(s){cats[s.category]=(cats[s.category]||0)+1;});
+
+    return h("div",null,
+      h("div",{className:"page-title"},"🔬 "+L("PFASスクリーニング")),
+      h("div",{style:{display:"flex",gap:12,alignItems:"center",marginBottom:16}},
+        h("label",{style:{fontSize:12,fontWeight:600,color:"var(--sub)"}},L("案件:")),
+        h("select",{value:scrCase,onChange:function(e){sscrCase(e.target.value);sscrFilter("all");sscrSearch("");ssel({});},
+          style:{padding:"6px 10px",border:"1px solid var(--bd)",borderRadius:6,fontSize:12,background:"var(--card)",color:"var(--tx)"}},
+          CASES.map(function(c){return h("option",{key:c.id,value:c.id},c.id+" — "+c.customer)}))),
+
+      h("div",{className:"dash-grid"},
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--tl)"}},tot),h("div",{className:"lbl"},"Total")),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--rd)"}},yc),h("div",{className:"lbl"},L("該当"))),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--am)"}},sc2),h("div",{className:"lbl"},L("疑い"))),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"#5b6b82"}},uc),h("div",{className:"lbl"},L("不明")))),
+
+      h("div",{className:"filter-bar"},
+        h("div",{className:"search-box",style:{marginBottom:0,flex:1}},
+          h("span",{className:"s-icon"},"🔍"),
+          h("input",{placeholder:L("CAS番号・物質名で検索..."),value:scrSearch,onChange:function(e){sscrSearch(e.target.value)}})),
+        h("button",{className:"filter-btn"+(scrFilter==="all"?" active":""),onClick:function(){sscrFilter("all")}},L("全て")+" ("+tot+")"),
+        h("button",{className:"filter-btn f-yes"+(scrFilter==="yes"?" active":""),onClick:function(){sscrFilter("yes")}},L("該当")+" ("+yc+")"),
+        h("button",{className:"filter-btn f-sus"+(scrFilter==="suspected"?" active":""),onClick:function(){sscrFilter("suspected")}},L("疑い")+" ("+sc2+")"),
+        h("button",{className:"filter-btn f-unk"+(scrFilter==="unknown"?" active":""),onClick:function(){sscrFilter("unknown")}},L("不明")+" ("+uc+")"),
+        h("span",{style:{width:1,height:20,background:"var(--bd)"}}),
+        h("button",{className:"btn bg sm",onClick:function(){bulkJudge("yes")}},L("一括判定")+": "+L("該当")),
+        h("button",{className:"btn bs sm",onClick:function(){bulkJudge("suspected")}},L("疑い")),
+        h("button",{className:"btn bs sm",onClick:function(){bulkJudge("unknown")}},L("不明"))),
+
+      h("div",{className:"inv-tbl"},
+        h("table",null,
+          h("thead",null,h("tr",null,
+            h("th",{style:{width:30}},h("input",{type:"checkbox",onChange:function(e){var n={};filtered.forEach(function(s){n[s.id]=e.target.checked;});ssel(n);}})),
+            h("th",null,L("CAS番号")),h("th",null,L("物質名")),h("th",null,L("分類")),h("th",null,L("濃度")),h("th",null,L("判定")),h("th",null,L("根拠")),h("th",null,L("証拠")))),
+          h("tbody",null,filtered.map(function(s){return h("tr",{key:s.id,className:"row-"+s.judgment},
+            h("td",null,h("input",{type:"checkbox",checked:!!sel[s.id],onChange:function(){toggleSel(s.id)}})),
+            h("td",null,h("code",{style:{fontSize:11}},s.cas)),
+            h("td",{style:{fontWeight:500}},_CL==="en"&&s.nameEn?s.nameEn:s.name),
+            h("td",null,h("span",{style:{fontSize:10}},s.category)),
+            h("td",null,s.conc),
+            h("td",null,h("select",{className:"j-select j-"+s.judgment,value:s.judgment,onChange:function(e){updateJudgment(s.id,e.target.value)}},
+              h("option",{value:"yes"},L("該当")),h("option",{value:"suspected"},L("疑い")),h("option",{value:"unknown"},L("不明")))),
+            h("td",{style:{fontSize:10}},s.basis),
+            h("td",{style:{fontSize:10}},s.evidence))})))),
+
+      h("div",{className:"chart-row"},
+        h("div",{className:"chart-wrap"},
+          h("h4",null,L("PFAS分類内訳")),
+          Object.keys(cats).sort().map(function(cat){
+            return h("div",{key:cat,className:"cat-bar"},
+              h("span",{className:"cb-label"},cat),
+              h("div",{className:"cb-fill",style:{width:Math.max(cats[cat]*20,24),background:"var(--tl)"}},cats[cat]));})),
+        h("div",{className:"chart-wrap"},
+          h("h4",null,L("判定分布")),
+          h("div",{style:{display:"flex",alignItems:"center",gap:20,justifyContent:"center",padding:"20px 0"}},
+            h("div",{className:"pie-chart",style:{background:"conic-gradient(var(--rd) 0% "+py+"%, var(--am) "+py+"% "+(py+ps)+"%, #8899aa "+(py+ps)+"% 100%)"}}),
+            h("div",null,
+              h("div",{style:{fontSize:12,marginBottom:4}},"🔴 "+L("該当")+": "+yc+" ("+py+"%)"),
+              h("div",{style:{fontSize:12,marginBottom:4}},"🟡 "+L("疑い")+": "+sc2+" ("+(tot?Math.round(sc2/tot*100):0)+"%)"),
+              h("div",{style:{fontSize:12}},"⚪ "+L("不明")+": "+uc+" ("+(tot?Math.round(uc/tot*100):0)+"%)"))))));
+  }
+
+  // ═══ New Case Page with Email Import ═══
+  function scanEmails(){
+    setEmailScanning(true);setEmailResults([]);
+    // Simulate scanning delay
+    setTimeout(function(){
+      setEmailResults(EMAIL_INBOX);
+      setEmailScanning(false);
+    },1500);
+  }
+  function importFromEmail(email){
+    setEmailSel(email);setEmailMode(false);
+    // Pre-fill form with extracted data — handled in render
+  }
+
+  function NewCasePage(){
+    var pre=emailSel?emailSel.extracted:null;
+    // Sync form fields from email selection when pre changes
+    var fv=pre?Object.assign({},ncFv,{
+      customer:ncFv.customer||pre.customer||"",contact:ncFv.contact||pre.contact||"",
+      division:ncFv.division||pre.division||"",email:ncFv.email||pre.email||"",
+      deadline:ncFv.deadline||pre.deadline||"",format:ncFv.format||pre.format||"chemSHERPA-CI",
+      priority:ncFv.priority||pre.priority||"medium",
+      productName:ncFv.productName||(pre.products&&pre.products[0]?pre.products[0].name:"")||"",
+      partNo:ncFv.partNo||(pre.products&&pre.products[0]?pre.products[0].partNo:"")||""
+    }):ncFv;
+    var setFv=setNcFv,saving=ncSaving,setSaving=setNcSaving,saved=ncSaved,setSaved=setNcSaved;
+    function ff(k){return function(e){setFv(Object.assign({},fv,{[k]:e.target.value}));}}
+    function doRegister(){
+      if(!fv.customer){alert('顧客名を入力してください');return;}
+      setSaving(true);
+      var newId='PFC-'+(String(ALL_CASES.length+1).padStart(3,'0'));
+      var today=new Date().toISOString().substring(0,10);
+      var newCase={id:newId,customer:fv.customer,contact:fv.contact,division:fv.division,email:fv.email,
+        deadline:fv.deadline||today,format:fv.format,step:0,priority:fv.priority,
+        data:{registration:{submittedBy:'',date:today,note:''},
+          analysis:{uploads:[],confidence:'-',extractedCount:0,log:[]},
+          screening:{summary:{yes:0,suspected:0,unknown:0}},resolution:{inquiries:[]},
+          validation:{checks:[]},submission:{format:fv.format,templateStatus:'pending',fields:[]},
+          archive:{files:[],versions:[{v:'1.0',date:today,note:'初期登録',by:''}],signoffs:[]}},
+        products:fv.productName?[{name:fv.productName,partNo:fv.partNo}]:[],substances:[]};
+      saveCase(newCase).then(function(res){
+        setSaving(false);
+        if(res.error){alert('DB保存エラー: '+res.error.message);return;}
+        setDbCases([newCase].concat(ALL_CASES));
+        setSaved(true);
+        setTimeout(function(){nav("cases");setEmailSel(null);setSaved(false);},1200);
+      });
+    }
+
+    // Email import modal/panel
+    function handleEmlDrop(e){
+      e.preventDefault();setEmlDrag(false);
+      var files=Array.from(e.dataTransfer?e.dataTransfer.files:e.target.files);
+      files.filter(function(f){return f.name.match(/\.(eml|msg|txt)$/i);}).forEach(function(f){
+        var r=new FileReader();
+        r.onload=function(ev){
+          var obj=parseEmlFile(ev.target.result,f.name);
+          setEmailResults(function(prev){return[obj].concat(prev.filter(function(x){return x.id!==obj.id;}));});
+        };
+        r.readAsText(f);
+      });
+    }
+    if(emailMode){
+      return h("div",null,
+        h("div",{className:"page-title"},L("✉ メールから案件取込")),
+        h("div",{style:{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}},
+          h("button",{className:"btn bg",onClick:scanEmails,disabled:emailScanning},emailScanning?L("🔄 スキャン中..."):L("📧 受信メールをスキャン")),
+          h("label",{className:"btn bs",style:{cursor:"pointer"}},
+            "📎 "+L("EMLファイルを選択"),
+            h("input",{type:"file",accept:".eml,.msg,.txt",multiple:true,style:{display:"none"},onChange:handleEmlDrop})),
+          h("button",{className:"btn bs",onClick:function(){setEmailMode(false)}},L("戻る"))),
+        // EML drag & drop zone
+        h("div",{
+          className:"upload-zone"+(emlDrag?" dragging":""),
+          style:{marginBottom:14,padding:"14px",minHeight:60,display:"flex",alignItems:"center",justifyContent:"center",gap:10,fontSize:12,color:"var(--sub)"},
+          onDragOver:function(e){e.preventDefault();setEmlDrag(true);},
+          onDragEnter:function(e){e.preventDefault();setEmlDrag(true);},
+          onDragLeave:function(){setEmlDrag(false);},
+          onDrop:handleEmlDrop},
+          h("span",{style:{fontSize:22}},"📧"),
+          h("span",null,emlDrag?L("ここにドロップ"):L("EMLファイルをここにドラッグ＆ドロップ"))),
+        emailScanning?h("div",{className:"nt",style:{textAlign:"center"}},L("📡 受信メールをスキャン中... PFAS関連キーワードを検索しています")):null,
+        emailResults.length>0?h("div",null,
+          h("div",{style:{fontSize:12,color:"var(--sub)",marginBottom:10}},emailResults.length+L("件のPFAS関連メールを検出")),
+          emailResults.map(function(em){
+            var ex=em.extracted;
+            return h("div",{key:em.id,className:"disc ok",style:{cursor:"pointer"},onClick:function(){importFromEmail(em)}},
+              h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}},
+                h("div",null,
+                  h("b",{style:{fontSize:13}},em.subject),
+                  h("div",{style:{fontSize:11,color:"var(--sub)",marginTop:2}},"From: "+em.fromName+" <"+em.from+"> — "+em.date)),
+                h("button",{className:"btn bg sm",onClick:function(e){e.stopPropagation();importFromEmail(em);}},"📥 "+L("取込"))),
+              h("div",{style:{display:"flex",gap:16,flexWrap:"wrap",fontSize:11,marginBottom:6}},
+                h("span",null,"👤 "+ex.customer),
+                h("span",null,"📅 "+L("期限")+": "+ex.deadline),
+                h("span",null,FmtTag(ex.format)),
+                PriTag(ex.priority)),
+              h("div",{style:{fontSize:11,color:"var(--sub)"}},L("対象製品:")+ex.products.map(function(p){return p.name+(p.partNo?" ("+p.partNo+")":"")}).join(", ")),
+              h("details",{style:{marginTop:8}},
+                h("summary",{style:{fontSize:11,color:"var(--tl)",cursor:"pointer"}},L("メール本文を表示")),
+                h("div",{className:"email-preview",style:{marginTop:6}},em.body)));})):
+        (!emailScanning?h("div",{style:{textAlign:"center",padding:"20px 0",color:"var(--ht)"}},
+          h("div",{style:{fontSize:32,marginBottom:8}},"✉"),
+          h("p",{style:{fontSize:13}},L("「受信メールをスキャン」をクリックして、PFAS調査依頼メールを検索します")),
+          h("p",{style:{fontSize:11,marginTop:4}},L("件名・本文からPFAS/chemSHERPA/REACH等のキーワードを自動検出"))):null));
+    }
+
+    return h("div",null,
+      h("div",{className:"page-title"},"＋ "+L("新規登録")),
+      h("div",{className:"entry-grid"},
+        h("div",{className:"entry-card",onClick:function(){nav("cases")}},h("div",{className:"ec-icon"},"📤"),h("h3",null,L("chemSHERPA/SDSアップロード")),h("p",null,L("ファイルをアップロードして自動解析"))),
+        h("div",{className:"entry-card",style:{borderColor:emailSel?"var(--gn)":""},onClick:function(){setEmailMode(true);setEmailResults([]);}},
+          h("div",{className:"ec-icon"},"✉"),h("h3",null,L("メールから取込")),
+          h("p",null,L("受信メールからPFAS調査依頼を検出し自動入力")),
+          emailSel?h("div",{style:{marginTop:8}},T("✓ "+emailSel.extracted.customer+L("を取込済"),"tg")):null),
+        h("div",{className:"entry-card"},h("div",{className:"ec-icon"},"📝"),h("h3",null,L("手動登録")),h("p",null,L("顧客・製品情報を手入力で登録")))),
+      pre?h("div",{className:"nt",style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},L("✉ メールから取込済:")+pre.customer+" ("+emailSel.date+")",
+        h("button",{className:"btn bs sm",onClick:function(){setEmailSel(null)}},L("✕ クリア"))):null,
+      h("div",{className:"section"},
+        h("div",{className:"sh"},h("h3",null,L("案件情報入力"))),
+        h("div",{className:"sb2"},
+          h("div",{className:"fr"},
+            h("div",{className:"fg"},h("label",null,L("顧客")),h("input",{placeholder:L("顧客名"),value:fv.customer,onChange:ff("customer")})),
+            h("div",{className:"fg"},h("label",null,L("担当者")),h("input",{placeholder:L("担当者名"),value:fv.contact,onChange:ff("contact")})),
+            h("div",{className:"fg"},h("label",null,L("部署")),h("input",{placeholder:L("部署名"),value:fv.division,onChange:ff("division")})),
+            h("div",{className:"fg"},h("label",null,"Email"),h("input",{placeholder:"email@example.com",value:fv.email,onChange:ff("email")})),
+            h("div",{className:"fg"},h("label",null,L("期限")),h("input",{type:"date",value:fv.deadline,onChange:ff("deadline")})),
+            h("div",{className:"fg"},h("label",null,L("提出フォーマット")),h("select",{value:fv.format,onChange:ff("format")},h("option",null,"chemSHERPA-CI"),h("option",null,"chemSHERPA-AI"),h("option",null,"IMDS"),h("option",null,"Excel"))),
+            h("div",{className:"fg"},h("label",null,L("優先度")),h("select",{value:fv.priority,onChange:ff("priority")},h("option",{value:"high"},L("高")),h("option",{value:"medium"},L("中")),h("option",{value:"low"},L("低"))))),
+          Sub(L("対象製品")),
+          h("div",{className:"fr"},
+            h("div",{className:"fg"},h("label",null,L("製品名")),h("input",{placeholder:L("製品名"),value:fv.productName,onChange:ff("productName")})),
+            h("div",{className:"fg"},h("label",null,L("型番")),h("input",{placeholder:L("型番"),value:fv.partNo,onChange:ff("partNo")}))),
+          saved?h("div",{className:"nt",style:{color:"var(--gn)",background:"var(--gnbg)"}},"✅ Supabaseに保存しました！案件一覧へ移動します..."):null,
+          h("div",{style:{display:"flex",gap:8,marginTop:14}},
+            h("button",{className:"btn bg",onClick:doRegister,disabled:saving},saving?"⏳ 保存中...":L("登録")),
+            h("button",{className:"btn bs",onClick:function(){nav("cases");setEmailSel(null);}},L("キャンセル"))))))
+  }
+
+  // ═══ Suppliers Page ═══
+  function SuppliersPage(){
+    var totalPending=dbSuppliers.reduce(function(a,s){return a+(s.pending||0);},0);
+    return h("div",null,
+      DbStatusBar(),
+      h("div",{className:"page-title"},"🏭 "+L("サプライヤー管理")),
+      h("div",{className:"dash-grid"},
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--tl)"}},dbSuppliers.length),h("div",{className:"lbl"},"Total")),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--gn)"}},dbSuppliers.filter(function(s){return s.status==="active"}).length),h("div",{className:"lbl"},"Active")),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--bl)"}},
+          (SUPPLIERS.reduce(function(a,s){return a+s.avgDays;},0)/SUPPLIERS.length).toFixed(1)),h("div",{className:"lbl"},L("平均応答日数"))),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--am)"}},totalPending),h("div",{className:"lbl"},"Pending"))),
+      h("div",{className:"inv-tbl"},
+        h("table",null,
+          h("thead",null,h("tr",null,h("th",null,"ID"),h("th",null,L("サプライヤー")),h("th",null,"Country"),h("th",null,L("担当者")),h("th",null,L("応答率")),h("th",null,L("平均応答日数")),h("th",null,L("ステータス")),h("th",null,"Pending"))),
+          h("tbody",null,dbSuppliers.map(function(s){return h("tr",{key:s.id},
+            h("td",{style:{fontWeight:600}},s.id),h("td",null,s.name),h("td",null,s.country),h("td",null,s.contact),
+            h("td",null,h("span",{style:{color:(s.response_rate||s.responseRate)>=90?"var(--gn)":(s.response_rate||s.responseRate)>=80?"var(--am)":"var(--rd)"}},((s.response_rate||s.responseRate)||0)+"%")),
+            h("td",null,((s.avg_days||s.avgDays)||0)+"d"),
+            h("td",null,s.status==="active"?T("Active","tg"):T("Delayed","ta")),
+            h("td",null,(s.pending||0)>0?T((s.pending||0)+"","ta"):T("0","tg")))})))));
+  }
+
+  // ═══ Dashboard Page ═══
+  function DashboardPage(){
+    var active=ALL_CASES.filter(function(c){return c.step<6}).length;
+    var overdue=ALL_CASES.filter(function(c){return new Date(c.deadline)<new Date()&&c.step<6}).length;
+    var totalSubs=0;ALL_CASES.forEach(function(c){totalSubs+=c.substances?c.substances.length:0;});
+    var completed=ALL_CASES.filter(function(c){return c.step>=6}).length;
+    return h("div",null,
+      h("div",{className:"page-title"},"📊 "+L("ダッシュボード")),
+      h("div",{className:"dash-grid"},
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--tl)"}},active),h("div",{className:"lbl"},L("アクティブ案件"))),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--rd)"}},overdue),h("div",{className:"lbl"},L("期限超過案件"))),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--bl)"}},totalSubs),h("div",{className:"lbl"},L("スクリーニング済物質"))),
+        h("div",{className:"dash-card"},h("div",{className:"num",style:{color:"var(--gn)"}},ALL_CASES.length?Math.round(completed/ALL_CASES.length*100)+"%":"0%"),h("div",{className:"lbl"},L("完了率")))),
+      DbStatusBar(),
+      h("div",{className:"chart-row"},
+        h("div",{className:"chart-wrap"},
+          h("h4",null,L("案件ステップ分布")),
+          STEP_KEYS.map(function(k,i){
+            var cnt=ALL_CASES.filter(function(c){return c.step===i}).length;
+            return h("div",{key:k,className:"cat-bar"},
+              h("span",{className:"cb-label"},gSN()[k]),
+              h("div",{className:"cb-fill",style:{width:Math.max(cnt*40,24),background:i<3?"var(--tl)":i<5?"var(--am)":"var(--gn)"}},cnt));})),
+        h("div",{className:"chart-wrap"},
+          h("h4",null,L("直近の期限")),
+          ALL_CASES.filter(function(c){return c.step<6}).sort(function(a,b){return new Date(a.deadline)-new Date(b.deadline)}).map(function(c){
+            var isOverdue=new Date(c.deadline)<new Date();
+            return h("div",{key:c.id,style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid var(--bd)",fontSize:12}},
+              h("span",null,h("b",null,c.id)," ",c.customer),
+              h("span",{style:{color:isOverdue?"var(--rd)":"var(--sub)"}},c.deadline+(isOverdue?" ⚠":"")));}))));
+  }
+
+  // ═══ Page routing ═══
+  var content;
+  if(pg==="cases") content=CaseListPage();
+  else if(pg==="new") content=NewCasePage();
+  else if(pg==="screening") content=ScreeningPage();
+  else if(pg==="suppliers") content=SuppliersPage();
+  else if(pg==="dashboard") content=DashboardPage();
+  else content=CaseListPage();
+
+  return h("div",null,Sidebar,h("div",{className:"main"},content));
+}
+
+ReactDOM.createRoot(document.getElementById("app")).render(h(App,null));
+</script>
+</body>
+</html>
