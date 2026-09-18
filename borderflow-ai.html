@@ -48,7 +48,6 @@ button,input,select{font-family:inherit}
 .sb-lang .btn{width:100%;background:rgba(255,255,255,.08);color:#fff;font-size:12.5px;justify-content:center;border:1px solid rgba(202,238,251,.16)}
 .main{margin-left:var(--sbw);flex:1;min-width:0;padding:28px 36px 72px;max-width:none;position:relative;z-index:1;width:auto}
 .page-title{font-size:22px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;letter-spacing:-.02em}
-.page-kicker{font-size:12px;color:var(--sub);margin:-10px 0 18px;max-width:46rem}
 .chevrons{display:flex;margin-bottom:20px;overflow-x:auto;gap:0}.chev{position:relative;flex:1;min-width:64px;padding:9px 8px 9px 18px;font-size:9px;font-weight:600;line-height:1.25;text-align:center;cursor:pointer;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,0 100%,10px 50%);margin-left:-2px;transition:.12s}.chev:first-child{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,0 100%);padding-left:10px}.chev b{display:block;font-size:11px}.chev-done{background:var(--lb);color:var(--navy)}.chev-cur{background:var(--navy);color:#fff}.chev-fut{background:#dfe3e8;color:var(--ht)}
 @media(prefers-color-scheme:dark){.chev-fut{background:var(--bd)}}
 .deal-card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:.18s}.deal-card:hover{border-color:var(--sky);box-shadow:var(--shadow)}
@@ -393,11 +392,7 @@ function App(){
     var rightPane;
     if(deal){rightPane=DealDetail(deal)}
     else{rightPane=h("div",{className:"empty-detail"},h("div",{className:"ed-icon"},"📋"),h("p",null,L("案件をクリックすると詳細が表示されます")))}
-    return h("div",null,
-      h("div",{style:{marginBottom:18}},
-        h("div",{className:"page-title"},"BorderFlow AI"),
-        h("p",{className:"page-kicker"},L("自律型貿易事務エージェント")+" — "+L("案件一覧"))),
-      h("div",{className:"split-wrap"},leftPane,h("div",{className:"split-right"},rightPane)))}
+    return h("div",{className:"split-wrap"},leftPane,h("div",{className:"split-right"},rightPane))}
 
   // ═══ NEW DEAL ═══
   function NewPage(){
