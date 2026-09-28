@@ -1,2 +1,5 @@
-# Wingconsulting
-Borderflow AIのリポジトリ
+# BorderFlow AI
+
+Wing Consulting の化学品商社向け・自律型貿易事務エージェントです。
+
+`index.html` を開くとデモが起動します。案件の登録から承認、船積、在庫、与信、物流、ダッシュボードまでを一つの画面で確認できます。サイドバーから日本語と English を切り替えられます。
